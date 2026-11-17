@@ -1,0 +1,154 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  FileSpreadsheet,
+  LayoutDashboard,
+  Menu,
+  X,
+} from "lucide-react";
+import { cerrarSesion } from "@/app/usuarios-acciones";
+import { LogoPurolomo } from "@/components/logo";
+import { nombreRango, type Rango } from "@/lib/acceso";
+import { cn } from "@/lib/utils";
+
+const todos: Rango[] = ["administrador", "consulta", "recepcionista", "pesador"];
+
+const grupos = [
+  {
+    titulo: "Principal",
+    items: [
+      { href: "/", label: "Inicio", icon: LayoutDashboard, roles: todos },
+    ],
+  },
+  {
+    titulo: "Operaciones",
+    items: [
+      { href: "/entradas", label: "Registrar entradas", icon: ArrowDownToLine, roles: ["administrador", "recepcionista"] as Rango[] },
+      { href: "/salidas", label: "Registrar salidas", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
+      { href: "/receta", label: "Cargar receta", icon: FileSpreadsheet, roles: ["administrador"] as Rango[] },
+    ],
+  },
+];
+
+function activo(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function cerrarMenu() {
+  const el = document.getElementById("menu-lateral");
+  if (el instanceof HTMLInputElement) el.checked = false;
+}
+
+export function Shell({
+  children,
+  nombre,
+  rango,
+}: {
+  children: React.ReactNode;
+  nombre: string;
+  rango: Rango;
+}) {
+  const pathname = usePathname();
+  const menu = grupos
+    .map((grupo) => ({
+      ...grupo,
+      items: grupo.items.filter((item) => item.roles.includes(rango)),
+    }))
+    .filter((grupo) => grupo.items.length > 0);
+
+  useEffect(() => {
+    cerrarMenu();
+  }, [pathname]);
+
+  return (
+    <div className="flex min-h-dvh w-full items-stretch">
+      <input id="menu-lateral" type="checkbox" className="peer sr-only" />
+      <label
+        htmlFor="menu-lateral"
+        className="fixed inset-0 z-30 hidden bg-black/50 peer-checked:block print:hidden lg:peer-checked:hidden"
+        aria-label="Cerrar menú"
+      />
+
+      <aside className="fixed inset-y-0 left-0 z-40 flex h-dvh w-[260px] shrink-0 -translate-x-full flex-col bg-navy text-white transition-transform peer-checked:translate-x-0 print:hidden lg:sticky lg:top-0 lg:bottom-auto lg:h-dvh lg:max-h-dvh lg:translate-x-0 lg:self-start">
+        <div className="relative flex items-center justify-center px-4 py-4">
+          <LogoPurolomo />
+          <label
+            htmlFor="menu-lateral"
+            className="absolute right-3 cursor-pointer rounded-md p-1 text-white/70 hover:bg-white/10 lg:hidden"
+            aria-label="Cerrar menú"
+          >
+            <X className="size-4" />
+          </label>
+        </div>
+        <nav className="menu-lateral flex-1 overflow-y-auto px-3 pb-6">
+          {menu.map((grupo) => (
+            <div key={grupo.titulo} className="mb-4">
+              <p className="px-3 pb-1.5 text-[10px] font-semibold tracking-[0.16em] text-white/40 uppercase">
+                {grupo.titulo}
+              </p>
+              <ul className="grid gap-0.5">
+                {grupo.items.map((item) => {
+                  const Icon = item.icon;
+                  const on = activo(pathname, item.href);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={cerrarMenu}
+                        className={cn(
+                          "flex min-h-11 items-center gap-2.5 rounded-lg px-3 py-2.5 text-base sm:text-sm",
+                          on
+                            ? "bg-purolomo-red font-semibold text-white"
+                            : "text-white/80 hover:bg-white/10",
+                        )}
+                      >
+                        <Icon className="size-4 shrink-0 opacity-90" />
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </nav>
+        <p className="px-5 pb-4 text-[11px] text-white/35">
+          Planta Embutidos Cagua · Almacén 40602-1
+        </p>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-black/5 bg-white px-3 py-2.5 pt-[max(0.625rem,env(safe-area-inset-top))] print:hidden sm:gap-3 sm:px-5">
+          <label
+            htmlFor="menu-lateral"
+            className="cursor-pointer rounded-md p-1.5 hover:bg-muted lg:hidden"
+            aria-label="Abrir menú"
+          >
+            <Menu className="size-5" />
+          </label>
+          <p className="min-w-0 flex-1 truncate text-sm font-semibold">Almacén</p>
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="hidden text-right sm:block">
+              <p className="text-xs font-semibold leading-tight">{nombre}</p>
+              <p className="text-[10px] tracking-wide text-muted-foreground uppercase">
+                {nombreRango(rango)}
+              </p>
+            </div>
+            <form action={cerrarSesion}>
+              <button type="submit" className="h-8 rounded-lg border px-2.5 text-sm font-medium hover:bg-muted">
+                Salir
+              </button>
+            </form>
+          </div>
+        </header>
+        <div className="relative min-h-0 flex-1 bg-[#f4f6f8]">{children}</div>
+      </div>
+    </div>
+  );
+}
