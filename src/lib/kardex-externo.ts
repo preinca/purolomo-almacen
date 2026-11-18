@@ -8,13 +8,16 @@ import { leerReporteKardex } from "./reporte-kardex";
  * Cliente del dashboard Purolomo Kárdex (Flask). Solo lee: POST /login y
  * POST /api/palleta/buscar (doble L). No llama a rutas de escritura.
  *
- * La respuesta en vivo no se capturó. Se asume, por el JS del dashboard:
- * - `success` verdadero y `codigo`, `descripcion`, `lote`, `fv`, `cantidad`
+ * La respuesta en vivo de una paleta puede traer solo `success`, `encontrado`,
+ * `codigo`, `descripcion`, `cantidad` y `token`, sin `lote` ni `fv`.
  * - `cantidad` puede ser número o texto; el inventario hace parseFloat y la
  *   etiqueta impresa trae unidad (`1000.0 KG`)
  * - un punto solo es decimal (`1000.0` → 1000); la coma es decimal salvo que
  *   agrupe miles de 3 dígitos (`1,000` → 1000, `1000,5` → 1000.5)
- * - `fv` en `AAAA-MM-DD`; si viene `DD/MM/AAAA` se interpreta día/mes/año
+ * - `fv`, si viene, se lee día primero: `DD/MM/AAAA`, `DD-MM-AAAA` o
+ *   `AAAA-MM-DD`, con o sin hora. Vacío, null o ilegible no es un error:
+ *   `fv` queda en blanco para completarlo en la ficha
+ * - `encontrado: false` es un token que el kárdex no tiene
  * - `nueva_integrada` y `mensaje` son opcionales
  *
  * La cookie `session` vive en memoria de este proceso (no es estado de un
@@ -244,6 +247,11 @@ function interpretar(datos: unknown): ResultadoKardex {
     return { ok: false, tipo: "invalido", error: "El kárdex externo respondió sin los datos de la paleta." };
   }
 
+  if (marcaFalsa(datos.encontrado)) {
+    const error = textoError(datos.error, "El kárdex externo no tiene esta paleta.");
+    return { ok: false, tipo: "no_encontrado", error };
+  }
+
   const fracaso = datos.success === false || datos.success === 0 || datos.success === "false" || datos.success === "0";
   const sinConfirmar = datos.success === undefined && typeof datos.error === "string" && !textoCampo(datos.codigo);
   if (fracaso || sinConfirmar) {
@@ -262,16 +270,13 @@ function normalizar(datos: Record<string, unknown>): ResultadoKardex {
   const descripcion = textoCampo(datos.descripcion).replace(/\s+/g, " ");
   const codigo = textoCampo(datos.codigo).toUpperCase();
   const lote = textoCampo(datos.lote).toUpperCase();
-  const fv = leerFecha(datos.fv);
+  const fv = leerFecha(datos.fv) ?? "";
   const cantidad = leerCantidad(datos.cantidad);
 
   if (!descripcion) {
     return { ok: false, tipo: "invalido", error: "El kárdex externo no envió el nombre del producto." };
   }
   if (!cantidad.ok) return { ok: false, tipo: "invalido", error: cantidad.error };
-  if (!fv) {
-    return { ok: false, tipo: "invalido", error: "El kárdex externo no envió una fecha de vencimiento válida." };
-  }
 
   const mensaje = textoError(datos.mensaje, "");
   return {
@@ -350,18 +355,29 @@ function aKilos(cantidad: number, unidad: string): number | null {
   return null;
 }
 
+/** Día primero. Vacío, null o un texto que no es fecha devuelven null. */
 function leerFecha(valor: unknown): string | null {
+  if (valor === null || valor === undefined) return null;
   if (typeof valor !== "string" && typeof valor !== "number") return null;
   const texto = String(valor).trim();
-  const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(texto);
+  if (!texto || texto === "-" || /^n\/?a$/i.test(texto) || texto.toLowerCase() === "null") return null;
+
+  const iso = /^(\d{4})-(\d{2})-(\d{2})(?:[T\s].*)?$/.exec(texto);
   if (iso) {
     const fecha = `${iso[1]}-${iso[2]}-${iso[3]}`;
     return fechaValida(fecha) ? fecha : null;
   }
-  const dmy = /^(\d{2})[/.-](\d{2})[/.-](\d{4})$/.exec(texto);
+  const dmy = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[T\s].*)?$/.exec(texto);
   if (!dmy) return null;
-  const fecha = `${dmy[3]}-${dmy[2]}-${dmy[1]}`;
+  const fecha = `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
   return fechaValida(fecha) ? fecha : null;
+}
+
+function marcaFalsa(valor: unknown) {
+  if (valor === false || valor === 0) return true;
+  if (typeof valor !== "string") return false;
+  const texto = valor.trim().toLowerCase();
+  return texto === "false" || texto === "0" || texto === "no";
 }
 
 function esMarca(valor: unknown) {

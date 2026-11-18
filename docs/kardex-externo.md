@@ -1,6 +1,6 @@
 # Kárdex externo y túnel que cambia
 
-El QR de la paleta solo trae un token (`PLT-<código>-<lote>-...`). El nombre, los kilos y el vencimiento los consulta el servidor en el dashboard Purolomo Kárdex: entra con usuario y clave, guarda la cookie y llama a `POST /api/palleta/buscar`.
+El QR de la paleta solo trae un token (`PLT-<código>-<lote>-...`). El nombre y los kilos los consulta el servidor en el dashboard Purolomo Kárdex: entra con usuario y clave, guarda la cookie y llama a `POST /api/palleta/buscar`. El lote, si el kárdex no lo manda, sale del token. La fecha de vencimiento se usa cuando viene (`DD/MM/AAAA`, `DD-MM-AAAA` o `AAAA-MM-DD`, con o sin hora, día primero). Si falta, es nula o no se entiende, la ficha pide completarla. `encontrado: false` significa que el kárdex no tiene esa paleta.
 
 Ese dashboard se publica con un túnel rápido de Cloudflare (`*.trycloudflare.com`). La dirección cambia cada vez que se reinicia `cloudflared`. No se deja un túnel fijo. La computadora donde corre el dashboard avisa la dirección nueva.
 

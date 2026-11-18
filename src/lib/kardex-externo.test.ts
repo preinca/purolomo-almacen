@@ -436,4 +436,124 @@ describe("kárdex externo", { concurrency: false }, () => {
     assert.equal(entrada.value.kg, 1000.5);
     assert.equal(entrada.value.producto, "SAL CON YODO Y FLUOR");
   });
+
+  test("la respuesta real sin lote ni vencimiento no es un error", async (t) => {
+    const original = globalThis.fetch;
+    t.after(() => {
+      globalThis.fetch = original;
+      limpiarEntorno();
+    });
+    configurar();
+    olvidarSesionKardex();
+    const respuestaReal = {
+      cantidad: 1000.0,
+      codigo: "MPCM01009",
+      descripcion: "SAL CON YODO Y FLUOR",
+      encontrado: true,
+      success: true,
+      token: TOKEN,
+    };
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.endsWith("/login")) return login("cookie-real");
+      return json(respuestaReal);
+    }) as typeof fetch;
+
+    const leida = await buscarPaletaKardex(TOKEN);
+    assert.equal(leida.ok, true);
+    if (!leida.ok) return;
+    assert.equal(leida.value.codigo, "MPCM01009");
+    assert.equal(leida.value.descripcion, "SAL CON YODO Y FLUOR");
+    assert.equal(leida.value.cantidad, 1000);
+    assert.equal(leida.value.lote, "");
+    assert.equal(leida.value.fv, "");
+
+    const db = await basePrueba();
+    const origen = origenVacio();
+    const preparada = await prepararEntrada(db, TOKEN, origen);
+    assert.equal(preparada.ok, true);
+    if (!preparada.ok || preparada.yaRegistrada) return;
+    assert.equal(preparada.faltaVencimiento, true);
+    assert.equal(preparada.paleta.lote, "1009111126");
+    assert.equal(preparada.paleta.codigo, "MPCM01009");
+    assert.equal(preparada.paleta.kg, 1000);
+    assert.match(preparada.aviso ?? "", /vencimiento/);
+
+    const sinFecha = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17");
+    assert.equal(sinFecha.ok, false);
+    assert.equal(await buscarEntrada(db, TOKEN), undefined);
+
+    const entrada = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17", "2030-12-07");
+    assert.equal(entrada.ok, true);
+    if (!entrada.ok) return;
+    assert.equal(entrada.value.vencimiento, "2030-12-07");
+    assert.equal(entrada.value.lote, "1009111126");
+    assert.equal(entrada.value.producto, "SAL CON YODO Y FLUOR");
+    assert.equal(fs.existsSync(origen.archivo), false);
+  });
+
+  test("encontrado en falso es un token que el kárdex no tiene", async (t) => {
+    const original = globalThis.fetch;
+    t.after(() => {
+      globalThis.fetch = original;
+      limpiarEntorno();
+    });
+    configurar();
+    olvidarSesionKardex();
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.endsWith("/login")) return login("cookie-no");
+      return json({
+        success: true,
+        encontrado: false,
+        codigo: "MPCM01009",
+        descripcion: "SAL CON YODO Y FLUOR",
+        cantidad: 1000,
+        error: "Paleta no registrada",
+      });
+    }) as typeof fetch;
+
+    const resultado = await buscarPaletaKardex(TOKEN);
+    assert.equal(resultado.ok, false);
+    if (resultado.ok) return;
+    assert.equal(resultado.tipo, "no_encontrado");
+    assert.equal(resultado.error, "Paleta no registrada");
+  });
+
+  test("lee el vencimiento día primero y deja en blanco el que no se entiende", async (t) => {
+    const original = globalThis.fetch;
+    t.after(() => {
+      globalThis.fetch = original;
+      limpiarEntorno();
+    });
+    configurar();
+    olvidarSesionKardex();
+    const casos: Array<[unknown, string]> = [
+      ["07/12/2030", "2030-12-07"],
+      ["07-12-2030", "2030-12-07"],
+      ["2030-12-07", "2030-12-07"],
+      ["2030-12-07T14:30:00", "2030-12-07"],
+      ["07/12/2030 08:30", "2030-12-07"],
+      ["7/12/2030", "2030-12-07"],
+      ["01/13/2030", ""],
+      [null, ""],
+      ["", ""],
+      ["no-es-fecha", ""],
+    ];
+    let pendiente = casos[0]?.[0];
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.endsWith("/login")) return login("cookie-fechas");
+      return json(paleta(1000, { fv: pendiente }));
+    }) as typeof fetch;
+
+    for (const [entrada, esperada] of casos) {
+      pendiente = entrada;
+      olvidarSesionKardex();
+      const resultado = await buscarPaletaKardex(TOKEN);
+      assert.equal(resultado.ok, true, `fv ${String(entrada)}`);
+      if (!resultado.ok) return;
+      assert.equal(resultado.value.fv, esperada, `fv ${String(entrada)}`);
+    }
+  });
 });

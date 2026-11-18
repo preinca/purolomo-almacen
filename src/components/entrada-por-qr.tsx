@@ -43,11 +43,11 @@ export function EntradaPorQr() {
     });
   }
 
-  function confirmar() {
+  function confirmar(vencimiento?: string) {
     if (!preview || preview.yaRegistrada) return;
     setError(null);
     iniciar(async () => {
-      const resultado = await confirmarEntradaPaleta(preview.paleta.token);
+      const resultado = await confirmarEntradaPaleta(preview.paleta.token, vencimiento);
       if (!resultado.ok) {
         setError(resultado.error);
         return;
@@ -130,16 +130,25 @@ function Ficha({
 }: {
   paleta: Extract<PreparacionPaleta, { ok: true }>;
   pendiente: boolean;
-  onConfirmar: () => void;
+  onConfirmar: (vencimiento?: string) => void;
 }) {
   const datos = paleta.paleta;
+  const faltaVencimiento = !paleta.yaRegistrada && paleta.faltaVencimiento === true;
   const texto = paleta.yaRegistrada
     ? "Esta paleta ya está registrada. No se creó otra entrada."
     : paleta.origenDatos === "kardex"
       ? "El kárdex externo devolvió esta paleta. Confirma para registrarla."
       : "El otro dashboard devolvió esta paleta. Confirma para registrarla.";
   return (
-    <div className="grid gap-4 rounded-xl border bg-white p-5">
+    <form
+      className="grid gap-4 rounded-xl border bg-white p-5"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (paleta.yaRegistrada) return;
+        const vencimiento = String(new FormData(event.currentTarget).get("vencimiento") ?? "");
+        onConfirmar(faltaVencimiento ? vencimiento : undefined);
+      }}
+    >
       <p className={paleta.yaRegistrada ? "text-sm font-semibold text-amber-800" : "text-sm font-semibold text-emerald-800"}>
         {texto}
       </p>
@@ -148,20 +157,25 @@ function Ficha({
         <Dato etiqueta="Código" valor={datos.codigo} />
         <Dato etiqueta="Kilos" valor={formatoKg(datos.kg)} />
         <Dato etiqueta="Lote" valor={datos.lote} />
-        <Dato etiqueta="Vencimiento" valor={formatoFecha(datos.vencimiento)} />
+        {faltaVencimiento ? null : <Dato etiqueta="Vencimiento" valor={formatoFecha(datos.vencimiento)} />}
         <Dato etiqueta="Token" valor={datos.token} />
       </dl>
+      {faltaVencimiento ? (
+        <div className="grid gap-1.5">
+          <Label htmlFor="vencimiento-ficha">Vencimiento</Label>
+          <Input id="vencimiento-ficha" name="vencimiento" type="date" required disabled={pendiente} />
+        </div>
+      ) : null}
       {paleta.yaRegistrada ? null : (
         <button
-          type="button"
+          type="submit"
           disabled={pendiente}
-          onClick={onConfirmar}
           className="inline-flex h-16 w-full items-center justify-center rounded-xl bg-green-600 px-6 text-lg font-semibold text-white hover:bg-green-700 disabled:opacity-60 sm:h-14 sm:text-base"
         >
           {pendiente ? "Registrando…" : "Registrar entrada"}
         </button>
       )}
-    </div>
+    </form>
   );
 }
 
