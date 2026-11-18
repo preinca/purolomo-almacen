@@ -1,8 +1,9 @@
 import type { Db } from "./db";
-import { fechaHoy } from "./formato";
+import { fechaHoy, fechaValida } from "./formato";
+import { buscarPaletaKardex, kardexEstaConfigurado } from "./kardex-externo";
 import type { Resultado } from "./lotes";
 import { consultarPaleta, liberarRecibida, marcarRecibida, type OrigenRemoto, origenLocal } from "./paleta-remota";
-import { cruzarConToken, partirToken, type DatosPaleta } from "./token-paleta";
+import { cruzarConToken, partirToken, type DatosPaleta, type PartesToken } from "./token-paleta";
 
 export type EntradaPaleta = DatosPaleta & {
   fecha: string;
@@ -68,10 +69,27 @@ export async function resumirEntradas(db: Db) {
   return { paletas: Number(row?.n ?? 0), kg: Number(row?.kg ?? 0) };
 }
 
+export type DatosManuales = {
+  token: string;
+  codigo: string;
+  lote: string;
+};
+
 export type PreparacionPaleta =
-  | { ok: true; yaRegistrada: false; paleta: DatosPaleta }
+  | { ok: true; yaRegistrada: false; paleta: DatosPaleta; origenDatos: "kardex" | "local"; aviso?: string }
   | { ok: true; yaRegistrada: true; paleta: EntradaPaleta }
-  | { ok: false; error: string };
+  | { ok: false; error: string; manual?: DatosManuales };
+
+type PaletaResuelta = {
+  ok: true;
+  paleta: DatosPaleta;
+  fuente: "kardex" | "local" | "manual";
+  aviso?: string;
+};
+
+type ConsultaResuelta =
+  | { ok: true; paleta: DatosPaleta; fuente: "kardex" | "local"; aviso?: string }
+  | { ok: false; error: string; manual?: DatosManuales };
 
 export async function prepararEntrada(
   db: Db,
@@ -82,16 +100,21 @@ export async function prepararEntrada(
   if (!partes.ok) return partes;
   const guardada = await buscarEntrada(db, partes.value.token);
   if (guardada) return { ok: true, yaRegistrada: true, paleta: guardada };
-  const remota = await consultarPaleta(partes.value.token, origen);
-  if (!remota.ok) return remota;
-  const cruzada = cruzarConToken(partes.value, remota.value);
-  if (!cruzada.ok) return cruzada;
-  return { ok: true, yaRegistrada: false, paleta: cruzada.value };
+  const resuelta = await resolverPaleta(partes.value, origen);
+  if (!resuelta.ok) return resuelta;
+  return {
+    ok: true,
+    yaRegistrada: false,
+    paleta: resuelta.paleta,
+    origenDatos: resuelta.fuente,
+    ...(resuelta.aviso ? { aviso: resuelta.aviso } : {}),
+  };
 }
 
 /**
- * Consulta de nuevo, avisa al otro dashboard y guarda la copia local.
- * Si el aviso falla, la entrada no queda registrada.
+ * Consulta de nuevo y guarda la copia local.
+ * Si los datos salen de la copia local, avisa a ese registro; si el aviso falla, no queda entrada.
+ * Los datos del kárdex externo solo se leen: no se llama a sus rutas de escritura.
  */
 export async function recibirPaleta(
   db: Db,
@@ -100,13 +123,135 @@ export async function recibirPaleta(
   origen: OrigenRemoto = origenLocal(),
   fecha = fechaHoy(),
 ): Promise<Resultado<EntradaPaleta>> {
-  const preparada = await prepararEntrada(db, tokenTexto, origen);
-  if (!preparada.ok) return preparada;
-  if (preparada.yaRegistrada) return { ok: false, error: "Esta paleta ya está registrada." };
+  const partes = partirToken(tokenTexto);
+  if (!partes.ok) return partes;
+  const guardada = await buscarEntrada(db, partes.value.token);
+  if (guardada) return { ok: false, error: "Esta paleta ya está registrada." };
+  const resuelta = await resolverPaleta(partes.value, origen);
+  if (!resuelta.ok) return { ok: false, error: resuelta.error };
+  return persistir(db, resuelta, usuario, origen, fecha);
+}
 
-  const paleta = preparada.paleta;
-  const avisada = await marcarRecibida(paleta.token, fecha, origen);
-  if (!avisada.ok) return avisada;
+/**
+ * Solo cuando el kárdex está configurado y no responde, y la copia local tampoco tiene la paleta.
+ * Si al confirmar el kárdex o la copia local ya responden, se guardan esos datos y no los escritos a mano.
+ */
+export async function recibirPaletaManual(
+  db: Db,
+  tokenTexto: string,
+  usuario: string,
+  campos: { producto: string; kg: number | string; vencimiento: string },
+  origen: OrigenRemoto = origenLocal(),
+  fecha = fechaHoy(),
+): Promise<Resultado<EntradaPaleta>> {
+  const partes = partirToken(tokenTexto);
+  if (!partes.ok) return partes;
+  if (!kardexEstaConfigurado()) {
+    return { ok: false, error: "La entrada a mano solo se usa cuando el kárdex externo no responde." };
+  }
+  const guardada = await buscarEntrada(db, partes.value.token);
+  if (guardada) return { ok: false, error: "Esta paleta ya está registrada." };
+
+  const kardex = await buscarPaletaKardex(partes.value.token);
+  if (kardex.ok) {
+    const cruzada = cruzarKardex(partes.value, kardex.value);
+    if (!cruzada.ok) return cruzada;
+    return persistir(db, { ok: true, paleta: cruzada.value, fuente: "kardex" }, usuario, origen, fecha);
+  }
+  if (kardex.tipo !== "caido") return { ok: false, error: kardex.error };
+
+  const local = await resolverLocal(partes.value, origen);
+  if (local.ok) return persistir(db, local, usuario, origen, fecha);
+
+  const producto = campos.producto.trim().replace(/\s+/g, " ");
+  const kg = kilosManuales(campos.kg);
+  const vencimiento = campos.vencimiento.trim();
+  if (producto.length < 2 || producto.length > 200) return { ok: false, error: "Escribe el nombre del producto." };
+  if (kg === null) return { ok: false, error: "Escribe los kilos de la paleta." };
+  if (!fechaValida(vencimiento)) return { ok: false, error: "Escribe el vencimiento con el formato AAAA-MM-DD." };
+
+  return persistir(
+    db,
+    {
+      ok: true,
+      paleta: {
+        token: partes.value.token,
+        codigo: partes.value.codigo,
+        producto,
+        kg,
+        lote: partes.value.lote,
+        vencimiento,
+      },
+      fuente: "manual",
+    },
+    usuario,
+    origen,
+    fecha,
+  );
+}
+
+async function resolverPaleta(partes: PartesToken, origen: OrigenRemoto): Promise<ConsultaResuelta> {
+  if (!kardexEstaConfigurado()) return resolverLocal(partes, origen);
+
+  const kardex = await buscarPaletaKardex(partes.token);
+  if (kardex.ok) {
+    const cruzada = cruzarKardex(partes, kardex.value);
+    if (!cruzada.ok) return cruzada;
+    const aviso = kardex.value.nuevaIntegrada && kardex.value.mensaje ? kardex.value.mensaje : undefined;
+    return { ok: true, paleta: cruzada.value, fuente: "kardex", ...(aviso ? { aviso } : {}) };
+  }
+  if (kardex.tipo !== "caido") return { ok: false, error: kardex.error };
+
+  const local = await resolverLocal(partes, origen);
+  if (local.ok) {
+    return {
+      ok: true,
+      paleta: local.paleta,
+      fuente: "local",
+      aviso: `${kardex.error} Se usó la copia local de esta paleta.`,
+    };
+  }
+  return {
+    ok: false,
+    error: `${kardex.error} Puedes completar el producto, los kilos y el vencimiento: el código y el lote salen del QR.`,
+    manual: { token: partes.token, codigo: partes.codigo, lote: partes.lote },
+  };
+}
+
+async function resolverLocal(partes: PartesToken, origen: OrigenRemoto): Promise<ConsultaResuelta> {
+  const remota = await consultarPaleta(partes.token, origen);
+  if (!remota.ok) return remota;
+  const cruzada = cruzarConToken(partes, remota.value);
+  if (!cruzada.ok) return cruzada;
+  return { ok: true, paleta: cruzada.value, fuente: "local" };
+}
+
+function cruzarKardex(
+  partes: PartesToken,
+  remoto: { codigo: string; descripcion: string; lote: string; fv: string; cantidad: number },
+) {
+  return cruzarConToken(partes, {
+    token: partes.token,
+    codigo: remoto.codigo.trim() || partes.codigo,
+    producto: remoto.descripcion,
+    kg: remoto.cantidad,
+    lote: remoto.lote.trim() || partes.lote,
+    vencimiento: remoto.fv,
+  });
+}
+
+async function persistir(
+  db: Db,
+  resuelta: PaletaResuelta,
+  usuario: string,
+  origen: OrigenRemoto,
+  fecha: string,
+): Promise<Resultado<EntradaPaleta>> {
+  const paleta = resuelta.paleta;
+  if (resuelta.fuente === "local") {
+    const avisada = await marcarRecibida(paleta.token, fecha, origen);
+    if (!avisada.ok) return avisada;
+  }
 
   const cambios = await db.run(
     `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario)
@@ -124,8 +269,20 @@ export async function recibirPaleta(
   if (cambios === 0) return { ok: false, error: "Esta paleta ya está registrada." };
   const guardada = await buscarEntrada(db, paleta.token);
   if (!guardada) {
-    await liberarRecibida(paleta.token, origen);
+    if (resuelta.fuente === "local") await liberarRecibida(paleta.token, origen);
     return { ok: false, error: "No se pudo guardar la entrada." };
   }
   return { ok: true, value: guardada };
+}
+
+function kilosManuales(valor: number | string) {
+  if (typeof valor === "number") {
+    if (!Number.isFinite(valor) || valor <= 0) return null;
+    return Math.round(valor * 1000) / 1000;
+  }
+  const limpio = valor.trim().replace(/\s/g, "").replace(",", ".");
+  if (!/^\d+(\.\d+)?$/.test(limpio)) return null;
+  const kilos = Number(limpio);
+  if (!Number.isFinite(kilos) || kilos <= 0) return null;
+  return Math.round(kilos * 1000) / 1000;
 }

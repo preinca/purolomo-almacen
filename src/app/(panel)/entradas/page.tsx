@@ -30,7 +30,7 @@ async function Entradas() {
         <CardHeader>
           <CardTitle>Nueva entrada</CardTitle>
           <CardDescription>
-            El QR solo trae el token. El nombre, los kilos, el lote y el vencimiento los devuelve el otro dashboard. En esta prueba local ya conoce la paleta de sal de la foto.
+            El QR solo trae el token. Si el kárdex externo está configurado, de ahí salen el producto, el código, el lote, el vencimiento y la cantidad. Si no responde, se usa la copia local o se completa la entrada a mano. Sin el kárdex configurado, esta prueba local ya conoce la paleta de sal de la foto.
           </CardDescription>
         </CardHeader>
         <CardContent>

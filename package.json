@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0",
     "lint": "eslint",
-    "test": "tsx --test src/lib/*.test.ts",
+    "test": "tsx --conditions=react-server --test src/lib/*.test.ts",
     "db:migrar": "node --experimental-sqlite --env-file=.env.local --import tsx scripts/migrar-supabase.ts"
   },
   "dependencies": {
