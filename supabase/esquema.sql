@@ -170,3 +170,13 @@ CREATE TABLE IF NOT EXISTS entradas_paleta (
 CREATE INDEX IF NOT EXISTS idx_entradas_paleta_fecha ON entradas_paleta (fecha DESC, creado_en DESC);
 
 ALTER TABLE entradas_paleta ENABLE ROW LEVEL SECURITY;
+
+-- URL vigente del túnel rápido del kárdex. Una sola fila. El reporte la reemplaza.
+-- RLS sin políticas: la API anon de Supabase no la lee. La app usa la conexión directa.
+CREATE TABLE IF NOT EXISTS kardex_externo_config (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  url TEXT NOT NULL,
+  actualizado_en TEXT NOT NULL
+);
+
+ALTER TABLE kardex_externo_config ENABLE ROW LEVEL SECURITY;

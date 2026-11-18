@@ -29,7 +29,7 @@ export async function consultarPaletaEnKardex(token: string): Promise<ConsultaKa
   await exigirRango(["administrador", "recepcionista"]);
   const partes = partirToken(token);
   if (!partes.ok) return partes;
-  const resultado = await buscarPaletaKardex(partes.value.token);
+  const resultado = await buscarPaletaKardex(partes.value.token, getDb());
   if (!resultado.ok) return { ok: false, error: resultado.error };
   const paleta = resultado.value;
   return {

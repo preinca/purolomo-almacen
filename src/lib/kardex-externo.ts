@@ -1,6 +1,8 @@
 import "server-only";
 
+import type { Db } from "./db";
 import { fechaValida } from "./formato";
+import { leerReporteKardex } from "./reporte-kardex";
 
 /**
  * Cliente del dashboard Purolomo Kárdex (Flask). Solo lee: POST /login y
@@ -70,8 +72,8 @@ export function kardexEstaConfigurado() {
   );
 }
 
-export async function buscarPaletaKardex(token: string): Promise<ResultadoKardex> {
-  const config = leerConfig();
+export async function buscarPaletaKardex(token: string, db?: Db): Promise<ResultadoKardex> {
+  const config = await leerConfig(db);
   if (!config.ok) return { ok: false, tipo: "no_configurado", error: config.error };
 
   const limpio = token.trim().toUpperCase().replace(/\s+/g, "");
@@ -95,8 +97,17 @@ export async function buscarPaletaKardex(token: string): Promise<ResultadoKardex
   };
 }
 
-function leerConfig(): { ok: true; value: Config } | { ok: false; error: string } {
-  const cruda = process.env.KARDEX_EXTERNO_URL?.trim() ?? "";
+async function leerConfig(db?: Db): Promise<{ ok: true; value: Config } | { ok: false; error: string }> {
+  let cruda = "";
+  if (db) {
+    try {
+      const guardada = await leerReporteKardex(db);
+      if (guardada?.url) cruda = guardada.url;
+    } catch {
+      cruda = "";
+    }
+  }
+  if (!cruda) cruda = process.env.KARDEX_EXTERNO_URL?.trim() ?? "";
   const usuario = process.env.KARDEX_EXTERNO_USUARIO?.trim() ?? "";
   const clave = process.env.KARDEX_EXTERNO_CLAVE ?? "";
   if (!cruda || !usuario || !clave.trim()) {

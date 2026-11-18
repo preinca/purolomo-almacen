@@ -100,7 +100,7 @@ export async function prepararEntrada(
   if (!partes.ok) return partes;
   const guardada = await buscarEntrada(db, partes.value.token);
   if (guardada) return { ok: true, yaRegistrada: true, paleta: guardada };
-  const resuelta = await resolverPaleta(partes.value, origen);
+  const resuelta = await resolverPaleta(db, partes.value, origen);
   if (!resuelta.ok) return resuelta;
   return {
     ok: true,
@@ -127,7 +127,7 @@ export async function recibirPaleta(
   if (!partes.ok) return partes;
   const guardada = await buscarEntrada(db, partes.value.token);
   if (guardada) return { ok: false, error: "Esta paleta ya está registrada." };
-  const resuelta = await resolverPaleta(partes.value, origen);
+  const resuelta = await resolverPaleta(db, partes.value, origen);
   if (!resuelta.ok) return { ok: false, error: resuelta.error };
   return persistir(db, resuelta, usuario, origen, fecha);
 }
@@ -152,7 +152,7 @@ export async function recibirPaletaManual(
   const guardada = await buscarEntrada(db, partes.value.token);
   if (guardada) return { ok: false, error: "Esta paleta ya está registrada." };
 
-  const kardex = await buscarPaletaKardex(partes.value.token);
+  const kardex = await buscarPaletaKardex(partes.value.token, db);
   if (kardex.ok) {
     const cruzada = cruzarKardex(partes.value, kardex.value);
     if (!cruzada.ok) return cruzada;
@@ -190,10 +190,10 @@ export async function recibirPaletaManual(
   );
 }
 
-async function resolverPaleta(partes: PartesToken, origen: OrigenRemoto): Promise<ConsultaResuelta> {
+async function resolverPaleta(db: Db, partes: PartesToken, origen: OrigenRemoto): Promise<ConsultaResuelta> {
   if (!kardexEstaConfigurado()) return resolverLocal(partes, origen);
 
-  const kardex = await buscarPaletaKardex(partes.token);
+  const kardex = await buscarPaletaKardex(partes.token, db);
   if (kardex.ok) {
     const cruzada = cruzarKardex(partes, kardex.value);
     if (!cruzada.ok) return cruzada;
