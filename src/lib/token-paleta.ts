@@ -38,7 +38,11 @@ export function partirToken(texto: string): Resultado<PartesToken> {
 }
 
 /** El código y el lote que devuelve el otro dashboard tienen que ser los del token. */
-export function cruzarConToken(partes: PartesToken, paleta: DatosPaleta): Resultado<DatosPaleta> {
+export function cruzarConToken(
+  partes: PartesToken,
+  paleta: DatosPaleta,
+  opciones?: { sinVencimiento?: boolean },
+): Resultado<DatosPaleta> {
   const codigo = paleta.codigo.trim().toUpperCase();
   const lote = paleta.lote.trim().toUpperCase();
   const token = paleta.token.trim().toUpperCase();
@@ -60,6 +64,9 @@ export function cruzarConToken(partes: PartesToken, paleta: DatosPaleta): Result
     return { ok: false, error: "El otro dashboard no envió los kilos de la paleta." };
   }
   if (!fechaValida(vencimiento)) {
+    if (opciones?.sinVencimiento && !vencimiento) {
+      return { ok: true, value: { token: partes.token, codigo, producto, kg, lote, vencimiento: "" } };
+    }
     return { ok: false, error: "El otro dashboard no envió una fecha de vencimiento válida." };
   }
 

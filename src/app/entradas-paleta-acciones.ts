@@ -52,9 +52,9 @@ export async function prepararEntradaPaleta(token: string): Promise<PreparacionP
   return prepararEntrada(getDb(), token);
 }
 
-export async function confirmarEntradaPaleta(token: string): Promise<Resultado<EntradaPaleta>> {
+export async function confirmarEntradaPaleta(token: string, vencimiento?: string): Promise<Resultado<EntradaPaleta>> {
   const sesion = await exigirRango(["administrador", "recepcionista"]);
-  const resultado = await recibirPaleta(getDb(), token, sesion.usuario);
+  const resultado = await recibirPaleta(getDb(), token, sesion.usuario, undefined, undefined, vencimiento);
   if (resultado.ok) {
     revalidatePath("/");
     revalidatePath("/entradas");

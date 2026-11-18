@@ -76,7 +76,14 @@ export type DatosManuales = {
 };
 
 export type PreparacionPaleta =
-  | { ok: true; yaRegistrada: false; paleta: DatosPaleta; origenDatos: "kardex" | "local"; aviso?: string }
+  | {
+      ok: true;
+      yaRegistrada: false;
+      paleta: DatosPaleta;
+      origenDatos: "kardex" | "local";
+      aviso?: string;
+      faltaVencimiento?: boolean;
+    }
   | { ok: true; yaRegistrada: true; paleta: EntradaPaleta }
   | { ok: false; error: string; manual?: DatosManuales };
 
@@ -102,12 +109,18 @@ export async function prepararEntrada(
   if (guardada) return { ok: true, yaRegistrada: true, paleta: guardada };
   const resuelta = await resolverPaleta(db, partes.value, origen);
   if (!resuelta.ok) return resuelta;
+  const faltaVencimiento = !fechaValida(resuelta.paleta.vencimiento);
+  const avisoFecha = faltaVencimiento
+    ? "El kárdex no envió la fecha de vencimiento. Complétala con la de la etiqueta."
+    : undefined;
+  const aviso = [resuelta.aviso, avisoFecha].filter(Boolean).join(" ");
   return {
     ok: true,
     yaRegistrada: false,
     paleta: resuelta.paleta,
     origenDatos: resuelta.fuente,
-    ...(resuelta.aviso ? { aviso: resuelta.aviso } : {}),
+    ...(aviso ? { aviso } : {}),
+    ...(faltaVencimiento ? { faltaVencimiento: true } : {}),
   };
 }
 
@@ -122,6 +135,7 @@ export async function recibirPaleta(
   usuario: string,
   origen: OrigenRemoto = origenLocal(),
   fecha = fechaHoy(),
+  vencimientoEscrito?: string,
 ): Promise<Resultado<EntradaPaleta>> {
   const partes = partirToken(tokenTexto);
   if (!partes.ok) return partes;
@@ -129,7 +143,9 @@ export async function recibirPaleta(
   if (guardada) return { ok: false, error: "Esta paleta ya está registrada." };
   const resuelta = await resolverPaleta(db, partes.value, origen);
   if (!resuelta.ok) return { ok: false, error: resuelta.error };
-  return persistir(db, resuelta, usuario, origen, fecha);
+  const completa = aplicarVencimiento(resuelta.paleta, vencimientoEscrito);
+  if (!completa.ok) return completa;
+  return persistir(db, { ...resuelta, paleta: completa.value }, usuario, origen, fecha);
 }
 
 /**
@@ -156,7 +172,9 @@ export async function recibirPaletaManual(
   if (kardex.ok) {
     const cruzada = cruzarKardex(partes.value, kardex.value);
     if (!cruzada.ok) return cruzada;
-    return persistir(db, { ok: true, paleta: cruzada.value, fuente: "kardex" }, usuario, origen, fecha);
+    const completa = aplicarVencimiento(cruzada.value, String(campos.vencimiento));
+    if (!completa.ok) return completa;
+    return persistir(db, { ok: true, paleta: completa.value, fuente: "kardex" }, usuario, origen, fecha);
   }
   if (kardex.tipo !== "caido") return { ok: false, error: kardex.error };
 
@@ -230,14 +248,27 @@ function cruzarKardex(
   partes: PartesToken,
   remoto: { codigo: string; descripcion: string; lote: string; fv: string; cantidad: number },
 ) {
-  return cruzarConToken(partes, {
-    token: partes.token,
-    codigo: remoto.codigo.trim() || partes.codigo,
-    producto: remoto.descripcion,
-    kg: remoto.cantidad,
-    lote: remoto.lote.trim() || partes.lote,
-    vencimiento: remoto.fv,
-  });
+  return cruzarConToken(
+    partes,
+    {
+      token: partes.token,
+      codigo: remoto.codigo.trim() || partes.codigo,
+      producto: remoto.descripcion,
+      kg: remoto.cantidad,
+      lote: remoto.lote.trim() || partes.lote,
+      vencimiento: remoto.fv,
+    },
+    { sinVencimiento: true },
+  );
+}
+
+function aplicarVencimiento(paleta: DatosPaleta, escrito?: string): Resultado<DatosPaleta> {
+  if (fechaValida(paleta.vencimiento)) return { ok: true, value: paleta };
+  const vencimiento = (escrito ?? "").trim();
+  if (!fechaValida(vencimiento)) {
+    return { ok: false, error: "Escribe el vencimiento de la etiqueta (AAAA-MM-DD)." };
+  }
+  return { ok: true, value: { ...paleta, vencimiento } };
 }
 
 async function persistir(
