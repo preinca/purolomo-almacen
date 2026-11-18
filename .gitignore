@@ -43,3 +43,6 @@ next-env.d.ts
 
 # base local
 /data/
+
+# Clave local del reporte del túnel. No se sube.
+herramientas/reporte-tunel-windows/config.json

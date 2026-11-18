@@ -6,6 +6,8 @@ import { TablaEntradas } from "@/components/tabla-entradas";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDb } from "@/lib/db";
 import { listarEntradas } from "@/lib/entrada-paleta";
+import { leerReporteKardex } from "@/lib/reporte-kardex";
+import { leerSesion } from "@/lib/usuarios";
 
 export default function Page() {
   return (
@@ -22,15 +24,21 @@ export default function Page() {
 
 async function Entradas() {
   await connection();
-  const entradas = await listarEntradas(getDb());
+  const db = getDb();
+  const sesion = await leerSesion();
+  const [entradas, reporte] = await Promise.all([
+    listarEntradas(db),
+    sesion?.rango === "administrador" ? leerReporteKardex(db) : Promise.resolve(null),
+  ]);
 
   return (
     <div className="grid gap-8">
+      {sesion?.rango === "administrador" ? <EstadoTunel reporte={reporte} /> : null}
       <Card>
         <CardHeader>
           <CardTitle>Nueva entrada</CardTitle>
           <CardDescription>
-            El QR solo trae el token. El nombre, los kilos, el lote y el vencimiento los devuelve el otro dashboard. En esta prueba local ya conoce la paleta de sal de la foto.
+            El QR solo trae el token. Si el kárdex externo está configurado, de ahí salen el producto, el código, el lote, el vencimiento y la cantidad. Si no responde, se usa la copia local o se completa la entrada a mano. Sin el kárdex configurado, esta prueba local ya conoce la paleta de sal de la foto.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -48,4 +56,32 @@ async function Entradas() {
       </Card>
     </div>
   );
+}
+
+function EstadoTunel({ reporte }: { reporte: { url: string; actualizadoEn: string } | null }) {
+  return (
+    <p className="rounded-xl border bg-white px-4 py-3 text-sm text-muted-foreground">
+      {reporte ? (
+        <>
+          Túnel del kárdex: <span className="font-mono text-foreground break-all">{reporte.url}</span>.
+          Reportado el {textoReporte(reporte.actualizadoEn)}.
+        </>
+      ) : (
+        "Todavía no llegó un reporte del túnel. Si hace falta, se usa la dirección guardada en el servidor."
+      )}
+    </p>
+  );
+}
+
+function textoReporte(iso: string) {
+  const fecha = new Date(iso);
+  if (Number.isNaN(fecha.getTime())) return iso;
+  return new Intl.DateTimeFormat("es-VE", {
+    timeZone: "America/Caracas",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(fecha);
 }

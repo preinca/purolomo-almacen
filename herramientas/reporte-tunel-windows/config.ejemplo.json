@@ -1,0 +1,8 @@
+{
+  "AlmacenUrl": "https://tu-almacen.vercel.app",
+  "Clave": "",
+  "Cloudflared": "C:\\Purolomo\\reporte-tunel\\cloudflared.exe",
+  "UrlLocal": "http://localhost:5000",
+  "Modo": "iniciar",
+  "ArchivoLog": ""
+}
