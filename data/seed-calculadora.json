@@ -1,0 +1,2759 @@
+{
+  "meta": {
+    "fuente": "Hojas ocultas del Excel de solicitud semanal (semilla provisional; las recetas diarias vendrán de otro Excel).",
+    "semana_ejemplo": 45,
+    "etiqueta_plan": "SEMANA # 16",
+    "correcciones": [
+      "Benzoato (MPCM01059): la solicitud de San Pablo apuntaba al eritorbato del jamón cocido (10,4 kg) en vez de a su benzoato (6,2 kg). El total corregido de la semana es 120,67 kg (el Excel imprimía 124,87 kg).",
+      "El carmín de MTD Con Todo va con su código MPCM01182, no mezclado en MPCM01004.",
+      "La fila impresa de ajo es MPCM01011 Ajo en polvo (antes decía MPCM01175 Saborizante de Ajo)."
+    ]
+  },
+  "plantas": [
+    "PE PUROLOMO/CDL",
+    "INDUPROCA",
+    "SAN PABLO"
+  ],
+  "productos_plan": [
+    {
+      "planta": "PE PUROLOMO/CDL",
+      "nombre": "PM 1 KG",
+      "receta_id": "pm",
+      "order": 1
+    },
+    {
+      "planta": "PE PUROLOMO/CDL",
+      "nombre": "PM 500 GRS",
+      "receta_id": "pm",
+      "order": 2
+    },
+    {
+      "planta": "PE PUROLOMO/CDL",
+      "nombre": "ALIBAL 1 KG",
+      "receta_id": "cdl-alibal",
+      "order": 3
+    },
+    {
+      "planta": "PE PUROLOMO/CDL",
+      "nombre": "BOLOGNA",
+      "receta_id": "cdl-bologna",
+      "order": 4
+    },
+    {
+      "planta": "PE PUROLOMO/CDL",
+      "nombre": "HERMO",
+      "receta_id": "cdl-hermo",
+      "order": 5
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "ALIBAL 1 KG",
+      "receta_id": "indu-alibal",
+      "order": 6
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "ALIBAL 700GR",
+      "receta_id": "indu-alibal",
+      "order": 7
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "ALIBAL 500 GRS",
+      "receta_id": "indu-alibal",
+      "order": 8
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "CAL 19",
+      "receta_id": "indu-cal19",
+      "order": 9
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "P. POLLO 400",
+      "receta_id": "indu-pechuga-pollo",
+      "order": 10
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "P. POLLO 800",
+      "receta_id": "indu-pechuga-pollo",
+      "order": 11
+    },
+    {
+      "planta": "INDUPROCA",
+      "nombre": "ESPALDA AHUMADA",
+      "receta_id": "indu-espalda",
+      "order": 12
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "ALIBAL 500 GRS",
+      "receta_id": "sp-alibal-500",
+      "order": 13
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "CAL 19",
+      "receta_id": "sp-cal19",
+      "order": 14
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "CAL 19 AUTOSERVICIO",
+      "receta_id": "sp-cal19-auto",
+      "order": 15
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "J.COC.SUP. 400 GRS",
+      "receta_id": "sp-jcocsup",
+      "order": 16
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "J.COC.SUP. 800 GRS",
+      "receta_id": "sp-jcocsup",
+      "order": 17
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "P.PAVO HERMO 1 KG",
+      "receta_id": "sp-ppavo",
+      "order": 18
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "P.PAVO PUNTA DEL MONTE 24*400G",
+      "receta_id": "sp-ppavo",
+      "order": 19
+    },
+    {
+      "planta": "SAN PABLO",
+      "nombre": "MTD CON TODO",
+      "receta_id": "sp-mtd-con-todo",
+      "order": 20
+    }
+  ],
+  "recetas": [
+    {
+      "id": "pm",
+      "nombre": "Producción CDL - Punta de Monte",
+      "planta": "PE PUROLOMO/CDL",
+      "kg_batch": 1800,
+      "fecha_formula": "F. ACTUALIZADA EL 13/02/2025",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 9,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 31.59,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 3.11,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01065",
+          "nombre": "Proteína texturizada de soya molida",
+          "kg_por_batch": 30,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1.8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01006",
+          "nombre": "Condimento Mortadela Especial (Punta de Monte 597-16)",
+          "kg_por_batch": 1.49,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.31,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01012",
+          "nombre": "Nuez moscada en polvo",
+          "kg_por_batch": 0.3,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 1.49,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 110,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01053",
+          "nombre": "Glucogel 451-13",
+          "kg_por_batch": 10.91,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 20,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [],
+      "nota_empaque": "Esta hoja no tiene bloque de material de empaque."
+    },
+    {
+      "id": "cdl-alibal",
+      "nombre": "CDL - Alibal",
+      "planta": "PE PUROLOMO/CDL",
+      "kg_batch": 1800,
+      "fecha_formula": "ACTUALIZADA 13-02-2025",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 8.89,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 33.8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 3.29,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 50,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1.8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01031",
+          "nombre": "Condimento Mortadela de Pollo Alibal (Alibal Agrosi 730-19B)",
+          "kg_por_batch": 3.49,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.504,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.108,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 1.008,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 0,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 175,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 12.6,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 65,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 14.51,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00109",
+          "nombre": "Tripa impresa corrugada blanca MTD Alibal 1 kg. Cal. final 71 ± 1",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 10500,
+          "nota": "140 rollos × 75 m = 10 500 m en un despacho, no por batch. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00104",
+          "nombre": "Tripa corrugada roja sin impresión, calibre 68",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00111",
+          "nombre": "Bolsas empaque embutido 50x75 C14",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00108",
+          "nombre": "Tripa impresa corrugada blanca MTD Alibal 700 g. Cal. final 66 ± 1",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00120",
+          "nombre": "Bolsas empaque (embutido) 41*80*0,06",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00268",
+          "nombre": "Bolsa empaque (embutido) 42 x 70",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Láminas de cartón 1.20 x 1.00",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00046",
+          "nombre": "Loops 20 Natur",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00047",
+          "nombre": "Clips RID M09-175",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        }
+      ]
+    },
+    {
+      "id": "cdl-bologna",
+      "nombre": "Producción CDL - Bologna 1 kg",
+      "planta": "PE PUROLOMO/CDL",
+      "kg_batch": 1800,
+      "fecha_formula": "Formula actualizada",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 8.4,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 30.13,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 2.97,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01065",
+          "nombre": "Proteína texturizada de soya molida",
+          "kg_por_batch": 20,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1.45,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01024",
+          "nombre": "Condimento para salchicha cocida superior tipo bologña",
+          "kg_por_batch": 2.2,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 1.3,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 1.55,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 90,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01053",
+          "nombre": "Glucogel 451-13",
+          "kg_por_batch": 14,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 20,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [],
+      "nota_empaque": "Esta hoja no tiene bloque de material de empaque."
+    },
+    {
+      "id": "cdl-hermo",
+      "nombre": "CDL - MTD Hermo",
+      "planta": "PE PUROLOMO/CDL",
+      "kg_batch": 1800.398,
+      "fecha_formula": "F. ACTUALIZADA EL 06/12/2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 8.5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 37,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 3.24,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 40,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1.8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01123",
+          "nombre": "Condimento Taroma Blend II",
+          "kg_por_batch": 4,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 1.4,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.1,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 1,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 175,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 8.46,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 65,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 14.5,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00256",
+          "nombre": "Tripa mortadela de pollo Hermo corrugada",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 1860,
+          "nota": "31 sticks × 60 m = 1 860 m en un despacho (0 batches esa semana). Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00257",
+          "nombre": "Tripa plástica 100 brown corrugada",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00104",
+          "nombre": "Tripa corrugada roja sin impresión, calibre 68",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Láminas de cartón 1.20 x 1.00",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00046",
+          "nombre": "Loops 20 Natur",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        },
+        {
+          "codigo": "MECM00047",
+          "nombre": "Clips RID M09-175",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "nota": "Listado en la plantilla de la receta, sin cantidad."
+        }
+      ]
+    },
+    {
+      "id": "indu-alibal",
+      "nombre": "Induproca - MTD Alibal 0,700 kg",
+      "planta": "INDUPROCA",
+      "kg_batch": 1049.89,
+      "fecha_formula": "Formula actualizada 13-02-2025",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 4.72,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 18.53,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 6.67,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 22.22,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01031",
+          "nombre": "Condimento Mortadela de Pollo Alibal (Alibal Agrosi 730-19B)",
+          "kg_por_batch": 1.94,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.78,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.06,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.67,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 97.22,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 36.11,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 8.06,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 0,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [],
+      "nota_empaque": "Esta hoja no tiene bloque de material de empaque."
+    },
+    {
+      "id": "indu-cal19",
+      "nombre": "Induproca - Cal 19",
+      "planta": "INDUPROCA",
+      "kg_batch": 997.99,
+      "fecha_formula": "Formula actualizada 13-02-2025",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 4.89,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 18.65,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.85,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 22.22,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01065",
+          "nombre": "Proteína texturizada de soya molida",
+          "kg_por_batch": 11.11,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01054",
+          "nombre": "Condimento salchicha de pollo Alibal",
+          "kg_por_batch": 1.94,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.83,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.04,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.3,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 83.33,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 16.11,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01053",
+          "nombre": "Glucogel 451-13",
+          "kg_por_batch": 7.78,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.72,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00151",
+          "nombre": "Tripa transparente impresa calibre 18",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 201250,
+          "nota": "26 cajas × 7 500 m + 5 cajitas × 1 250 m = 201 250 m. 70 batches esa semana, pero no divide de forma exacta ni está formulado. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00120",
+          "nombre": "Bolsas empaque (embutido) 41*80*0,06",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 5250,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 20,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md. Teórico: 4 vueltas por paleta; bobina 450 m."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Láminas de cartón 1.20 x 1.00",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 105,
+          "nota": "Un bloque dice unidad MTS y el otro UNDS. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00165",
+          "nombre": "Etiqueta Mortadelita 7,9 * 13 cm IMP",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 5000,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        }
+      ]
+    },
+    {
+      "id": "indu-pechuga-pollo",
+      "nombre": "Induproca - Pechuga de pollo 800 g",
+      "planta": "INDUPROCA",
+      "kg_batch": 1000,
+      "fecha_formula": "FORMULA ACTUALIZADA 12/08/2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 4.73,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01118",
+          "nombre": "Sal refinada extrafina",
+          "kg_por_batch": 15.32,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 6,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.88,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 35,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01061",
+          "nombre": "Mezcla en polvo saborizante jamón de pollo",
+          "kg_por_batch": 0.15,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.12,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 45,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.84,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.96,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00116",
+          "nombre": "Tripa transparente calibre 65",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 1625,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00255",
+          "nombre": "Caja pechuga de pollo 800 g 24x40.5x13.5",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 450,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00133",
+          "nombre": "Etiquetas Punta de Monte Light 800 g",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 6000,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 810,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 4,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Lámina cartón base paleta madera",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 24,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        }
+      ]
+    },
+    {
+      "id": "indu-espalda",
+      "nombre": "Induproca - Espalda ahumada tipo arepero",
+      "planta": "INDUPROCA",
+      "kg_batch": 1000,
+      "fecha_formula": "FORMULA ACTUALIZADA 04-07-2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 16.26,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 6.5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 2.2,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 30,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01069",
+          "nombre": "Glutamato de sodio",
+          "kg_por_batch": 0.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.14,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 55,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 12,
+          "tipo": "mpnc",
+          "nota": "En la hoja no tenía código; el Excel lo suma en MPCM01010."
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.8,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00104",
+          "nombre": "Tripa corrugada roja sin impresión, calibre 68",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 10400,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00366",
+          "nombre": "Etiqueta Espalda Ahumada tipo arepero 1 kg",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 32500,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00120",
+          "nombre": "Bolsa 41*80",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 3150,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 4770,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 12,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00047",
+          "nombre": "Clips RID M09-175",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 84600,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Lámina cartón base paleta madera",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 53,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        }
+      ]
+    },
+    {
+      "id": "sp-alibal-500",
+      "nombre": "San Pablo - MTD Alibal 500 g",
+      "planta": "SAN PABLO",
+      "kg_batch": 679.974,
+      "fecha_formula": "Formula actualizada 06-12-2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 3.07,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 12.04,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 4.34,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.17,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 14.44,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01031",
+          "nombre": "Condimento Mortadela de Pollo Alibal (Alibal Agrosi 730-19B)",
+          "kg_por_batch": 1.26,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.507,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.039,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.436,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 63.19,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 23.47,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 5.24,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 0,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.65,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [],
+      "nota_empaque": "Esta hoja no tiene bloque de material de empaque."
+    },
+    {
+      "id": "sp-cal19",
+      "nombre": "San Pablo - Cal 19",
+      "planta": "SAN PABLO",
+      "kg_batch": 699.99,
+      "fecha_formula": "FORMULA ACTUALIZADA: 06-12-2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 3.42,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 13.06,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.3,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 15.56,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01065",
+          "nombre": "Proteína texturizada de soya molida",
+          "kg_por_batch": 7.78,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01054",
+          "nombre": "Condimento salchicha de pollo Alibal",
+          "kg_por_batch": 1.36,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 3.5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.58,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.03,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.19,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 58.33,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 11.28,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01053",
+          "nombre": "Glucogel 451-13",
+          "kg_por_batch": 5.44,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.51,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00151",
+          "nombre": "Tripa transparente impresa calibre 18",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 14950,
+          "nota": "2 cajas × 7 475 m = 14 950 m de un despacho (0 batches en la semana  del plan). Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00120",
+          "nombre": "Bolsas empaque (embutido) 41*80*0,06",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 350,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 4,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Láminas de cartón 1.20 x 1.00",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 8,
+          "nota": "En esta hoja la unidad figura como kg; en otras como unds o mts. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00165",
+          "nombre": "Etiqueta Mortadelita 7,9 * 13 cm IMP",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        }
+      ]
+    },
+    {
+      "id": "sp-cal19-auto",
+      "nombre": "San Pablo - Cal 19 (autoservicio)",
+      "planta": "SAN PABLO",
+      "kg_batch": 699.993,
+      "fecha_formula": "FORMULA ACTUALIZADA: 06-12-2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 3.42,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 13.06,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.29,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 15.55,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01065",
+          "nombre": "Proteína texturizada de soya molida",
+          "kg_por_batch": 7.78,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01054",
+          "nombre": "Condimento salchicha de pollo Alibal",
+          "kg_por_batch": 1.36,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 3.5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01011",
+          "nombre": "Ajo en polvo",
+          "kg_por_batch": 0.581,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01034",
+          "nombre": "Humo líquido diluido",
+          "kg_por_batch": 0.028,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.21,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 58.33,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 11.28,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01053",
+          "nombre": "Glucogel 451-13",
+          "kg_por_batch": 5.45,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.504,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00151",
+          "nombre": "Tripa transparente impresa calibre 18",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 112500,
+          "nota": "15 cajas × 7 500 m = 112 500 m (un bloque dice 17 cajas, inconsistente). 40 batches esa semana, pero no está formulado. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00268",
+          "nombre": "Bolsa empaque (embutido) 42 x 70",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 3000,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 12,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00229",
+          "nombre": "Tapa 340 laminado para Mortadelita",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        },
+        {
+          "codigo": "MECM00230",
+          "nombre": "Fondo 360 laminado para Mortadelita",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Láminas de cartón 1.20 x 1.00",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 60,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00213",
+          "nombre": "Etiqueta Mortadelita menor a 5 000 g",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 12000,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 900,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00095",
+          "nombre": "Etiqueta Zebra Mini Tag 6 cm * 3,5 cm",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        },
+        {
+          "codigo": "MECM00139",
+          "nombre": "Bolsa de polietileno con fuelle 60 x 110 cm s/perforada",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        }
+      ]
+    },
+    {
+      "id": "sp-jcocsup",
+      "nombre": "San Pablo - Jamón cocido superior 800 g",
+      "planta": "SAN PABLO",
+      "kg_batch": 1000,
+      "fecha_formula": "FORMULA ACTUALIZADA 07/10/2024",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 4.97,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 18.43,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 4.91,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 2.18,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 19.2,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.62,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01069",
+          "nombre": "Glutamato de sodio",
+          "kg_por_batch": 0.98,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.2,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 26.23,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 11.64,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01116",
+          "nombre": "Albúmina deshidratada",
+          "kg_por_batch": 11.52,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 1.04,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00116",
+          "nombre": "Tripa transparente calibre 65",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 1687.5,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md. Nota teórica: 31 cm por pieza de 800 g."
+        },
+        {
+          "codigo": "MECM00255",
+          "nombre": "Caja pechuga de pollo 800 g 24x40.5x13.5",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 450,
+          "nota": "La caja está titulada para pechuga de pollo, no para jamón. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00228",
+          "nombre": "Etiqueta jamón cocido superior 800 g",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 6000,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 810,
+          "nota": "Nota teórica: ~1,8 m por caja; rollo de 90 m. El total no está ligado al batch."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 4,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md. Teórico: 4 vueltas por paleta; bobina 450 m."
+        },
+        {
+          "codigo": "MECM00099",
+          "nombre": "Clips S-735 BR",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 11880,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Lámina cartón base paleta madera",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 24,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        }
+      ]
+    },
+    {
+      "id": "sp-ppavo",
+      "nombre": "San Pablo - Pechuga de pavo 1 kg Hermo",
+      "planta": "SAN PABLO",
+      "kg_batch": 1000,
+      "fecha_formula": "",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 4.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01118",
+          "nombre": "Sal refinada extrafina",
+          "kg_por_batch": 13.87,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 2.2,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 6,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 27,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01032",
+          "nombre": "Fibra de colágeno",
+          "kg_por_batch": 7.8,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01070",
+          "nombre": "Saborizante de pavo",
+          "kg_por_batch": 2.7,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01004",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.17,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01010",
+          "nombre": "Carragenato Type MB-150 F",
+          "kg_por_batch": 12,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 27,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.9,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.66,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00328",
+          "nombre": "Tripa pechuga de pavo Premier de 1 kg",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 312.5,
+          "nota": "Observación: 62,5 m × stick. Nota teórica: 24 cm (500 g) o 30 cm (1 kg) por pieza. 0 batches esa semana."
+        },
+        {
+          "codigo": "MECM00120",
+          "nombre": "Bolsas empaque (embutido) 41*80*0,06",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 100,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00119",
+          "nombre": "Cinta adhesiva",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Lámina de cartón 1,00 m × 1,20 m",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        },
+        {
+          "codigo": "MECM00045",
+          "nombre": "Envoplast",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        },
+        {
+          "codigo": "MECM00099",
+          "nombre": "Clips S-735 BR",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 0,
+          "nota": "Aparece en la plantilla como inventario maquila o sin cantidad; no hay consumo por batch."
+        }
+      ]
+    },
+    {
+      "id": "sp-mtd-con-todo",
+      "nombre": "San Pablo - MTD Con Todo 400 g",
+      "planta": "SAN PABLO",
+      "kg_batch": 650.014,
+      "fecha_formula": "Formula actualizada 06-08-2025",
+      "items": [
+        {
+          "codigo": "MPCM01008",
+          "nombre": "Tripolifosfato Sódico en Polvo",
+          "kg_por_batch": 2.53,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01009",
+          "nombre": "Sal con Yodo y Flúor",
+          "kg_por_batch": 12.44,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01035",
+          "nombre": "Azúcar (proceso embutidos)",
+          "kg_por_batch": 6.14,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01007",
+          "nombre": "Nutri-Sal II",
+          "kg_por_batch": 1.26,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01119",
+          "nombre": "Aislado de soya para emulsionado",
+          "kg_por_batch": 7.22,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01031",
+          "nombre": "Condimento Mortadela de Pollo Alibal (Alibal Agrosi 730-19B)",
+          "kg_por_batch": 3.14,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01182",
+          "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+          "kg_por_batch": 0.468,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01017",
+          "nombre": "Almidón de yuca",
+          "kg_por_batch": 45.14,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01039",
+          "nombre": "Harina de trigo",
+          "kg_por_batch": 97.5,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01033",
+          "nombre": "Almidón de papa",
+          "kg_por_batch": 9.03,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01059",
+          "nombre": "Benzoato de sodio",
+          "kg_por_batch": 0.449,
+          "tipo": "mpnc"
+        },
+        {
+          "codigo": "MPCM01005",
+          "nombre": "Eritorbato de Sodio",
+          "kg_por_batch": 0.65,
+          "tipo": "mpnc"
+        }
+      ],
+      "empaque": [
+        {
+          "codigo": "MECM00368",
+          "nombre": "Tripa impresa mortadela Con Todo 400 g",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 3750,
+          "nota": "90 batches esa semana, pero el total no es fórmula. Teórico: 23 cm por pieza de 0,400 kg. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00120",
+          "nombre": "Bolsas empaque (embutido) 41*80*0,06",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 700,
+          "nota": "Teórico: 24 piezas por bolsa. El total no está ligado al batch."
+        },
+        {
+          "codigo": "MECM00189",
+          "nombre": "Cinta de embalar",
+          "cantidad_por_batch": null,
+          "unidad": "mts",
+          "tipo": "empaque",
+          "cantidad_observada": 1350,
+          "nota": "Teórico: ~2 m por paquete; rollo de 90 m."
+        },
+        {
+          "codigo": "MECM00187",
+          "nombre": "Bobinas de plástico stretch (Envoplast)",
+          "cantidad_por_batch": null,
+          "unidad": "kg",
+          "tipo": "empaque",
+          "cantidad_observada": 4,
+          "nota": "Teórico: 4 vueltas por paleta; bobina 450 m."
+        },
+        {
+          "codigo": "MECM00076",
+          "nombre": "Láminas de cartón 1.20 x 1.00",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 11,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        },
+        {
+          "codigo": "MECM00047",
+          "nombre": "Clips RID M09-175",
+          "cantidad_por_batch": null,
+          "unidad": "unds",
+          "tipo": "empaque",
+          "cantidad_observada": 28200,
+          "nota": "Cantidad de un despacho histórico, no ligada a los batches de la semana. Ver seed-NOTAS.md."
+        }
+      ]
+    }
+  ],
+  "catalogo_mp": [
+    {
+      "codigo": "MPCM01003",
+      "nombre": "Mezcla Lactato de Sodio y Diacetato",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01004",
+      "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01182",
+      "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01005",
+      "nombre": "Eritorbato de Sodio",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01006",
+      "nombre": "Condimento Mortadela Especial (Punta de Monte 597-16)",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01007",
+      "nombre": "Nutri-Sal II",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01008",
+      "nombre": "Tripolifosfato Sódico en Polvo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01009",
+      "nombre": "Sal con Yodo y Flúor",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01010",
+      "nombre": "Carragenato Type MB-150 F",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01118",
+      "nombre": "Sal refinada extrafina",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01011",
+      "nombre": "Ajo en polvo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01012",
+      "nombre": "Nuez moscada en polvo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01119",
+      "nombre": "Aislado de soya para emulsionado",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01120",
+      "nombre": "Aislado SUPRO 500E para jamones",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01017",
+      "nombre": "Almidón de yuca",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01022",
+      "nombre": "Cardamomo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01023",
+      "nombre": "Oleorresina de almendras",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01024",
+      "nombre": "Condimento para salchicha cocida superior tipo bologña",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01031",
+      "nombre": "Condimento Mortadela de Pollo Alibal (Alibal Agrosi 730-19B)",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01032",
+      "nombre": "Fibra de colágeno",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01033",
+      "nombre": "Almidón de papa",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01035",
+      "nombre": "Azúcar (proceso embutidos)",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01039",
+      "nombre": "Harina de trigo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01053",
+      "nombre": "Glucogel 451-13",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01054",
+      "nombre": "Condimento salchicha de pollo Alibal",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01059",
+      "nombre": "Benzoato de sodio",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01061",
+      "nombre": "Mezcla en polvo saborizante jamón de pollo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01064",
+      "nombre": "Goma xantana",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01065",
+      "nombre": "Proteína texturizada de soya molida",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01034",
+      "nombre": "Humo líquido diluido",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01068",
+      "nombre": "Saborizante de jamón 738-19",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01069",
+      "nombre": "Glutamato de sodio",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01070",
+      "nombre": "Saborizante de pavo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01097",
+      "nombre": "Carragenina para jamones",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01107",
+      "nombre": "Mezcla en polvo para marinar carnes",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01116",
+      "nombre": "Albúmina deshidratada",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01170",
+      "nombre": "Almidón de garbanzo",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MPCM01123",
+      "nombre": "Condimento Taroma Blend II",
+      "unidad": "kg",
+      "tipo": "mpnc"
+    },
+    {
+      "codigo": "MECM00045",
+      "nombre": "Envoplast",
+      "unidad": "unds",
+      "tipo": "empaque",
+      "nota": "Envoplast; en otras recetas el stretch va como MECM00187 en kg."
+    },
+    {
+      "codigo": "MECM00046",
+      "nombre": "Loops 20 Natur",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00047",
+      "nombre": "Clips RID M09-175",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00076",
+      "nombre": "Láminas de cartón 1.20 x 1.00",
+      "unidad": "unds",
+      "tipo": "empaque",
+      "nota": "La unidad no es consistente en el Excel (unds, kg o mts según la hoja)."
+    },
+    {
+      "codigo": "MECM00095",
+      "nombre": "Etiqueta Zebra Mini Tag 6 cm * 3,5 cm",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00099",
+      "nombre": "Clips S-735 BR",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00104",
+      "nombre": "Tripa corrugada roja sin impresión, calibre 68",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00108",
+      "nombre": "Tripa impresa corrugada blanca MTD Alibal 700 g. Cal. final 66 ± 1",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00109",
+      "nombre": "Tripa impresa corrugada blanca MTD Alibal 1 kg. Cal. final 71 ± 1",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00111",
+      "nombre": "Bolsas empaque embutido 50x75 C14",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00116",
+      "nombre": "Tripa transparente calibre 65",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00119",
+      "nombre": "Cinta adhesiva",
+      "unidad": "unds",
+      "tipo": "empaque",
+      "nota": "Cinta adhesiva, distinta de MECM00189 (cinta de embalar, en mts)."
+    },
+    {
+      "codigo": "MECM00120",
+      "nombre": "Bolsas empaque (embutido) 41*80*0,06",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00133",
+      "nombre": "Etiquetas Punta de Monte Light 800 g",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00139",
+      "nombre": "Bolsa de polietileno con fuelle 60 x 110 cm s/perforada",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00151",
+      "nombre": "Tripa transparente impresa calibre 18",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00165",
+      "nombre": "Etiqueta Mortadelita 7,9 * 13 cm IMP",
+      "unidad": "unds",
+      "tipo": "empaque",
+      "nota": "En una hoja figura en kg y en otra en unds."
+    },
+    {
+      "codigo": "MECM00187",
+      "nombre": "Bobinas de plástico stretch (Envoplast)",
+      "unidad": "kg",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00189",
+      "nombre": "Cinta de embalar",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00213",
+      "nombre": "Etiqueta Mortadelita menor a 5 000 g",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00228",
+      "nombre": "Etiqueta jamón cocido superior 800 g",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00229",
+      "nombre": "Tapa 340 laminado para Mortadelita",
+      "unidad": "kg",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00230",
+      "nombre": "Fondo 360 laminado para Mortadelita",
+      "unidad": "kg",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00255",
+      "nombre": "Caja pechuga de pollo 800 g 24x40.5x13.5",
+      "unidad": "unds",
+      "tipo": "empaque",
+      "nota": "También aparece, probablemente por error, en la receta de jamón cocido."
+    },
+    {
+      "codigo": "MECM00256",
+      "nombre": "Tripa mortadela de pollo Hermo corrugada",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00257",
+      "nombre": "Tripa plástica 100 brown corrugada",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00268",
+      "nombre": "Bolsa empaque (embutido) 42 x 70",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00328",
+      "nombre": "Tripa pechuga de pavo Premier de 1 kg",
+      "unidad": "mts",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00366",
+      "nombre": "Etiqueta Espalda Ahumada tipo arepero 1 kg",
+      "unidad": "unds",
+      "tipo": "empaque"
+    },
+    {
+      "codigo": "MECM00368",
+      "nombre": "Tripa impresa mortadela Con Todo 400 g",
+      "unidad": "mts",
+      "tipo": "empaque"
+    }
+  ],
+  "example_week16": {
+    "semana": 45,
+    "batches_plan": [
+      {
+        "order": 1,
+        "lunes": 22,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 30,
+        "viernes": 22
+      },
+      {
+        "order": 2,
+        "lunes": 10,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 10,
+        "viernes": 10
+      },
+      {
+        "order": 3,
+        "lunes": 18,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 18,
+        "viernes": 18
+      },
+      {
+        "order": 4,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 5,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 6,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 7,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 30
+      },
+      {
+        "order": 8,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 30
+      },
+      {
+        "order": 9,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 30,
+        "viernes": 40
+      },
+      {
+        "order": 10,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 11,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 12,
+        "lunes": 5,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 13,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 14,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 15,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 40,
+        "viernes": 0
+      },
+      {
+        "order": 16,
+        "lunes": 5,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 17,
+        "lunes": 5,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 18,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 19,
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0
+      },
+      {
+        "order": 20,
+        "lunes": 30,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 60,
+        "viernes": 0
+      }
+    ],
+    "totales": [
+      {
+        "codigo": "MPCM01004",
+        "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+        "cantidad": 281.692,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01182",
+        "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
+        "cantidad": 42.12,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01005",
+        "nombre": "Eritorbato de Sodio",
+        "cantidad": 515.3,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01006",
+        "nombre": "Condimento Mortadela Especial (Punta de Monte 597-16)",
+        "cantidad": 154.96,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01007",
+        "nombre": "Nutri-Sal II",
+        "cantidad": 936.4,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01008",
+        "nombre": "Tripolifosfato Sódico en Polvo",
+        "cantidad": 2480.76,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01009",
+        "nombre": "Sal con Yodo y Flúor",
+        "cantidad": 9435.46,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01010",
+        "nombre": "Carragenato Type MB-150 F",
+        "cantidad": 1443.54,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01011",
+        "nombre": "Ajo en polvo",
+        "cantidad": 187.596,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01012",
+        "nombre": "Nuez moscada en polvo",
+        "cantidad": 31.2,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01119",
+        "nombre": "Aislado de soya para emulsionado",
+        "cantidad": 9282.4,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01017",
+        "nombre": "Almidón de yuca",
+        "cantidad": 38952.1,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01031",
+        "nombre": "Condimento Mortadela de Pollo Alibal (Alibal Agrosi 730-19B)",
+        "cantidad": 587.46,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01033",
+        "nombre": "Almidón de papa",
+        "cantidad": 1350,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01035",
+        "nombre": "Azúcar (proceso embutidos)",
+        "cantidad": 2204.8,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01039",
+        "nombre": "Harina de trigo",
+        "cantidad": 16030.5,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01053",
+        "nombre": "Glucogel 451-13",
+        "cantidad": 1897.24,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01054",
+        "nombre": "Condimento salchicha de pollo Alibal",
+        "cantidad": 190.2,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01059",
+        "nombre": "Benzoato de sodio",
+        "cantidad": 120.67,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01065",
+        "nombre": "Proteína texturizada de soya molida",
+        "cantidad": 4208.9,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01034",
+        "nombre": "Humo líquido diluido",
+        "cantidad": 16.852,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01069",
+        "nombre": "Glutamato de sodio",
+        "cantidad": 13.3,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      },
+      {
+        "codigo": "MPCM01116",
+        "nombre": "Albúmina deshidratada",
+        "cantidad": 115.2,
+        "unidad": "kg",
+        "tipo": "mpnc"
+      }
+    ]
+  }
+}

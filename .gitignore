@@ -42,7 +42,8 @@ yarn-error.log*
 next-env.d.ts
 
 # base local
-/data/
+/data/*
+!/data/seed-calculadora.json
 
 # Clave local del reporte del túnel. No se sube.
 herramientas/reporte-tunel-windows/config.json

@@ -32,6 +32,10 @@ El túnel rápido cambia en cada reinicio. Esa computadora corre `herramientas/r
 
 La cookie de sesión se queda en el servidor. Si el kárdex no responde, se usa la copia local (`data/dashboard-remoto.json`) y, si tampoco tiene la paleta, se puede completar el producto, los kilos y el vencimiento a mano. Si el kárdex dice que el token no existe, no se registra. Sin usuario y clave del kárdex, el flujo local no cambia.
 
+## Calculadora semanal
+
+En el menú, **Calculadora semanal** arma la solicitud de materia prima no cárnica (y el empaque) a partir de los batches de lunes a viernes. El detalle está en [docs/calculadora-semanal.md](docs/calculadora-semanal.md).
+
 ```bash
 npm test
 ```
