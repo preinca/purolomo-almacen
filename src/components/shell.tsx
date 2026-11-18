@@ -7,8 +7,10 @@ import {
   ArrowDownToLine,
   ArrowUpFromLine,
   FileSpreadsheet,
+  History,
   LayoutDashboard,
   Menu,
+  ScrollText,
   X,
 } from "lucide-react";
 import { cerrarSesion } from "@/app/usuarios-acciones";
@@ -31,6 +33,13 @@ const grupos = [
       { href: "/entradas", label: "Registrar entradas", icon: ArrowDownToLine, roles: ["administrador", "recepcionista"] as Rango[] },
       { href: "/salidas", label: "Registrar salidas", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
       { href: "/receta", label: "Cargar receta", icon: FileSpreadsheet, roles: ["administrador"] as Rango[] },
+    ],
+  },
+  {
+    titulo: "Historial",
+    items: [
+      { href: "/historial/entradas", label: "Historial de entradas", icon: History, roles: todos },
+      { href: "/historial/salidas", label: "Historial de salidas", icon: ScrollText, roles: todos },
     ],
   },
 ];

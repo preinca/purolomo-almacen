@@ -17,6 +17,7 @@ export async function confirmarEntradaPaleta(token: string): Promise<Resultado<E
   if (resultado.ok) {
     revalidatePath("/");
     revalidatePath("/entradas");
+    revalidatePath("/historial/entradas");
   }
   return resultado;
 }

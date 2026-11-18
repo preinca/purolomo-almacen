@@ -53,11 +53,20 @@ export async function buscarEntrada(db: Db, token: string) {
 
 export async function listarEntradas(db: Db, limite = 20) {
   await asegurarEntradas(db);
+  const pedido = Number.isFinite(limite) ? limite : 20;
+  const tope = Math.min(Math.max(Math.trunc(pedido), 1), 500);
   const filas = await db.all<Fila>(
     "SELECT * FROM entradas_paleta ORDER BY creado_en DESC, token DESC LIMIT ?",
-    limite,
+    tope,
   );
   return filas.map(fila);
+}
+
+/** Tope del historial, el mismo que usa producción para las recepciones recientes. */
+export const LIMITE_HISTORIAL_ENTRADAS = 300;
+
+export async function listarHistorialEntradas(db: Db) {
+  return listarEntradas(db, LIMITE_HISTORIAL_ENTRADAS);
 }
 
 export async function resumirEntradas(db: Db) {
