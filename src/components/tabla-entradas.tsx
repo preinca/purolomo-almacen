@@ -1,8 +1,16 @@
-import { formatoFecha, formatoKg } from "@/lib/formato";
+import { formatoFecha, formatoHora, formatoKg } from "@/lib/formato";
 import type { EntradaPaleta } from "@/lib/entrada-paleta";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export function TablaEntradas({ entradas }: { entradas: EntradaPaleta[] }) {
+export function TablaEntradas({
+  entradas,
+  mostrarUsuario = false,
+  mostrarHora = false,
+}: {
+  entradas: EntradaPaleta[];
+  mostrarUsuario?: boolean;
+  mostrarHora?: boolean;
+}) {
   if (entradas.length === 0) {
     return (
       <p className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
@@ -16,11 +24,13 @@ export function TablaEntradas({ entradas }: { entradas: EntradaPaleta[] }) {
       <TableHeader>
         <TableRow>
           <TableHead>Fecha</TableHead>
+          {mostrarHora ? <TableHead>Hora</TableHead> : null}
           <TableHead>Producto</TableHead>
           <TableHead>Lote</TableHead>
           <TableHead>Kilos</TableHead>
           <TableHead>Disponibles</TableHead>
           <TableHead>Vencimiento</TableHead>
+          {mostrarUsuario ? <TableHead>Usuario</TableHead> : null}
           <TableHead>Token</TableHead>
         </TableRow>
       </TableHeader>
@@ -28,6 +38,7 @@ export function TablaEntradas({ entradas }: { entradas: EntradaPaleta[] }) {
         {entradas.map((entrada) => (
           <TableRow key={entrada.token}>
             <TableCell>{formatoFecha(entrada.fecha)}</TableCell>
+            {mostrarHora ? <TableCell>{formatoHora(entrada.creadoEn) || "—"}</TableCell> : null}
             <TableCell>
               <span className="font-medium">{entrada.producto}</span>
               <span className="mt-0.5 block font-mono text-xs text-muted-foreground">{entrada.codigo}</span>
@@ -36,6 +47,7 @@ export function TablaEntradas({ entradas }: { entradas: EntradaPaleta[] }) {
             <TableCell>{formatoKg(entrada.kg)}</TableCell>
             <TableCell>{entrada.kgDisponible === undefined ? "" : formatoKg(entrada.kgDisponible)}</TableCell>
             <TableCell>{formatoFecha(entrada.vencimiento)}</TableCell>
+            {mostrarUsuario ? <TableCell>{entrada.usuario || "—"}</TableCell> : null}
             <TableCell className="font-mono text-xs">{entrada.token}</TableCell>
           </TableRow>
         ))}

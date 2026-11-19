@@ -77,6 +77,7 @@ export async function registrarEntradaManualPaleta(input: {
   if (resultado.ok) {
     revalidatePath("/");
     revalidatePath("/entradas");
+    revalidatePath("/historial/entradas");
   }
   return resultado;
 }

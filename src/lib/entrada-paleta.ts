@@ -58,6 +58,8 @@ export async function listarEntradas(db: Db, limite = 20) {
   await asegurarEntradas(db);
   const { asegurarDosificaciones } = await import("./dosificacion");
   await asegurarDosificaciones(db);
+  const pedido = Number.isFinite(limite) ? limite : 20;
+  const tope = Math.min(Math.max(Math.trunc(pedido), 1), 500);
   const filas = await db.all<Fila>(
     `SELECT e.*,
        e.kg - COALESCE((
@@ -67,9 +69,16 @@ export async function listarEntradas(db: Db, limite = 20) {
      FROM entradas_paleta e
      ORDER BY e.creado_en DESC, e.token DESC
      LIMIT ?`,
-    limite,
+    tope,
   );
   return filas.map(fila);
+}
+
+/** Tope del historial, el mismo que usa producción para las recepciones recientes. */
+export const LIMITE_HISTORIAL_ENTRADAS = 300;
+
+export async function listarHistorialEntradas(db: Db) {
+  return listarEntradas(db, LIMITE_HISTORIAL_ENTRADAS);
 }
 
 export async function resumirEntradas(db: Db) {

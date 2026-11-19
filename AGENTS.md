@@ -16,12 +16,18 @@ Los flujos de Purolomo Almacén están en `docs/`. Cada archivo describe el prop
 - [Usuarios y permisos](docs/usuarios-y-permisos.md): rangos, menú y acciones de alta que todavía no tienen página.
 - [Panel de inicio](docs/panel.md): conteo y últimas entradas de paleta.
 - [Entradas de paleta por QR](docs/entradas-paleta.md): token `PLT-…`, consulta al otro dashboard y registro único.
+- [Historial de entradas](docs/historial-de-entradas.md): paletas de `entradas_paleta`, en `/historial/entradas`.
 - [Recepción de TAG en cava](docs/recepcion-tag.md): alta del lote que después se pesa. El formulario no está montado en `/entradas`.
 - [Carga de receta](docs/recetas.md): Excel de Alibal 1 kg por línea, descarga y borrado.
-- [Salida para consumo](docs/salida-consumo.md): pesaje, mini lotes y cierre de la fórmula.
-- [Salida para logística](docs/salida-logistica.md): el TAG sale de cava y deja de poder consumirse.
+- [Dosificación](docs/dosificacion.md): la pestaña de salidas. QR de la paleta, núcleo, peso unitario por cantidad y descuento del stock.
+- [Historial de salidas](docs/historial-de-salidas.md): dosificaciones y, aparte, despachos y consumos de TAG, en `/historial/salidas`.
+- [Calculadora semanal](docs/calculadora-semanal.md): plan de materia prima no cárnica.
+- [Salida para consumo](docs/salida-consumo.md): pesaje, mini lotes y cierre de la fórmula. Ya no está enlazada en el menú.
+- [Salida para logística](docs/salida-logistica.md): el TAG sale de cava y deja de poder consumirse. Ya no está enlazada en el menú.
 - [Ficha del TAG e historial](docs/lote-y-historial.md): kilos, movimientos, observación e impresión del navegador.
 - [Inventario y stock](docs/inventario.md): cómo se calculan los kilos disponibles de cada TAG.
 - [Búsqueda y lectura de QR](docs/busqueda-y-qr.md): escáner de TAG, de consumo y de token de paleta.
 - [Impresión de etiquetas](docs/impresion.md): diálogo del navegador, cola ZPL y `GET`/`POST /api/impresion`.
 - [Persistencia en Postgres](docs/persistencia.md): base local o Supabase, migración, tablas y RLS sin políticas.
+
+Rangos (`src/lib/acceso.ts` y el menú de `src/components/shell.tsx`): administrador entra a todo; recepcionista suma `/entradas`; pesador suma `/salidas` (Dosificación); consulta, recepcionista y pesador comparten las rutas de lectura, incluidos los dos historiales. La calculadora no la ve el pesador.

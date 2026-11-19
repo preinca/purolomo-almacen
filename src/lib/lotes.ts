@@ -287,10 +287,40 @@ export async function listarMovimientos(
   tipo: Movimiento["tipo"] | null,
   limite = 200,
 ) {
+  const pedido = Number.isFinite(limite) ? limite : 200;
+  const tope = Math.min(Math.max(Math.trunc(pedido), 1), 500);
   const rows = tipo
-    ? await db.all<SqlRow>(`SELECT * FROM movimientos WHERE tipo = ? ORDER BY fecha DESC, id DESC LIMIT ?`, tipo, limite)
-    : await db.all<SqlRow>(`SELECT * FROM movimientos ORDER BY fecha DESC, id DESC LIMIT ?`, limite);
+    ? await db.all<SqlRow>(`SELECT * FROM movimientos WHERE tipo = ? ORDER BY fecha DESC, id DESC LIMIT ?`, tipo, tope)
+    : await db.all<SqlRow>(`SELECT * FROM movimientos ORDER BY fecha DESC, id DESC LIMIT ?`, tope);
   return rows.map(filaMov);
+}
+
+/** Tope del historial, el mismo que usa producción para despachos y consumos. */
+export const LIMITE_HISTORIAL_SALIDAS = 200;
+
+/**
+ * Despachos y consumos de TAG, del id más alto al más bajo.
+ * No entran los traslados a logística ni el consumo de una dosificación:
+ * esa salida se lee en `dosificaciones`.
+ */
+export async function listarHistorialSalidas(db: Db, limite = LIMITE_HISTORIAL_SALIDAS) {
+  const pedido = Number.isFinite(limite) ? limite : LIMITE_HISTORIAL_SALIDAS;
+  const tope = Math.min(Math.max(Math.trunc(pedido), 1), 500);
+  const { asegurarDosificaciones } = await import("./dosificacion");
+  await asegurarDosificaciones(db);
+  const [despachos, consumos] = await Promise.all([
+    listarMovimientos(db, "despacho", tope),
+    db
+      .all<SqlRow>(
+        `SELECT * FROM movimientos
+         WHERE tipo = 'consumo' AND dosificacion_id IS NULL
+         ORDER BY fecha DESC, id DESC
+         LIMIT ?`,
+        tope,
+      )
+      .then((rows) => rows.map(filaMov)),
+  ]);
+  return [...despachos, ...consumos].sort((a, b) => b.id - a.id).slice(0, tope);
 }
 
 export async function movimientosDeTag(db: Db, tag: string) {

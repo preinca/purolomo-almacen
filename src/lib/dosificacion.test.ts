@@ -3,6 +3,7 @@ import test from "node:test";
 import { basePrueba } from "./db-prueba.ts";
 import { recibirPaleta } from "./entrada-paleta.ts";
 import { anularDosificacion, consultarProductoDosificacion, guardarDosificacion, kgDisponiblesDeToken, listarDosificaciones, pesoTotalPaleta } from "./dosificacion.ts";
+import { listarHistorialSalidas } from "./lotes.ts";
 import { PALETA_DE_PRUEBA, guardarDashboard, type OrigenRemoto } from "./paleta-remota.ts";
 import fs from "node:fs";
 import os from "node:os";
@@ -75,4 +76,20 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
   );
   assert.equal(movimiento?.tipo, "consumo");
   assert.equal(Number(movimiento?.kg), 10);
+
+  const historial = await listarDosificaciones(db, 200);
+  const fila = historial.find((item) => item.id === guardada.value.id);
+  assert.equal(fila?.token, PALETA_DE_PRUEBA.token);
+  assert.equal(fila?.codigo, "MPCM01009");
+  assert.equal(fila?.descripcion, "SAL CON YODO Y FLUOR");
+  assert.equal(fila?.nucleo, "N-12");
+  assert.equal(fila?.pesoUnitario, 2.5);
+  assert.equal(fila?.cantidad, 4);
+  assert.equal(fila?.pesoTotal, 10);
+  assert.equal(fila?.anulada, true);
+  const movimientos = await listarHistorialSalidas(db);
+  assert.equal(
+    movimientos.some((mov) => mov.nota.startsWith("Dosificación")),
+    false,
+  );
 });

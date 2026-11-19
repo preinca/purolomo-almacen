@@ -8,8 +8,10 @@ import {
   ArrowUpFromLine,
   Calculator,
   FileSpreadsheet,
+  History,
   LayoutDashboard,
   Menu,
+  ScrollText,
   X,
 } from "lucide-react";
 import { cerrarSesion } from "@/app/usuarios-acciones";
@@ -33,6 +35,13 @@ const grupos = [
       { href: "/salidas", label: "Dosificación", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
       { href: "/receta", label: "Cargar receta", icon: FileSpreadsheet, roles: ["administrador"] as Rango[] },
       { href: "/calculadora", label: "Calculadora semanal", icon: Calculator, roles: ["administrador", "recepcionista", "consulta"] as Rango[] },
+    ],
+  },
+  {
+    titulo: "Historial",
+    items: [
+      { href: "/historial/entradas", label: "Historial de entradas", icon: History, roles: todos },
+      { href: "/historial/salidas", label: "Historial de salidas", icon: ScrollText, roles: todos },
     ],
   },
 ];

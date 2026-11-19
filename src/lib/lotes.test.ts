@@ -7,10 +7,12 @@ import {
   eliminarLote,
   insertarRecepcion,
   kgRestantes,
+  listarHistorialSalidas,
   registrarConsumo,
   registrarDespacho,
   resumir,
   siguienteTag,
+  trasladarALogistica,
   validarRecepcion,
 } from "./lotes.ts";
 import { pngQr } from "./png-qr.ts";
@@ -95,6 +97,41 @@ test("registra una recepción, genera QR y mueve kilos", async () => {
 
   const resumen = await resumir(db);
   assert.ok(resumen.paletas >= 1);
+});
+
+test("el historial de salidas junta despachos y consumos y deja fuera logística", async () => {
+  const db = await basePrueba();
+  const tag = "9300001";
+  const creado = await insertarRecepcion(db, {
+    fecha: "2026-10-26",
+    tag,
+    codigo: "MPCM01043",
+    kgRecibidos: 1000,
+  });
+  assert.equal(creado.ok, true);
+
+  assert.equal(
+    (await registrarDespacho(db, { tag, fecha: "2026-10-26", kg: 100, destino: "PDM 1K", linea: "1", nota: "Pesaje" })).ok,
+    true,
+  );
+  assert.equal((await registrarConsumo(db, { tag, fecha: "2026-10-27", kg: 50, nota: "Merma" })).ok, true);
+  assert.equal(
+    (await trasladarALogistica(db, { tag, fecha: "2026-10-28", observacion: "Sale de cava" })).ok,
+    true,
+  );
+
+  const historial = await listarHistorialSalidas(db);
+  assert.deepEqual(
+    historial.map((mov) => mov.tipo),
+    ["consumo", "despacho"],
+  );
+  assert.equal(historial[0]?.nota, "Merma");
+  assert.equal(historial[1]?.destino, "PDM 1K");
+  assert.equal(historial[1]?.linea, "1");
+  assert.equal(historial.some((mov) => mov.tipo === "consumo" && mov.kg === 50), true);
+  const reciente = await listarHistorialSalidas(db, 1);
+  assert.equal(reciente.length, 1);
+  assert.equal(reciente[0]?.tipo, "consumo");
 });
 
 test("elimina un lote y sus movimientos", async () => {

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { basePrueba } from "./db-prueba.ts";
-import { buscarEntrada, prepararEntrada, recibirPaleta, resumirEntradas } from "./entrada-paleta.ts";
+import { buscarEntrada, listarEntradas, listarHistorialEntradas, prepararEntrada, recibirPaleta, resumirEntradas } from "./entrada-paleta.ts";
 import { PALETA_DE_PRUEBA, guardarDashboard, type OrigenRemoto } from "./paleta-remota.ts";
 import { cruzarConToken, partirToken } from "./token-paleta.ts";
 
@@ -62,6 +62,38 @@ test("si el otro dashboard no responde, no queda entrada", async () => {
   const entrada = await recibirPaleta(db, PALETA_DE_PRUEBA.token, "ana", origen, "2026-11-17");
   assert.equal(entrada.ok, false);
   assert.equal(await buscarEntrada(db, PALETA_DE_PRUEBA.token), undefined);
+});
+
+test("el historial de entradas sale del más reciente al más antiguo y respeta el tope", async () => {
+  const db = await basePrueba();
+  const filas = [
+    ["PLT-A", "2026-11-01T10:00:00.000Z", "ana", "L1"],
+    ["PLT-C", "2026-11-03T10:00:00.000Z", "luis", "L3"],
+    ["PLT-B", "2026-11-02T10:00:00.000Z", "ana", "L2"],
+  ] as const;
+  for (const [token, creadoEn, usuario, lote] of filas) {
+    await db.run(
+      `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario, creado_en)
+       VALUES (?, 'MPCM01009', 'SAL', 10, ?, '2030-12-07', '2026-11-17', ?, ?)`,
+      token,
+      lote,
+      usuario,
+      creadoEn,
+    );
+  }
+
+  const recientes = await listarEntradas(db, 2);
+  assert.deepEqual(
+    recientes.map((entrada) => entrada.token),
+    ["PLT-C", "PLT-B"],
+  );
+  const historial = await listarHistorialEntradas(db);
+  assert.deepEqual(
+    historial.map((entrada) => entrada.token),
+    ["PLT-C", "PLT-B", "PLT-A"],
+  );
+  assert.equal(historial[0]?.usuario, "luis");
+  assert.equal(historial[0]?.lote, "L3");
 });
 
 test("un token desconocido no se registra", async () => {
