@@ -2,7 +2,10 @@ import type { Db } from "./db";
 import { buscarEntrada } from "./entrada-paleta";
 import { buscarPaletaKardex, kardexEstaConfigurado } from "./kardex-externo";
 import type { Resultado } from "./lotes";
+import { pesoTotalPaleta } from "./peso-paleta";
 import { partirToken } from "./token-paleta";
+
+export { pesoTotalPaleta };
 
 const TABLA = `
 CREATE TABLE IF NOT EXISTS dosificaciones (
@@ -36,12 +39,6 @@ export type Dosificacion = ProductoDosificacion & {
   usuario: string;
   creadoEn: string;
 };
-
-export function pesoTotalPaleta(pesoUnitario: number, cantidad: number) {
-  if (!Number.isFinite(pesoUnitario) || !Number.isFinite(cantidad)) return null;
-  if (pesoUnitario <= 0 || !Number.isInteger(cantidad) || cantidad <= 0) return null;
-  return Math.round(pesoUnitario * cantidad * 1000) / 1000;
-}
 
 export async function asegurarDosificaciones(db: Db) {
   await db.exec(TABLA);

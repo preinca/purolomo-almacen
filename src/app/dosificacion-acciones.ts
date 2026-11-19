@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { consultarProductoDosificacion, guardarDosificacion, pesoTotalPaleta, type ProductoDosificacion } from "@/lib/dosificacion";
+import { consultarProductoDosificacion, guardarDosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
+import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { getDb } from "@/lib/db";
 import type { Resultado } from "@/lib/lotes";
 import { exigirRango } from "@/lib/usuarios";
