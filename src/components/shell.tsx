@@ -10,6 +10,7 @@ import {
   FileSpreadsheet,
   History,
   LayoutDashboard,
+  Tags,
   Menu,
   ScrollText,
   X,
@@ -33,6 +34,7 @@ const grupos = [
     items: [
       { href: "/entradas", label: "Registrar entradas", icon: ArrowDownToLine, roles: ["administrador", "recepcionista"] as Rango[] },
       { href: "/salidas", label: "Dosificación", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
+      { href: "/etiquetas-paletas", label: "Etiquetas Paletas", icon: Tags, roles: todos },
       { href: "/receta", label: "Cargar receta", icon: FileSpreadsheet, roles: ["administrador"] as Rango[] },
       { href: "/calculadora", label: "Calculadora semanal", icon: Calculator, roles: ["administrador", "recepcionista", "consulta"] as Rango[] },
     ],
@@ -41,7 +43,7 @@ const grupos = [
     titulo: "Historial",
     items: [
       { href: "/historial/entradas", label: "Historial de entradas", icon: History, roles: todos },
-      { href: "/historial/salidas", label: "Historial de salidas", icon: ScrollText, roles: todos },
+      { href: "/historial/salidas", label: "Historial de Dosificaciones", icon: ScrollText, roles: todos },
     ],
   },
 ];

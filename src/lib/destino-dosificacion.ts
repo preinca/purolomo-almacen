@@ -10,11 +10,11 @@ export const CATALOGO_DESTINOS = [
     detalle: "Makilas, planta San Pablo.",
   },
   {
-    id: "makilas_turmero",
-    nombre: "Turmero",
+    id: "makilas_induproca",
+    nombre: "Induproca",
     grupo: "makilas",
     codigo: "60993",
-    detalle: "Makilas, planta Turmero.",
+    detalle: "Makilas, planta Induproca.",
   },
   {
     id: "makilas_pev",

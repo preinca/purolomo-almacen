@@ -7,20 +7,31 @@ import { ZONA_HORARIA, formatoFecha, formatoHora, formatoKg } from "@/lib/format
 export function EtiquetaDosificacion({
   datos,
   volverHref = "/salidas",
+  controles = true,
+  anulada = false,
 }: {
   datos: DatosEtiquetaDosificacion;
   volverHref?: string;
+  controles?: boolean;
+  anulada?: boolean;
 }) {
   const svg = svgQrDosificacion(datos);
   const dia = diaEnCaracas(datos.creadoEn);
   return (
     <article className="etiqueta-dosificacion mx-auto w-full max-w-xl break-inside-avoid rounded-xl border bg-white p-4 text-[#071422]">
+      {controles ? (
       <div className="mb-3 flex items-center justify-between gap-3 print:hidden">
         <Link href={volverHref} className="text-sm underline">
           Volver
         </Link>
         <BotonImprimir etiqueta="Imprimir" />
       </div>
+      ) : null}
+      {anulada ? (
+        <p className="mb-3 rounded-md bg-red-600 px-2 py-1.5 text-center text-xs font-semibold tracking-wide text-white uppercase">
+          Anulada
+        </p>
+      ) : null}
       <div className="flex items-start justify-between gap-3 border-b pb-2">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}

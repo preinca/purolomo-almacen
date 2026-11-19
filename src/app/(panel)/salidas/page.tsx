@@ -1,14 +1,11 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { AnularDosificacion } from "@/components/dosificacion-form";
 import { DosificacionConDestino } from "@/components/dosificacion-destino";
 import { PageFrame } from "@/components/page-frame";
 import { SalidaAlibal } from "@/components/salida-alibal";
 import { SalidaLogistica } from "@/components/salida-logistica";
 import { getDb } from "@/lib/db";
-import { listarDosificaciones } from "@/lib/dosificacion";
-import { textoDestino } from "@/lib/destino-dosificacion";
-import { fechaHoy, formatoKg } from "@/lib/formato";
+import { fechaHoy } from "@/lib/formato";
 import { leerSesion } from "@/lib/usuarios";
 import { buscarPesaje, codigoDelPesaje, existenciasDeTipos, listarMiniLotes, pesajeEnCurso, progresoPesaje, siguienteNumero } from "@/lib/pesajes";
 import { ALIBAL_1K, recetasCargadas } from "@/lib/recetas";
@@ -48,7 +45,6 @@ async function Salidas({
   const pedidoProducto = leer(parametros.producto);
   const producto = pedidoProducto === ALIBAL_1K.destino || pesajeId || token ? ALIBAL_1K.destino : "";
   const db = getDb();
-  const historial = modo === "" ? await listarDosificaciones(db) : [];
   const cargadas = (await recetasCargadas(db)).filter((receta) => receta.destino === producto);
   const enCurso = await pesajeEnCurso(db, producto);
   const encontrado = Number.isInteger(pesajeId) ? await buscarPesaje(db, pesajeId) : null;
@@ -70,58 +66,7 @@ async function Salidas({
           {aviso}
         </p>
       ) : null}
-      {modo === "" ? (
-        <div className="grid gap-8">
-          <DosificacionConDestino />
-          <section className="grid gap-3">
-            <h2 className="text-lg font-semibold">Dosificaciones registradas</h2>
-            {historial.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Todavía no hay dosificaciones.</p>
-            ) : (
-              <div className="overflow-x-auto rounded-xl border bg-white">
-                <table className="w-full min-w-[40rem] text-sm">
-                  <thead className="bg-muted/60 text-left">
-                    <tr>
-                      <th className="px-3 py-2">Destino</th>
-                      <th className="px-3 py-2">Producto</th>
-                      <th className="px-3 py-2">Núcleo</th>
-                      <th className="px-3 py-2">Peso unitario</th>
-                      <th className="px-3 py-2">Unidades</th>
-                      <th className="px-3 py-2">Peso total</th>
-                      <th className="px-3 py-2">Usuario</th>
-                      <th className="px-3 py-2">Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {historial.map((fila) => (
-                      <tr key={fila.id} className="border-t">
-                        <td className="px-3 py-2">
-                          <span>{textoDestino(fila.destino, fila.destinoCodigo)}</span>
-                          <a href={`/historial/salidas/${fila.id}`} className="mt-0.5 block text-xs underline">
-                            Etiqueta
-                          </a>
-                        </td>
-                        <td className="px-3 py-2">
-                          <span className="font-medium">{fila.descripcion}</span>
-                          <span className="mt-0.5 block font-mono text-xs text-muted-foreground">{fila.codigo}</span>
-                        </td>
-                        <td className="px-3 py-2">{fila.nucleo}</td>
-                        <td className="px-3 py-2">{formatoKg(fila.pesoUnitario)}</td>
-                        <td className="px-3 py-2">{fila.cantidad}</td>
-                        <td className="px-3 py-2 font-semibold">{formatoKg(fila.pesoTotal)}</td>
-                        <td className="px-3 py-2">{fila.usuario}</td>
-                        <td className="px-3 py-2">
-                          {fila.anulada ? "Anulada" : <AnularDosificacion id={fila.id} />}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-        </div>
-      ) : null}
+      {modo === "" ? <DosificacionConDestino /> : null}
       <div className={`grid gap-4 ${esAdmin ? "sm:grid-cols-2" : ""} ${modo === "" ? "hidden" : ""}`}>
         <a
           href="/salidas?modo=consumo"

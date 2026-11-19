@@ -1,10 +1,10 @@
-# Historial de salidas
+# Historial de Dosificaciones
 
 ## Propósito
 
 Lista las salidas del almacén. La salida de hoy es la **Dosificación**: cada fila trae token, código, descripción, núcleo, peso unitario, cantidad, peso total y si está anulada. Debajo quedan los despachos y consumos de TAG que no pertenecen a una dosificación.
 
-El título de la página es **Historial de salidas**. En el menú, registrar una salida se llama **Dosificación**.
+El título de la página y el menú dicen **Historial de Dosificaciones**. Registrar una paleta se llama **Dosificación**. Las etiquetas impresas están en **Etiquetas Paletas**.
 
 Los traslados a logística no entran; se guardan como movimiento `transferencia`. El consumo que crea una dosificación tampoco se repite en la segunda tabla: ya está en la primera, con `dosificacion_id`.
 
@@ -20,7 +20,7 @@ Registrar y anular una dosificación sigue en **Dosificación** (`/salidas`) y l
 
 ## Pasos
 
-1. El usuario abre **Historial de salidas** o entra a `/historial/salidas`.
+1. El usuario abre **Historial de Dosificaciones** o entra a `/historial/salidas`.
 2. `listarDosificaciones` trae hasta 200 filas de `dosificaciones`, de la más reciente a la más antigua. La columna Destino muestra el nombre y `destino_codigo`. El enlace Etiqueta abre `/historial/salidas/[id]` para reimprimir el QR.
 3. `listarHistorialSalidas` junta hasta 200 despachos y hasta 200 consumos con `dosificacion_id` vacío, los ordena por `id` descendente y se queda con 200.
 4. La primera tabla muestra fecha y hora en Caracas, token, código, descripción, núcleo, peso unitario, cantidad, peso total y anulada (`Sí` o `No`).

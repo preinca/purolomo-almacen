@@ -1,6 +1,6 @@
 # Dosificación
 
-La pestaña **Dosificación** (antes «Registrar salidas») registra una paleta de un solo producto. Primero se elige el destino: **Producción** (40602-1), **Cerdo** (40602-3) o **Makilas** (San Pablo 60994, Turmero 60993, P.E.V 40644, Planta SST 60996). El QR de entrada es el de la paleta (`PLT-…`). La cámara es la trasera principal. Si no lee, el token se escribe a mano.
+La pestaña **Dosificación** registra una paleta de un solo producto. Primero se elige el destino: **Producción** (40602-1), **Cerdo** (40602-3) o **Makilas** (San Pablo 60994, Induproca 60993, P.E.V 40644, Planta SST 60996). El listado y la anulación están en **Historial de Dosificaciones**. Las etiquetas se ven en **Etiquetas Paletas**. El QR de entrada es el de la paleta (`PLT-…`).
 
 Cada registro guarda `destino` y `destino_codigo`. Sin destino no se guarda. Los registros anteriores, y los que decían `purolomo`, quedan como Producción 40602-1. Al guardar sale una etiqueta con QR (`PUROLOMO DOSIFICACION` y `ID:` de la dosificación). Se puede reimprimir desde el listado. Ese QR no es el token de la entrada.
 
