@@ -30,7 +30,7 @@ const grupos = [
     titulo: "Operaciones",
     items: [
       { href: "/entradas", label: "Registrar entradas", icon: ArrowDownToLine, roles: ["administrador", "recepcionista"] as Rango[] },
-      { href: "/salidas", label: "Registrar salidas", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
+      { href: "/salidas", label: "Dosificación", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
       { href: "/receta", label: "Cargar receta", icon: FileSpreadsheet, roles: ["administrador"] as Rango[] },
       { href: "/calculadora", label: "Calculadora semanal", icon: Calculator, roles: ["administrador", "recepcionista", "consulta"] as Rango[] },
     ],
