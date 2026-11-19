@@ -7,15 +7,20 @@ import { EscanerToken } from "@/components/escaner-token";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { type DestinoDosificacion } from "@/lib/destino-dosificacion";
+import { textoDestino, type DestinoDosificacion } from "@/lib/destino-dosificacion";
 import type { DatosEtiquetaDosificacion } from "@/lib/etiqueta-dosificacion";
 import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { formatoKg } from "@/lib/formato";
 
-export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) {
+export function DosificacionForm({
+  destino,
+  onVolverInicio,
+}: {
+  destino: DestinoDosificacion;
+  onVolverInicio: () => void;
+}) {
   const [pendiente, iniciar] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [aviso, setAviso] = useState<string | null>(null);
   const [nota, setNota] = useState<string | null>(null);
   const [token, setToken] = useState("");
   const [codigo, setCodigo] = useState("");
@@ -35,7 +40,6 @@ export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) 
 
   function consultar(leido: string) {
     setError(null);
-    setAviso(null);
     setNota(null);
     setToken(leido);
     iniciar(async () => {
@@ -62,7 +66,6 @@ export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) 
 
   function guardar() {
     setError(null);
-    setAviso(null);
     iniciar(async () => {
       const resultado = await registrarDosificacion({
         token,
@@ -77,20 +80,61 @@ export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) 
         setError(resultado.error);
         return;
       }
-      setAviso(`Dosificación guardada: ${descripcion || codigo}, ${formatoKg(resultado.value.pesoTotal)}.`);
       setEtiqueta(resultado.value);
       setNucleo("");
       setPeso("");
       setCantidad("");
+      setToken("");
+      setCodigo("");
+      setDescripcion("");
+      setManual(false);
+      setDisponibles(null);
     });
   }
 
+  function seguir() {
+    setEtiqueta(null);
+    setError(null);
+    setNota(null);
+  }
+
+  if (etiqueta) {
+    return (
+      <div className="mx-auto grid w-full min-w-0 max-w-xl justify-items-center gap-4">
+        <p className="text-center text-lg font-semibold text-emerald-800">Dosificación guardada</p>
+        <EtiquetaDosificacion datos={etiqueta} controles="imprimir" />
+        <div className="grid w-full gap-3 print:hidden">
+          <button
+            type="button"
+            onClick={seguir}
+            className="inline-flex min-h-14 w-full items-center justify-center rounded-xl bg-green-600 px-4 text-center text-base font-semibold text-white hover:bg-green-700"
+          >
+            Seguir dosificando (mismo destino)
+          </button>
+          <button
+            type="button"
+            onClick={onVolverInicio}
+            className="inline-flex min-h-14 w-full items-center justify-center rounded-xl border border-border bg-white px-4 text-center text-base font-semibold hover:bg-muted"
+          >
+            Volver al inicio
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid gap-6">
-      {aviso ? (
-        <p className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-950">{aviso}</p>
-      ) : null}
-      {etiqueta ? <EtiquetaDosificacion datos={etiqueta} /> : null}
+    <div className="grid min-w-0 gap-6">
+      <div className="flex min-w-0 flex-col gap-3 rounded-xl border bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="min-w-0 text-lg font-semibold break-words">Destino: {textoDestino(destino)}</p>
+        <button
+          type="button"
+          onClick={onVolverInicio}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border px-4 text-sm"
+        >
+          Cambiar destino
+        </button>
+      </div>
       {nota ? (
         <p className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">{nota}</p>
       ) : null}
@@ -110,17 +154,17 @@ export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) 
       >
         <div className="grid gap-1.5">
           <Label htmlFor="token-dosi">Token de la paleta</Label>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex min-w-0 flex-col gap-3 sm:flex-row">
             <Input
               id="token-dosi"
               name="token"
               value={token}
               onChange={(event) => setToken(event.target.value)}
               placeholder="PLT-MPCM01009-1009111126-6-59651802"
-              className="font-mono"
+              className="min-w-0 font-mono"
               autoCapitalize="characters"
             />
-            <Button type="button" variant="outline" disabled={pendiente} onClick={() => consultar(token)}>
+            <Button type="button" variant="outline" disabled={pendiente} onClick={() => consultar(token)} className="min-h-11 w-full sm:w-auto">
               {pendiente ? "Consultando…" : "Consultar"}
             </Button>
           </div>
@@ -156,7 +200,7 @@ export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) 
             <Input id="total-dosi" readOnly value={total === null ? "" : String(total)} className="bg-muted" />
           </div>
         </div>
-        <Button type="submit" disabled={pendiente || total === null}>
+        <Button type="submit" disabled={pendiente || total === null} className="min-h-14 w-full">
           {pendiente ? "Guardando…" : "Guardar dosificación"}
         </Button>
       </form>

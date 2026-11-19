@@ -66,11 +66,11 @@ export function GaleriaEtiquetas({ etiquetas }: { etiquetas: EtiquetaListada[] }
   }
 
   return (
-    <div className="grid gap-6">
-      <div className="grid gap-3 rounded-xl border bg-white p-4 print:hidden sm:grid-cols-2 lg:grid-cols-3">
-        <label className="grid gap-1 text-sm">
+    <div className="grid min-w-0 max-w-full gap-6">
+      <div className="grid min-w-0 grid-cols-1 gap-3 rounded-xl border bg-white p-4 print:hidden sm:grid-cols-2 lg:grid-cols-3">
+        <label className="grid min-w-0 gap-1 text-sm">
           Destino
-          <select value={destino} onChange={(event) => setDestino(event.target.value)} className="h-11 rounded-lg border bg-white px-3">
+          <select value={destino} onChange={(event) => setDestino(event.target.value)} className="h-11 w-full min-w-0 max-w-full rounded-lg border bg-white px-3">
             <option value="">Todos</option>
             {CATALOGO_DESTINOS.map((item) => (
               <option key={item.id} value={item.id}>
@@ -79,9 +79,9 @@ export function GaleriaEtiquetas({ etiquetas }: { etiquetas: EtiquetaListada[] }
             ))}
           </select>
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           Producto
-          <select value={producto} onChange={(event) => setProducto(event.target.value)} className="h-11 rounded-lg border bg-white px-3">
+          <select value={producto} onChange={(event) => setProducto(event.target.value)} className="h-11 w-full min-w-0 max-w-full rounded-lg border bg-white px-3">
             <option value="">Todos</option>
             {productos.map(([codigo, nombre]) => (
               <option key={codigo} value={codigo}>
@@ -90,29 +90,29 @@ export function GaleriaEtiquetas({ etiquetas }: { etiquetas: EtiquetaListada[] }
             ))}
           </select>
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           Buscar
           <input
             value={busqueda}
             onChange={(event) => setBusqueda(event.target.value)}
             placeholder="Producto, código, núcleo o token"
-            className="h-11 rounded-lg border px-3"
+            className="h-11 w-full min-w-0 max-w-full rounded-lg border px-3"
           />
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           Desde
-          <input type="date" value={desde} onChange={(event) => setDesde(event.target.value)} className="h-11 rounded-lg border px-3" />
+          <input type="date" value={desde} onChange={(event) => setDesde(event.target.value)} className="h-11 w-full min-w-0 max-w-full rounded-lg border px-3" />
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid min-w-0 gap-1 text-sm">
           Hasta
-          <input type="date" value={hasta} onChange={(event) => setHasta(event.target.value)} className="h-11 rounded-lg border px-3" />
+          <input type="date" value={hasta} onChange={(event) => setHasta(event.target.value)} className="h-11 w-full min-w-0 max-w-full rounded-lg border px-3" />
         </label>
-        <div className="flex items-end gap-2">
+        <div className="flex min-w-0 items-end">
           <button
             type="button"
             disabled={elegidas.length === 0}
             onClick={imprimirSeleccion}
-            className="h-11 rounded-lg bg-purolomo-red px-4 text-sm font-semibold text-white disabled:opacity-50"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-purolomo-red px-4 text-center text-sm font-semibold text-white disabled:opacity-50"
           >
             Imprimir seleccionadas ({elegidas.length})
           </button>
@@ -124,17 +124,17 @@ export function GaleriaEtiquetas({ etiquetas }: { etiquetas: EtiquetaListada[] }
         </p>
       ) : (
         grupos.map(([dia, lista]) => (
-          <section key={dia} className="grid gap-3">
+          <section key={dia} className="grid min-w-0 gap-3">
             <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{formatoFecha(dia)}</h2>
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid min-w-0 gap-4 lg:grid-cols-2">
               {lista.map((etiqueta) => {
                 const elegida = elegidas.includes(etiqueta.id);
                 return (
-                  <div key={etiqueta.id} className={elegidas.length > 0 && !elegida ? "print:hidden" : ""}>
-                    <label className="mb-2 flex items-center gap-2 text-sm print:hidden">
-                      <input type="checkbox" checked={elegida} onChange={() => alternar(etiqueta.id)} />
+                  <div key={etiqueta.id} className={`min-w-0 max-w-full ${elegidas.length > 0 && !elegida ? "print:hidden" : ""}`}>
+                    <label className="mb-2 flex min-h-11 items-center gap-3 text-sm print:hidden">
+                      <input type="checkbox" checked={elegida} onChange={() => alternar(etiqueta.id)} className="size-5" />
                       Seleccionar
-                      <a href={`/historial/salidas/${etiqueta.id}`} className="ml-auto underline">
+                      <a href={`/historial/salidas/${etiqueta.id}`} className="ml-auto inline-flex min-h-11 items-center underline">
                         Ver
                       </a>
                     </label>

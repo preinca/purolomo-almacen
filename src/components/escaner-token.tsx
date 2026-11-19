@@ -218,7 +218,7 @@ export function EscanerToken({ onToken }: { onToken: (token: string) => void }) 
               <select
                 value={elegida}
                 onChange={(event) => void cambiarCamara(event.target.value)}
-                className="h-11 rounded-lg border bg-white px-3 text-sm"
+                className="h-11 w-full min-w-0 max-w-full rounded-lg border bg-white px-3 text-sm"
               >
                 {camaras.map((item, indice) => (
                   <option key={item.deviceId} value={item.deviceId}>
