@@ -39,6 +39,7 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
       nucleo: "N-12",
       pesoUnitario: 2.5,
       cantidad: 4,
+      destino: "produccion",
     },
     "ana",
   );
@@ -46,6 +47,8 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
   if (!guardada.ok) return;
   assert.equal(guardada.value.pesoTotal, 10);
   assert.equal(guardada.value.nucleo, "N-12");
+  assert.equal(guardada.value.destino, "produccion");
+  assert.equal(guardada.value.destinoCodigo, "40602-1");
   const lista = await listarDosificaciones(db);
   assert.equal(lista[0]?.descripcion, "SAL CON YODO Y FLUOR");
   assert.equal(lista[0]?.cantidad, 4);
@@ -60,6 +63,7 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
       nucleo: "N-13",
       pesoUnitario: 500,
       cantidad: 3,
+      destino: "makilas_san_pablo",
     },
     "ana",
   );
@@ -87,6 +91,26 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
   assert.equal(fila?.cantidad, 4);
   assert.equal(fila?.pesoTotal, 10);
   assert.equal(fila?.anulada, true);
+  assert.equal(fila?.destino, "produccion");
+  assert.equal(fila?.destinoCodigo, "40602-1");
+
+  const sinDestino = await guardarDosificacion(
+    db,
+    {
+      token: producto.value.token,
+      codigo: producto.value.codigo,
+      descripcion: producto.value.descripcion,
+      nucleo: "N-14",
+      pesoUnitario: 1,
+      cantidad: 1,
+      destino: "otra-planta",
+    },
+    "ana",
+  );
+  assert.equal(sinDestino.ok, false);
+  if (sinDestino.ok) return;
+  assert.match(sinDestino.error, /destino/);
+  assert.equal(await kgDisponiblesDeToken(db, PALETA_DE_PRUEBA.token), 1000);
   const movimientos = await listarHistorialSalidas(db);
   assert.equal(
     movimientos.some((mov) => mov.nota.startsWith("Dosificación")),

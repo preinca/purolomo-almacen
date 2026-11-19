@@ -1,6 +1,8 @@
 # Dosificación
 
-La pestaña **Dosificación** (antes «Registrar salidas») registra una paleta de un solo producto. El QR es el mismo de la entrada (`PLT-…`). La cámara es la trasera principal, no la ultra gran angular: esa no enfoca de cerca. Si no lee, el token se escribe a mano.
+La pestaña **Dosificación** (antes «Registrar salidas») registra una paleta de un solo producto. Primero se elige el destino: **Producción** (40602-1), **Cerdo** (40602-3) o **Makilas** (San Pablo 60994, Turmero 60993, P.E.V 40644, Planta SST 60996). El QR de entrada es el de la paleta (`PLT-…`). La cámara es la trasera principal. Si no lee, el token se escribe a mano.
+
+Cada registro guarda `destino` y `destino_codigo`. Sin destino no se guarda. Los registros anteriores, y los que decían `purolomo`, quedan como Producción 40602-1. Al guardar sale una etiqueta con QR (`PUROLOMO DOSIFICACION` y `ID:` de la dosificación). Se puede reimprimir desde el listado. Ese QR no es el token de la entrada.
 
 El nombre y el código salen de la entrada ya guardada o, si todavía no está, del kárdex. Si no hay nombre, se escriben a mano. El peso total es el peso unitario por la cantidad de unidades.
 
@@ -12,4 +14,4 @@ Al guardar, en la misma transacción:
 
 Anular marca el registro y agrega un movimiento `devolucion` con los mismos kilos, así el stock vuelve.
 
-La tabla `dosificaciones` ya está creada. Para el descuento hace falta `supabase/migraciones/2026-11-19-dosificacion-stock.sql`. El carmín de la calculadora, si la base se sembró antes, sigue en `supabase/migraciones/2026-11-19-carmin.sql`.
+La tabla `dosificaciones` ya está creada. Para el descuento hace falta `supabase/migraciones/2026-11-19-dosificacion-stock.sql`. Para el destino, `supabase/migraciones/2026-11-19-dosificacion-destino.sql`. El carmín de la calculadora, si la base se sembró antes, sigue en `supabase/migraciones/2026-11-19-carmin.sql`.

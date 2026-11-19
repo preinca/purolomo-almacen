@@ -2,14 +2,17 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { anularRegistroDosificacion, consultarPaletaDosificacion, registrarDosificacion } from "@/app/dosificacion-acciones";
+import { EtiquetaDosificacion } from "@/components/etiqueta-dosificacion";
 import { EscanerToken } from "@/components/escaner-token";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { type DestinoDosificacion } from "@/lib/destino-dosificacion";
+import type { DatosEtiquetaDosificacion } from "@/lib/etiqueta-dosificacion";
 import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { formatoKg } from "@/lib/formato";
 
-export function DosificacionForm() {
+export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) {
   const [pendiente, iniciar] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
@@ -22,6 +25,7 @@ export function DosificacionForm() {
   const [nucleo, setNucleo] = useState("");
   const [peso, setPeso] = useState("");
   const [cantidad, setCantidad] = useState("");
+  const [etiqueta, setEtiqueta] = useState<DatosEtiquetaDosificacion | null>(null);
 
   const total = useMemo(() => {
     const unitario = Number(peso.replace(",", "."));
@@ -67,12 +71,14 @@ export function DosificacionForm() {
         nucleo,
         pesoUnitario: peso,
         cantidad,
+        destino,
       });
       if (!resultado.ok) {
         setError(resultado.error);
         return;
       }
       setAviso(`Dosificación guardada: ${descripcion || codigo}, ${formatoKg(resultado.value.pesoTotal)}.`);
+      setEtiqueta(resultado.value);
       setNucleo("");
       setPeso("");
       setCantidad("");
@@ -84,6 +90,7 @@ export function DosificacionForm() {
       {aviso ? (
         <p className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-950">{aviso}</p>
       ) : null}
+      {etiqueta ? <EtiquetaDosificacion datos={etiqueta} /> : null}
       {nota ? (
         <p className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">{nota}</p>
       ) : null}

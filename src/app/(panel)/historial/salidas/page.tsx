@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getDb } from "@/lib/db";
+import { textoDestino } from "@/lib/destino-dosificacion";
 import { listarDosificaciones } from "@/lib/dosificacion";
 import { ZONA_HORARIA, formatoFecha, formatoHora, formatoKg } from "@/lib/formato";
 import { lineaPorId } from "@/lib/lineas";
@@ -75,6 +76,7 @@ async function Historial() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Fecha</TableHead>
+                  <TableHead>Destino</TableHead>
                   <TableHead>Token</TableHead>
                   <TableHead>Código</TableHead>
                   <TableHead>Descripción</TableHead>
@@ -93,6 +95,12 @@ async function Historial() {
                       <span className="mt-0.5 block text-xs text-muted-foreground">
                         {formatoHora(fila.creadoEn) || "—"}
                       </span>
+                    </TableCell>
+                    <TableCell>
+                      <span>{textoDestino(fila.destino, fila.destinoCodigo)}</span>
+                      <Link href={`/historial/salidas/${fila.id}`} className="mt-0.5 block text-xs underline">
+                        Etiqueta
+                      </Link>
                     </TableCell>
                     <TableCell className="font-mono text-xs">{fila.token}</TableCell>
                     <TableCell className="font-mono text-xs">{fila.codigo}</TableCell>
