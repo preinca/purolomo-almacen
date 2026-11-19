@@ -19,6 +19,7 @@ export function TablaEntradas({ entradas }: { entradas: EntradaPaleta[] }) {
           <TableHead>Producto</TableHead>
           <TableHead>Lote</TableHead>
           <TableHead>Kilos</TableHead>
+          <TableHead>Disponibles</TableHead>
           <TableHead>Vencimiento</TableHead>
           <TableHead>Token</TableHead>
         </TableRow>
@@ -33,6 +34,7 @@ export function TablaEntradas({ entradas }: { entradas: EntradaPaleta[] }) {
             </TableCell>
             <TableCell className="font-mono">{entrada.lote}</TableCell>
             <TableCell>{formatoKg(entrada.kg)}</TableCell>
+            <TableCell>{entrada.kgDisponible === undefined ? "" : formatoKg(entrada.kgDisponible)}</TableCell>
             <TableCell>{formatoFecha(entrada.vencimiento)}</TableCell>
             <TableCell className="font-mono text-xs">{entrada.token}</TableCell>
           </TableRow>

@@ -15,7 +15,7 @@ export default function Page({ searchParams }: PageProps<"/receta">) {
   return (
     <PageFrame
       titulo="Cargar receta"
-      descripcion="Al empezar la jornada se carga la receta de Alibal 1 kg. Después, en Registrar salidas, solo se puede retirar lo que esa receta permite."
+      descripcion="Al empezar la jornada se carga la receta de Alibal 1 kg. Después, en el pesaje de consumo de Dosificación, solo se puede retirar lo que esa receta permite."
     >
       <Suspense fallback={<p className="text-sm text-muted-foreground">Cargando…</p>}>
         <Receta searchParams={searchParams} />
@@ -103,7 +103,7 @@ async function Receta({
             ))
           )}
           <Link href="/salidas" className="w-fit text-sm font-medium underline">
-            Ir a registrar salidas
+            Ir a dosificación
           </Link>
         </CardContent>
       </Card>
