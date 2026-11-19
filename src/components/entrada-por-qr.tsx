@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { DatosManuales, PreparacionPaleta } from "@/lib/entrada-paleta";
-import { formatoFecha, formatoKg } from "@/lib/formato";
+import { fechaValida, formatoKg, textoVencimiento } from "@/lib/formato";
 
 export function EntradaPorQr() {
   const router = useRouter();
@@ -43,11 +43,11 @@ export function EntradaPorQr() {
     });
   }
 
-  function confirmar(vencimiento?: string) {
+  function confirmar(opcion: { vencimiento?: string; noAplica?: boolean }) {
     if (!preview || preview.yaRegistrada) return;
     setError(null);
     iniciar(async () => {
-      const resultado = await confirmarEntradaPaleta(preview.paleta.token, vencimiento);
+      const resultado = await confirmarEntradaPaleta(preview.paleta.token, opcion.vencimiento, opcion.noAplica === true);
       if (!resultado.ok) {
         setError(resultado.error);
         return;
@@ -60,7 +60,7 @@ export function EntradaPorQr() {
     });
   }
 
-  function registrarManual(campos: { producto: string; kg: string; vencimiento: string }) {
+  function registrarManual(campos: { producto: string; kg: string; vencimiento: string; noAplica: boolean }) {
     if (!manual) return;
     setError(null);
     iniciar(async () => {
@@ -117,8 +117,10 @@ export function EntradaPorQr() {
           </Button>
         </div>
       </form>
-      {preview ? <Ficha paleta={preview} pendiente={pendiente} onConfirmar={confirmar} /> : null}
-      {manual ? <FormularioManual datos={manual} pendiente={pendiente} onRegistrar={registrarManual} /> : null}
+      {preview ? <Ficha key={preview.paleta.token} paleta={preview} pendiente={pendiente} onConfirmar={confirmar} onError={setError} /> : null}
+      {manual ? (
+        <FormularioManual key={manual.token} datos={manual} pendiente={pendiente} onRegistrar={registrarManual} onError={setError} />
+      ) : null}
     </div>
   );
 }
@@ -127,13 +129,16 @@ function Ficha({
   paleta,
   pendiente,
   onConfirmar,
+  onError,
 }: {
   paleta: Extract<PreparacionPaleta, { ok: true }>;
   pendiente: boolean;
-  onConfirmar: (vencimiento?: string) => void;
+  onConfirmar: (opcion: { vencimiento?: string; noAplica?: boolean }) => void;
+  onError: (mensaje: string) => void;
 }) {
   const datos = paleta.paleta;
   const faltaVencimiento = !paleta.yaRegistrada && paleta.faltaVencimiento === true;
+  const yaSinFecha = paleta.yaRegistrada && paleta.paleta.vencimientoNoAplica;
   const texto = paleta.yaRegistrada
     ? "Esta paleta ya está registrada. No se creó otra entrada."
     : paleta.origenDatos === "kardex"
@@ -145,8 +150,14 @@ function Ficha({
       onSubmit={(event) => {
         event.preventDefault();
         if (paleta.yaRegistrada) return;
-        const vencimiento = String(new FormData(event.currentTarget).get("vencimiento") ?? "");
-        onConfirmar(faltaVencimiento ? vencimiento : undefined);
+        const form = new FormData(event.currentTarget);
+        const noAplica = form.get("no-aplica") === "on";
+        const vencimiento = String(form.get("vencimiento") ?? "");
+        if (faltaVencimiento && !noAplica && !fechaValida(vencimiento)) {
+          onError("Elige la fecha de vencimiento o marca que no aplica.");
+          return;
+        }
+        onConfirmar(faltaVencimiento ? { vencimiento, noAplica } : {});
       }}
     >
       <p className={paleta.yaRegistrada ? "text-sm font-semibold text-amber-800" : "text-sm font-semibold text-emerald-800"}>
@@ -157,15 +168,12 @@ function Ficha({
         <Dato etiqueta="Código" valor={datos.codigo} />
         <Dato etiqueta="Kilos" valor={formatoKg(datos.kg)} />
         <Dato etiqueta="Lote" valor={datos.lote} />
-        {faltaVencimiento ? null : <Dato etiqueta="Vencimiento" valor={formatoFecha(datos.vencimiento)} />}
+        {faltaVencimiento ? null : (
+          <Dato etiqueta="Vencimiento" valor={textoVencimiento(datos.vencimiento, yaSinFecha)} />
+        )}
         <Dato etiqueta="Token" valor={datos.token} />
       </dl>
-      {faltaVencimiento ? (
-        <div className="grid gap-1.5">
-          <Label htmlFor="vencimiento-ficha">Vencimiento</Label>
-          <Input id="vencimiento-ficha" name="vencimiento" type="date" required disabled={pendiente} />
-        </div>
-      ) : null}
+      {faltaVencimiento ? <EleccionVencimiento pendiente={pendiente} idPrefijo="ficha" /> : null}
       {paleta.yaRegistrada ? null : (
         <button
           type="submit"
@@ -183,10 +191,12 @@ function FormularioManual({
   datos,
   pendiente,
   onRegistrar,
+  onError,
 }: {
   datos: DatosManuales;
   pendiente: boolean;
-  onRegistrar: (campos: { producto: string; kg: string; vencimiento: string }) => void;
+  onRegistrar: (campos: { producto: string; kg: string; vencimiento: string; noAplica: boolean }) => void;
+  onError: (mensaje: string) => void;
 }) {
   return (
     <form
@@ -194,15 +204,22 @@ function FormularioManual({
       onSubmit={(event) => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
+        const noAplica = form.get("no-aplica") === "on";
+        const vencimiento = String(form.get("vencimiento") ?? "");
+        if (!noAplica && !fechaValida(vencimiento)) {
+          onError("Elige la fecha de vencimiento o marca que no aplica.");
+          return;
+        }
         onRegistrar({
           producto: String(form.get("producto") ?? ""),
           kg: String(form.get("kg") ?? ""),
-          vencimiento: String(form.get("vencimiento") ?? ""),
+          vencimiento,
+          noAplica,
         });
       }}
     >
       <p className="text-sm font-semibold text-amber-800">
-        El código y el lote salen del QR. Completa el producto, los kilos y el vencimiento que trae la etiqueta.
+        El código y el lote salen del QR. Completa el producto y los kilos. Si la etiqueta trae vencimiento, escríbelo; si no aplica, márcalo.
       </p>
       <dl className="grid gap-3 sm:grid-cols-2">
         <Dato etiqueta="Código" valor={datos.codigo} />
@@ -217,9 +234,8 @@ function FormularioManual({
           <Label htmlFor="kg-manual">Kilos</Label>
           <Input id="kg-manual" name="kg" inputMode="decimal" required disabled={pendiente} placeholder="1000" />
         </div>
-        <div className="grid gap-1.5 sm:col-span-2">
-          <Label htmlFor="vencimiento-manual">Vencimiento</Label>
-          <Input id="vencimiento-manual" name="vencimiento" type="date" required disabled={pendiente} />
+        <div className="sm:col-span-2">
+          <EleccionVencimiento pendiente={pendiente} idPrefijo="manual" />
         </div>
       </div>
       <button
@@ -230,6 +246,31 @@ function FormularioManual({
         {pendiente ? "Registrando…" : "Registrar con estos datos"}
       </button>
     </form>
+  );
+}
+
+function EleccionVencimiento({ pendiente, idPrefijo }: { pendiente: boolean; idPrefijo: string }) {
+  const [noAplica, setNoAplica] = useState(false);
+  return (
+    <div className="grid gap-3">
+      <label className="flex items-start gap-3 text-sm font-medium">
+        <input
+          type="checkbox"
+          name="no-aplica"
+          checked={noAplica}
+          onChange={(event) => setNoAplica(event.target.checked)}
+          disabled={pendiente}
+          className="mt-0.5 size-4"
+        />
+        Fecha de vencimiento: No aplica
+      </label>
+      {noAplica ? null : (
+        <div className="grid gap-1.5">
+          <Label htmlFor={`${idPrefijo}-vencimiento`}>Vencimiento</Label>
+          <Input id={`${idPrefijo}-vencimiento`} name="vencimiento" type="date" disabled={pendiente} />
+        </div>
+      )}
+    </div>
   );
 }
 

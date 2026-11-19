@@ -4,7 +4,7 @@
 
 Lleva los kilos de cada TAG de materia prima: lo recibido, lo despachado en pesajes y lo consumido por la acción suelta. El disponible es la diferencia. Un TAG en logística sale del stock que se puede pesar, aunque sus kilos numéricos sigan en la fila.
 
-La pantalla de inicio no es este inventario. El inicio suma paletas de `entradas_paleta` ([panel](panel.md)). El stock de cava vive en `lotes`.
+La pantalla de inicio no es este inventario de cava. El inicio suma paletas de `entradas_paleta` y, en **Inventario**, lista las que todavía tienen kilos ordenadas por vencimiento: primero la que vence antes y al final las que tienen «No aplica» ([panel](panel.md)). El stock de cava vive en `lotes` y no usa esa fecha.
 
 ## Cómo se calcula
 

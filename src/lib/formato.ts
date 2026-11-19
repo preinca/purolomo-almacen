@@ -24,6 +24,12 @@ export function fechaValida(fecha: string) {
   );
 }
 
+/** Fecha legible, o «No aplica» cuando la paleta no vence (empaque). */
+export function textoVencimiento(vencimiento: string, noAplica = false) {
+  if (noAplica) return "No aplica";
+  return formatoFecha(vencimiento);
+}
+
 export function formatoFecha(fecha: string) {
   if (!fechaValida(fecha)) return fecha;
   const [year, month, day] = fecha.split("-").map(Number);

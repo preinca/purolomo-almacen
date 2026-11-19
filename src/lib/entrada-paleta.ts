@@ -10,6 +10,7 @@ export type EntradaPaleta = DatosPaleta & {
   usuario: string;
   creadoEn: string;
   kgDisponible?: number;
+  vencimientoNoAplica: boolean;
 };
 
 const TABLA = `
@@ -19,12 +20,21 @@ CREATE TABLE IF NOT EXISTS entradas_paleta (
   producto TEXT NOT NULL,
   kg DOUBLE PRECISION NOT NULL CHECK (kg > 0),
   lote TEXT NOT NULL,
-  vencimiento TEXT NOT NULL,
+  vencimiento TEXT,
+  vencimiento_no_aplica INTEGER NOT NULL DEFAULT 0,
   fecha TEXT NOT NULL,
   usuario TEXT NOT NULL DEFAULT '',
   creado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
 );
 CREATE INDEX IF NOT EXISTS idx_entradas_paleta_fecha ON entradas_paleta (fecha DESC, creado_en DESC);
+ALTER TABLE entradas_paleta ADD COLUMN IF NOT EXISTS vencimiento_no_aplica INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE entradas_paleta ALTER COLUMN vencimiento DROP NOT NULL;
+ALTER TABLE entradas_paleta DROP CONSTRAINT IF EXISTS entradas_paleta_vencimiento_ok;
+ALTER TABLE entradas_paleta ADD CONSTRAINT entradas_paleta_vencimiento_ok CHECK (
+  (vencimiento_no_aplica = 0 AND vencimiento IS NOT NULL)
+  OR (vencimiento_no_aplica = 1 AND vencimiento IS NULL)
+);
+CREATE INDEX IF NOT EXISTS idx_entradas_paleta_fefo ON entradas_paleta (vencimiento_no_aplica, vencimiento);
 `;
 
 type Fila = Record<string, unknown>;
@@ -36,7 +46,8 @@ function fila(row: Fila): EntradaPaleta {
     producto: String(row.producto),
     kg: Number(row.kg),
     lote: String(row.lote),
-    vencimiento: String(row.vencimiento),
+    vencimiento: row.vencimiento == null ? "" : String(row.vencimiento),
+    vencimientoNoAplica: Number(row.vencimiento_no_aplica) === 1,
     fecha: String(row.fecha),
     usuario: String(row.usuario ?? ""),
     creadoEn: String(row.creado_en),
@@ -79,6 +90,31 @@ export const LIMITE_HISTORIAL_ENTRADAS = 300;
 
 export async function listarHistorialEntradas(db: Db) {
   return listarEntradas(db, LIMITE_HISTORIAL_ENTRADAS);
+}
+
+/** Stock de paletas con kilos: primero lo que vence antes. Sin vencimiento queda al final. */
+export async function listarInventarioPaletas(db: Db, limite = 100) {
+  await asegurarEntradas(db);
+  const { asegurarDosificaciones } = await import("./dosificacion");
+  await asegurarDosificaciones(db);
+  const pedido = Number.isFinite(limite) ? limite : 100;
+  const tope = Math.min(Math.max(Math.trunc(pedido), 1), 500);
+  const filas = await db.all<Fila>(
+    `SELECT e.*,
+       e.kg - COALESCE((
+         SELECT SUM(d.peso_total) FROM dosificaciones d
+         WHERE d.token = e.token AND d.anulada = 0
+       ), 0) AS kg_disponible
+     FROM entradas_paleta e
+     WHERE e.kg - COALESCE((
+       SELECT SUM(d.peso_total) FROM dosificaciones d
+       WHERE d.token = e.token AND d.anulada = 0
+     ), 0) > 0.001
+     ORDER BY e.vencimiento_no_aplica ASC, e.vencimiento ASC NULLS LAST, e.token ASC
+     LIMIT ?`,
+    tope,
+  );
+  return filas.map(fila);
 }
 
 export async function resumirEntradas(db: Db) {
@@ -131,7 +167,7 @@ export async function prepararEntrada(
   if (!resuelta.ok) return resuelta;
   const faltaVencimiento = !fechaValida(resuelta.paleta.vencimiento);
   const avisoFecha = faltaVencimiento
-    ? "El kárdex no envió la fecha de vencimiento. Complétala con la de la etiqueta."
+    ? "El kárdex no envió la fecha de vencimiento. Escríbela o marca que no aplica."
     : undefined;
   const aviso = [resuelta.aviso, avisoFecha].filter(Boolean).join(" ");
   return {
@@ -156,6 +192,7 @@ export async function recibirPaleta(
   origen: OrigenRemoto = origenLocal(),
   fecha = fechaHoy(),
   vencimientoEscrito?: string,
+  noAplica = false,
 ): Promise<Resultado<EntradaPaleta>> {
   const partes = partirToken(tokenTexto);
   if (!partes.ok) return partes;
@@ -163,9 +200,9 @@ export async function recibirPaleta(
   if (guardada) return { ok: false, error: "Esta paleta ya está registrada." };
   const resuelta = await resolverPaleta(db, partes.value, origen);
   if (!resuelta.ok) return { ok: false, error: resuelta.error };
-  const completa = aplicarVencimiento(resuelta.paleta, vencimientoEscrito);
-  if (!completa.ok) return completa;
-  return persistir(db, { ...resuelta, paleta: completa.value }, usuario, origen, fecha);
+  const elegida = resolverVencimiento(resuelta.paleta, vencimientoEscrito, noAplica);
+  if (!elegida.ok) return elegida;
+  return persistir(db, resuelta, usuario, origen, fecha, elegida.value);
 }
 
 /**
@@ -176,7 +213,7 @@ export async function recibirPaletaManual(
   db: Db,
   tokenTexto: string,
   usuario: string,
-  campos: { producto: string; kg: number | string; vencimiento: string },
+  campos: { producto: string; kg: number | string; vencimiento: string; noAplica?: boolean },
   origen: OrigenRemoto = origenLocal(),
   fecha = fechaHoy(),
 ): Promise<Resultado<EntradaPaleta>> {
@@ -192,39 +229,41 @@ export async function recibirPaletaManual(
   if (kardex.ok) {
     const cruzada = cruzarKardex(partes.value, kardex.value);
     if (!cruzada.ok) return cruzada;
-    const completa = aplicarVencimiento(cruzada.value, String(campos.vencimiento));
-    if (!completa.ok) return completa;
-    return persistir(db, { ok: true, paleta: completa.value, fuente: "kardex" }, usuario, origen, fecha);
+    const elegida = resolverVencimiento(cruzada.value, String(campos.vencimiento), campos.noAplica === true);
+    if (!elegida.ok) return elegida;
+    return persistir(db, { ok: true, paleta: cruzada.value, fuente: "kardex" }, usuario, origen, fecha, elegida.value);
   }
   if (kardex.tipo !== "caido") return { ok: false, error: kardex.error };
 
   const local = await resolverLocal(partes.value, origen);
-  if (local.ok) return persistir(db, local, usuario, origen, fecha);
+  if (local.ok) {
+    const elegida = resolverVencimiento(local.paleta, campos.vencimiento, campos.noAplica === true);
+    if (!elegida.ok) return elegida;
+    return persistir(db, local, usuario, origen, fecha, elegida.value);
+  }
 
   const producto = campos.producto.trim().replace(/\s+/g, " ");
   const kg = kilosManuales(campos.kg);
-  const vencimiento = campos.vencimiento.trim();
   if (producto.length < 2 || producto.length > 200) return { ok: false, error: "Escribe el nombre del producto." };
   if (kg === null) return { ok: false, error: "Escribe los kilos de la paleta." };
-  if (!fechaValida(vencimiento)) return { ok: false, error: "Escribe el vencimiento con el formato AAAA-MM-DD." };
+  const paleta: DatosPaleta = {
+    token: partes.value.token,
+    codigo: partes.value.codigo,
+    producto,
+    kg,
+    lote: partes.value.lote,
+    vencimiento: "",
+  };
+  const elegida = resolverVencimiento(paleta, campos.vencimiento, campos.noAplica === true);
+  if (!elegida.ok) return elegida;
 
   return persistir(
     db,
-    {
-      ok: true,
-      paleta: {
-        token: partes.value.token,
-        codigo: partes.value.codigo,
-        producto,
-        kg,
-        lote: partes.value.lote,
-        vencimiento,
-      },
-      fuente: "manual",
-    },
+    { ok: true, paleta, fuente: "manual" },
     usuario,
     origen,
     fecha,
+    elegida.value,
   );
 }
 
@@ -282,13 +321,19 @@ function cruzarKardex(
   );
 }
 
-function aplicarVencimiento(paleta: DatosPaleta, escrito?: string): Resultado<DatosPaleta> {
-  if (fechaValida(paleta.vencimiento)) return { ok: true, value: paleta };
+type VencimientoElegido = { valor: string | null; noAplica: boolean };
+
+function resolverVencimiento(paleta: DatosPaleta, escrito?: string, noAplica = false): Resultado<VencimientoElegido> {
+  if (fechaValida(paleta.vencimiento)) return { ok: true, value: { valor: paleta.vencimiento, noAplica: false } };
+  if (noAplica) return { ok: true, value: { valor: null, noAplica: true } };
   const vencimiento = (escrito ?? "").trim();
-  if (!fechaValida(vencimiento)) {
-    return { ok: false, error: "Escribe el vencimiento de la etiqueta (AAAA-MM-DD)." };
-  }
-  return { ok: true, value: { ...paleta, vencimiento } };
+  if (fechaValida(vencimiento)) return { ok: true, value: { valor: vencimiento, noAplica: false } };
+  return {
+    ok: false,
+    error: vencimiento
+      ? "Escribe el vencimiento con el formato AAAA-MM-DD."
+      : "Elige la fecha de vencimiento o marca que no aplica.",
+  };
 }
 
 async function persistir(
@@ -297,6 +342,7 @@ async function persistir(
   usuario: string,
   origen: OrigenRemoto,
   fecha: string,
+  vencimiento: VencimientoElegido,
 ): Promise<Resultado<EntradaPaleta>> {
   const paleta = resuelta.paleta;
   if (resuelta.fuente === "local") {
@@ -305,17 +351,18 @@ async function persistir(
   }
 
   const cambios = await db.run(
-    `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario, vencimiento_no_aplica)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT (token) DO NOTHING`,
     paleta.token,
     paleta.codigo,
     paleta.producto,
     paleta.kg,
     paleta.lote,
-    paleta.vencimiento,
+    vencimiento.valor,
     fecha,
     usuario,
+    vencimiento.noAplica ? 1 : 0,
   );
   if (cambios === 0) return { ok: false, error: "Esta paleta ya está registrada." };
   const guardada = await buscarEntrada(db, paleta.token);

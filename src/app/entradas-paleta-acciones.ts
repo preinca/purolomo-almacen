@@ -52,9 +52,13 @@ export async function prepararEntradaPaleta(token: string): Promise<PreparacionP
   return prepararEntrada(getDb(), token);
 }
 
-export async function confirmarEntradaPaleta(token: string, vencimiento?: string): Promise<Resultado<EntradaPaleta>> {
+export async function confirmarEntradaPaleta(
+  token: string,
+  vencimiento?: string,
+  noAplica = false,
+): Promise<Resultado<EntradaPaleta>> {
   const sesion = await exigirRango(["administrador", "recepcionista"]);
-  const resultado = await recibirPaleta(getDb(), token, sesion.usuario, undefined, undefined, vencimiento);
+  const resultado = await recibirPaleta(getDb(), token, sesion.usuario, undefined, undefined, vencimiento, noAplica);
   if (resultado.ok) {
     revalidatePath("/");
     revalidatePath("/entradas");
@@ -67,12 +71,14 @@ export async function registrarEntradaManualPaleta(input: {
   producto: string;
   kg: string;
   vencimiento: string;
+  noAplica?: boolean;
 }): Promise<Resultado<EntradaPaleta>> {
   const sesion = await exigirRango(["administrador", "recepcionista"]);
   const resultado = await recibirPaletaManual(getDb(), input.token, sesion.usuario, {
     producto: input.producto,
     kg: input.kg,
     vencimiento: input.vencimiento,
+    noAplica: input.noAplica === true,
   });
   if (resultado.ok) {
     revalidatePath("/");

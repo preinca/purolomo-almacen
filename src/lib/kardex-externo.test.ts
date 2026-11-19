@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { describe, test } from "node:test";
 import { basePrueba } from "./db-prueba.ts";
-import { buscarEntrada, prepararEntrada, recibirPaleta, recibirPaletaManual } from "./entrada-paleta.ts";
+import { buscarEntrada, listarInventarioPaletas, prepararEntrada, recibirPaleta, recibirPaletaManual } from "./entrada-paleta.ts";
 import { olvidarSesionKardex, buscarPaletaKardex } from "./kardex-externo.ts";
 import { PALETA_DE_PRUEBA, guardarDashboard, type OrigenRemoto } from "./paleta-remota.ts";
 import os from "node:os";
@@ -313,11 +313,13 @@ describe("kárdex externo", { concurrency: false }, () => {
 
     const db = await basePrueba();
     const origen = origenVacio();
-    const entrada = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17");
+    const entrada = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17", "", true);
     assert.equal(entrada.ok, true);
     if (!entrada.ok) return;
     assert.equal(entrada.value.producto, "SAL CON YODO Y FLUOR");
     assert.equal(entrada.value.kg, 1000);
+    assert.equal(entrada.value.vencimiento, "2030-12-07");
+    assert.equal(entrada.value.vencimientoNoAplica, false);
     assert.equal(fs.existsSync(origen.archivo), false);
   });
 
@@ -481,15 +483,63 @@ describe("kárdex externo", { concurrency: false }, () => {
 
     const sinFecha = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17");
     assert.equal(sinFecha.ok, false);
+    if (sinFecha.ok) return;
+    assert.match(sinFecha.error, /no aplica/);
     assert.equal(await buscarEntrada(db, TOKEN), undefined);
 
     const entrada = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17", "2030-12-07");
     assert.equal(entrada.ok, true);
     if (!entrada.ok) return;
     assert.equal(entrada.value.vencimiento, "2030-12-07");
+    assert.equal(entrada.value.vencimientoNoAplica, false);
     assert.equal(entrada.value.lote, "1009111126");
     assert.equal(entrada.value.producto, "SAL CON YODO Y FLUOR");
     assert.equal(fs.existsSync(origen.archivo), false);
+  });
+
+  test("sin vencimiento se guarda como no aplica y el inventario lo deja al final", async (t) => {
+    const original = globalThis.fetch;
+    t.after(() => {
+      globalThis.fetch = original;
+      limpiarEntorno();
+    });
+    configurar();
+    olvidarSesionKardex();
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.endsWith("/login")) return login("cookie-empaque");
+      return json({
+        cantidad: 20,
+        codigo: "MPCM01009",
+        descripcion: "BOLSA",
+        encontrado: true,
+        success: true,
+        token: TOKEN,
+      });
+    }) as typeof fetch;
+
+    const db = await basePrueba();
+    const origen = origenVacio();
+    await db.run(
+      `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario)
+       VALUES ('PLT-ANTES', 'EMP01', 'CAJA', 8, 'L', '2026-06-01', '2026-11-01', 'ana')`,
+    );
+    const entrada = await recibirPaleta(db, TOKEN, "ana", origen, "2026-11-17", "", true);
+    assert.equal(entrada.ok, true);
+    if (!entrada.ok) return;
+    assert.equal(entrada.value.vencimiento, "");
+    assert.equal(entrada.value.vencimientoNoAplica, true);
+    const cruda = await db.get<{ vencimiento: string | null; vencimiento_no_aplica: number }>(
+      "SELECT vencimiento, vencimiento_no_aplica FROM entradas_paleta WHERE token = ?",
+      TOKEN,
+    );
+    assert.equal(cruda?.vencimiento ?? null, null);
+    assert.equal(Number(cruda?.vencimiento_no_aplica), 1);
+    const inventario = await listarInventarioPaletas(db);
+    assert.deepEqual(
+      inventario.map((fila) => fila.token),
+      ["PLT-ANTES", TOKEN],
+    );
   });
 
   test("encontrado en falso es un token que el kárdex no tiene", async (t) => {

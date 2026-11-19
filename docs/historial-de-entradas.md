@@ -18,7 +18,7 @@ Registrar una paleta nueva sigue en **Registrar entradas** y solo lo hacen admin
 
 1. El usuario abre **Historial de entradas** o entra a `/historial/entradas`.
 2. `listarHistorialEntradas` trae hasta 300 filas de `entradas_paleta`.
-3. La tabla muestra fecha, hora de `creado_en` en `America/Caracas`, producto, código, lote, kilos, kilos disponibles, vencimiento, usuario y token. Los disponibles son los kilos de la paleta menos las dosificaciones vigentes.
+3. La tabla muestra fecha, hora de `creado_en` en `America/Caracas`, producto, código, lote, kilos, kilos disponibles, vencimiento, usuario y token. Los disponibles son los kilos de la paleta menos las dosificaciones vigentes. Si `vencimiento_no_aplica` es 1, la columna dice «No aplica» en lugar de una fecha vacía. El orden sigue siendo el de registro, no el de vencimiento.
 4. Si no hay filas, dice «Todavía no hay entradas.»
 
 No hay alta en esta página. Cada alta sigue en el escáner de `/entradas`, que guarda la fila y vuelve a validar esta ruta.
@@ -67,7 +67,7 @@ Columnas que se ven y de dónde salen:
 | Producto y código | `producto`, `codigo` |
 | Lote | `lote` |
 | Kilos | `kg` |
-| Vencimiento | `vencimiento` |
+| Vencimiento | `vencimiento`, o «No aplica» si `vencimiento_no_aplica` es 1 |
 | Usuario | `usuario` |
 | Token | `token` |
 

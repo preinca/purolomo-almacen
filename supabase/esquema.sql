@@ -164,13 +164,23 @@ CREATE TABLE IF NOT EXISTS entradas_paleta (
   producto TEXT NOT NULL,
   kg DOUBLE PRECISION NOT NULL CHECK (kg > 0),
   lote TEXT NOT NULL,
-  vencimiento TEXT NOT NULL,
+  vencimiento TEXT,
+  vencimiento_no_aplica INTEGER NOT NULL DEFAULT 0,
   fecha TEXT NOT NULL,
   usuario TEXT NOT NULL DEFAULT '',
   creado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
 );
 
 CREATE INDEX IF NOT EXISTS idx_entradas_paleta_fecha ON entradas_paleta (fecha DESC, creado_en DESC);
+
+ALTER TABLE entradas_paleta ADD COLUMN IF NOT EXISTS vencimiento_no_aplica INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE entradas_paleta ALTER COLUMN vencimiento DROP NOT NULL;
+ALTER TABLE entradas_paleta DROP CONSTRAINT IF EXISTS entradas_paleta_vencimiento_ok;
+ALTER TABLE entradas_paleta ADD CONSTRAINT entradas_paleta_vencimiento_ok CHECK (
+  (vencimiento_no_aplica = 0 AND vencimiento IS NOT NULL)
+  OR (vencimiento_no_aplica = 1 AND vencimiento IS NULL)
+);
+CREATE INDEX IF NOT EXISTS idx_entradas_paleta_fefo ON entradas_paleta (vencimiento_no_aplica, vencimiento);
 
 ALTER TABLE entradas_paleta ENABLE ROW LEVEL SECURITY;
 
