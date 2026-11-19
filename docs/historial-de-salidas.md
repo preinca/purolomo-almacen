@@ -21,7 +21,7 @@ Registrar y anular una dosificación sigue en **Dosificación** (`/salidas`) y l
 ## Pasos
 
 1. El usuario abre **Historial de salidas** o entra a `/historial/salidas`.
-2. `listarDosificaciones` trae hasta 200 filas de `dosificaciones`, de la más reciente a la más antigua.
+2. `listarDosificaciones` trae hasta 200 filas de `dosificaciones`, de la más reciente a la más antigua. La columna Destino sale de `destino` (`purolomo`, `makilas_san_pablo`, `makilas_turmero`).
 3. `listarHistorialSalidas` junta hasta 200 despachos y hasta 200 consumos con `dosificacion_id` vacío, los ordena por `id` descendente y se queda con 200.
 4. La primera tabla muestra fecha y hora en Caracas, token, código, descripción, núcleo, peso unitario, cantidad, peso total y anulada (`Sí` o `No`).
 5. La segunda tabla muestra fecha, tipo, TAG (enlace a `/lote/[tag]`), destino, línea, kilos y nota.

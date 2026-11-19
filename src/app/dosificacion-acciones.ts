@@ -23,6 +23,7 @@ export async function registrarDosificacion(input: {
   nucleo: string;
   pesoUnitario: string;
   cantidad: string;
+  destino: string;
 }): Promise<Resultado<{ pesoTotal: number }>> {
   const sesion = await exigirDosificacion();
   const pesoUnitario = Number(input.pesoUnitario.trim().replace(",", "."));
@@ -40,6 +41,7 @@ export async function registrarDosificacion(input: {
       nucleo: input.nucleo,
       pesoUnitario,
       cantidad,
+      destino: input.destino,
     },
     sesion.usuario,
   );

@@ -1,11 +1,13 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { AnularDosificacion, DosificacionForm } from "@/components/dosificacion-form";
+import { AnularDosificacion } from "@/components/dosificacion-form";
+import { DosificacionConDestino } from "@/components/dosificacion-destino";
 import { PageFrame } from "@/components/page-frame";
 import { SalidaAlibal } from "@/components/salida-alibal";
 import { SalidaLogistica } from "@/components/salida-logistica";
 import { getDb } from "@/lib/db";
 import { listarDosificaciones } from "@/lib/dosificacion";
+import { etiquetaDestino } from "@/lib/destino-dosificacion";
 import { fechaHoy, formatoKg } from "@/lib/formato";
 import { leerSesion } from "@/lib/usuarios";
 import { buscarPesaje, codigoDelPesaje, existenciasDeTipos, listarMiniLotes, pesajeEnCurso, progresoPesaje, siguienteNumero } from "@/lib/pesajes";
@@ -15,7 +17,7 @@ export default function Page({ searchParams }: PageProps<"/salidas">) {
   return (
     <PageFrame
       titulo="Dosificación"
-      descripcion="Escanea el QR de la paleta que se está dosificando. El nombre sale del mismo token de la entrada."
+      descripcion="Elige el destino y escanea el QR de la paleta. El nombre sale del mismo token de la entrada."
     >
       <Suspense fallback={<p className="text-sm text-muted-foreground">Cargando…</p>}>
         <Salidas searchParams={searchParams} />
@@ -70,7 +72,7 @@ async function Salidas({
       ) : null}
       {modo === "" ? (
         <div className="grid gap-8">
-          <DosificacionForm />
+          <DosificacionConDestino />
           <section className="grid gap-3">
             <h2 className="text-lg font-semibold">Dosificaciones registradas</h2>
             {historial.length === 0 ? (
@@ -80,6 +82,7 @@ async function Salidas({
                 <table className="w-full min-w-[40rem] text-sm">
                   <thead className="bg-muted/60 text-left">
                     <tr>
+                      <th className="px-3 py-2">Destino</th>
                       <th className="px-3 py-2">Producto</th>
                       <th className="px-3 py-2">Núcleo</th>
                       <th className="px-3 py-2">Peso unitario</th>
@@ -92,6 +95,7 @@ async function Salidas({
                   <tbody>
                     {historial.map((fila) => (
                       <tr key={fila.id} className="border-t">
+                        <td className="px-3 py-2">{etiquetaDestino(fila.destino)}</td>
                         <td className="px-3 py-2">
                           <span className="font-medium">{fila.descripcion}</span>
                           <span className="mt-0.5 block font-mono text-xs text-muted-foreground">{fila.codigo}</span>

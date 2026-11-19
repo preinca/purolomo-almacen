@@ -293,4 +293,13 @@ CREATE INDEX IF NOT EXISTS idx_dosificaciones_creado ON dosificaciones (creado_e
 
 ALTER TABLE dosificaciones ADD COLUMN IF NOT EXISTS anulada INTEGER NOT NULL DEFAULT 0;
 
+ALTER TABLE dosificaciones ADD COLUMN IF NOT EXISTS destino TEXT;
+UPDATE dosificaciones SET destino = 'purolomo' WHERE destino IS NULL OR destino = '';
+ALTER TABLE dosificaciones ALTER COLUMN destino SET DEFAULT 'purolomo';
+ALTER TABLE dosificaciones ALTER COLUMN destino SET NOT NULL;
+ALTER TABLE dosificaciones DROP CONSTRAINT IF EXISTS dosificaciones_destino_ok;
+ALTER TABLE dosificaciones ADD CONSTRAINT dosificaciones_destino_ok CHECK (
+  destino IN ('purolomo', 'makilas_san_pablo', 'makilas_turmero')
+);
+
 ALTER TABLE dosificaciones ENABLE ROW LEVEL SECURITY;

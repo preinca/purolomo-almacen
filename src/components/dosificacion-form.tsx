@@ -6,10 +6,11 @@ import { EscanerToken } from "@/components/escaner-token";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { type DestinoDosificacion } from "@/lib/destino-dosificacion";
 import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { formatoKg } from "@/lib/formato";
 
-export function DosificacionForm() {
+export function DosificacionForm({ destino }: { destino: DestinoDosificacion }) {
   const [pendiente, iniciar] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
@@ -67,6 +68,7 @@ export function DosificacionForm() {
         nucleo,
         pesoUnitario: peso,
         cantidad,
+        destino,
       });
       if (!resultado.ok) {
         setError(resultado.error);

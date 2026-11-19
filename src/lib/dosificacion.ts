@@ -3,6 +3,7 @@ import { buscarEntrada } from "./entrada-paleta";
 import { fechaHoy, semanaDe } from "./formato";
 import { buscarPaletaKardex, kardexEstaConfigurado } from "./kardex-externo";
 import type { Resultado } from "./lotes";
+import { esDestinoDosificacion, type DestinoDosificacion } from "./destino-dosificacion";
 import { pesoTotalPaleta } from "./peso-paleta";
 import { partirToken } from "./token-paleta";
 
@@ -24,6 +25,14 @@ CREATE TABLE IF NOT EXISTS dosificaciones (
 );
 CREATE INDEX IF NOT EXISTS idx_dosificaciones_creado ON dosificaciones (creado_en DESC, id DESC);
 ALTER TABLE dosificaciones ADD COLUMN IF NOT EXISTS anulada INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE dosificaciones ADD COLUMN IF NOT EXISTS destino TEXT;
+UPDATE dosificaciones SET destino = 'purolomo' WHERE destino IS NULL OR destino = '';
+ALTER TABLE dosificaciones ALTER COLUMN destino SET DEFAULT 'purolomo';
+ALTER TABLE dosificaciones ALTER COLUMN destino SET NOT NULL;
+ALTER TABLE dosificaciones DROP CONSTRAINT IF EXISTS dosificaciones_destino_ok;
+ALTER TABLE dosificaciones ADD CONSTRAINT dosificaciones_destino_ok CHECK (
+  destino IN ('purolomo', 'makilas_san_pablo', 'makilas_turmero')
+);
 ALTER TABLE movimientos ADD COLUMN IF NOT EXISTS dosificacion_id INTEGER;
 CREATE INDEX IF NOT EXISTS idx_movimientos_dosificacion ON movimientos (dosificacion_id);
 `;
@@ -48,6 +57,7 @@ export type Dosificacion = {
   usuario: string;
   creadoEn: string;
   anulada: boolean;
+  destino: DestinoDosificacion | null;
 };
 
 export async function asegurarDosificaciones(db: Db) {
@@ -122,6 +132,7 @@ export async function guardarDosificacion(
     nucleo: string;
     pesoUnitario: number;
     cantidad: number;
+    destino: string;
   },
   usuario: string,
 ): Promise<Resultado<Dosificacion>> {
@@ -136,6 +147,8 @@ export async function guardarDosificacion(
   if (descripcion.length < 2) return { ok: false, error: "Escribe el nombre del producto." };
   if (nucleo.length < 1 || nucleo.length > 40) return { ok: false, error: "Escribe el número de núcleo." };
   if (pesoTotal === null) return { ok: false, error: "El peso unitario y la cantidad tienen que ser mayores que cero." };
+  if (!esDestinoDosificacion(input.destino)) return { ok: false, error: "Elige el destino de la dosificación." };
+  const destino = input.destino;
 
   return db.transaction(async (tx) => {
     const entrada = await tx.get<Record<string, unknown>>(
@@ -154,8 +167,8 @@ export async function guardarDosificacion(
     }
 
     await tx.run(
-      `INSERT INTO dosificaciones (token, codigo, descripcion, nucleo, peso_unitario, cantidad, peso_total, usuario)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO dosificaciones (token, codigo, descripcion, nucleo, peso_unitario, cantidad, peso_total, usuario, destino)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       partes.value.token,
       codigo,
       descripcion,
@@ -164,6 +177,7 @@ export async function guardarDosificacion(
       input.cantidad,
       pesoTotal,
       usuario,
+      destino,
     );
     const guardada = await tx.get<Record<string, unknown>>(
       "SELECT * FROM dosificaciones WHERE token = ? ORDER BY id DESC LIMIT 1",
@@ -238,6 +252,11 @@ async function kgDisponibles(db: Db, token: string, kgRecibidos: number) {
   return Math.round((kgRecibidos - Number(row?.usado ?? 0)) * 1000) / 1000;
 }
 
+function destinoDe(valor: unknown): DestinoDosificacion | null {
+  const texto = String(valor ?? "");
+  return esDestinoDosificacion(texto) ? texto : null;
+}
+
 function fila(row: Record<string, unknown>): Dosificacion {
   return {
     id: Number(row.id),
@@ -251,5 +270,6 @@ function fila(row: Record<string, unknown>): Dosificacion {
     usuario: String(row.usuario ?? ""),
     creadoEn: String(row.creado_en),
     anulada: Number(row.anulada) === 1,
+    destino: destinoDe(row.destino),
   };
 }
