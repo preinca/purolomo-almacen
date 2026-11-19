@@ -111,15 +111,6 @@ async function Salidas({
               </div>
             )}
           </section>
-          <p className="text-sm text-muted-foreground">
-            <a href="/salidas?modo=consumo" className="underline">Pesaje de consumo</a>
-            {esAdmin ? (
-              <>
-                {" · "}
-                <a href="/salidas?modo=logistica" className="underline">Salida para logística</a>
-              </>
-            ) : null}
-          </p>
         </div>
       ) : null}
       <div className={`grid gap-4 ${esAdmin ? "sm:grid-cols-2" : ""} ${modo === "" ? "hidden" : ""}`}>
