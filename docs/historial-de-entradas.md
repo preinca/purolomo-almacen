@@ -18,7 +18,7 @@ Registrar una paleta nueva sigue en **Registrar entradas** y solo lo hacen admin
 
 1. El usuario abre **Historial de entradas** o entra a `/historial/entradas`.
 2. `listarHistorialEntradas` trae hasta 300 filas de `entradas_paleta`.
-3. La tabla muestra fecha, hora de `creado_en` en `America/Caracas`, producto, código, lote, kilos, vencimiento, usuario y token.
+3. La tabla muestra fecha, hora de `creado_en` en `America/Caracas`, producto, código, lote, kilos, kilos disponibles, vencimiento, usuario y token. Los disponibles son los kilos de la paleta menos las dosificaciones vigentes.
 4. Si no hay filas, dice «Todavía no hay entradas.»
 
 No hay alta en esta página. Cada alta sigue en el escáner de `/entradas`, que guarda la fila y vuelve a validar esta ruta.
@@ -46,8 +46,13 @@ Ninguna en esta página. Al confirmar una paleta, `confirmarEntradaPaleta` llama
 Tabla `entradas_paleta`. RLS activado, sin políticas. La app usa la conexión directa y no pasa por RLS.
 
 ```sql
-SELECT * FROM entradas_paleta
-ORDER BY creado_en DESC, token DESC
+SELECT e.*,
+  e.kg - COALESCE((
+    SELECT SUM(d.peso_total) FROM dosificaciones d
+    WHERE d.token = e.token AND d.anulada = 0
+  ), 0) AS kg_disponible
+FROM entradas_paleta e
+ORDER BY e.creado_en DESC, e.token DESC
 LIMIT 300
 ```
 

@@ -11,7 +11,13 @@ export async function proxy(request: NextRequest) {
     url.search = "";
     return NextResponse.redirect(url);
   }
-  if (pathname === "/entrar" || pathname.startsWith("/api/impresion")) return NextResponse.next();
+  if (
+    pathname === "/entrar" ||
+    pathname.startsWith("/api/impresion") ||
+    pathname.startsWith("/api/kardex-externo")
+  ) {
+    return NextResponse.next();
+  }
 
   const sesion = leerFirma(request.cookies.get("sesion")?.value);
   if (!sesion) {

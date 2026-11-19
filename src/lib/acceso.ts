@@ -31,6 +31,7 @@ function coincide(rutas: string[], pathname: string) {
 
 export function puedeEntrar(rango: Rango, pathname: string) {
   if (rango === "administrador") return true;
+  if (coincide(["/calculadora"], pathname)) return rango !== "pesador";
   if (coincide(RUTAS_CONSULTA, pathname)) return true;
   if (rango === "recepcionista" && coincide(RUTAS_RECEPCION, pathname)) return true;
   if (rango === "pesador" && coincide(RUTAS_PESAJE, pathname)) return true;

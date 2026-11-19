@@ -133,4 +133,23 @@
   body {
     background: white !important;
   }
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+  .hoja-solicitud table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .hoja-solicitud th,
+  .hoja-solicitud td {
+    border: 1px solid #111;
+    padding: 3px 5px;
+    text-align: left;
+  }
+  .hoja-solicitud th.num,
+  .hoja-solicitud td.num {
+    text-align: right;
+  }
 }

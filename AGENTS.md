@@ -8,15 +8,26 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Purolomo Almacén
+## Documentación de flujos
 
-Registro de entradas y salidas de materia prima. Next.js 16 en Vercel y Postgres en Supabase, con el cliente `postgres` y la conexión directa (`DATABASE_URL` o `POSTGRES_URL`). Sin esas variables, el desarrollo usa la base local de `data/almacen`. La sesión es una cookie firmada (`SESION_SECRETO`). El esquema está en `supabase/esquema.sql`: RLS activado y sin políticas. `npm run db:migrar` lo aplica y se puede volver a ejecutar.
+Los flujos de Purolomo Almacén están en `docs/`. Cada archivo describe el propósito, los pasos, las rutas, los componentes, las server actions y las tablas de Supabase (RLS incluido), con enlaces al código.
 
-Antes de cambiar un flujo documentado, lee su archivo en `docs/`.
+- [Autenticación y sesión](docs/autenticacion.md): primer administrador, entrada, cookie firmada y salida.
+- [Usuarios y permisos](docs/usuarios-y-permisos.md): rangos, menú y acciones de alta que todavía no tienen página.
+- [Panel de inicio](docs/panel.md): conteo y últimas entradas de paleta.
+- [Entradas de paleta por QR](docs/entradas-paleta.md): token `PLT-…`, consulta al otro dashboard y registro único.
+- [Historial de entradas](docs/historial-de-entradas.md): paletas de `entradas_paleta`, en `/historial/entradas`.
+- [Recepción de TAG en cava](docs/recepcion-tag.md): alta del lote que después se pesa. El formulario no está montado en `/entradas`.
+- [Carga de receta](docs/recetas.md): Excel de Alibal 1 kg por línea, descarga y borrado.
+- [Dosificación](docs/dosificacion.md): la pestaña de salidas. QR de la paleta, núcleo, peso unitario por cantidad y descuento del stock.
+- [Historial de salidas](docs/historial-de-salidas.md): dosificaciones y, aparte, despachos y consumos de TAG, en `/historial/salidas`.
+- [Calculadora semanal](docs/calculadora-semanal.md): plan de materia prima no cárnica.
+- [Salida para consumo](docs/salida-consumo.md): pesaje, mini lotes y cierre de la fórmula. Ya no está enlazada en el menú.
+- [Salida para logística](docs/salida-logistica.md): el TAG sale de cava y deja de poder consumirse. Ya no está enlazada en el menú.
+- [Ficha del TAG e historial](docs/lote-y-historial.md): kilos, movimientos, observación e impresión del navegador.
+- [Inventario y stock](docs/inventario.md): cómo se calculan los kilos disponibles de cada TAG.
+- [Búsqueda y lectura de QR](docs/busqueda-y-qr.md): escáner de TAG, de consumo y de token de paleta.
+- [Impresión de etiquetas](docs/impresion.md): diálogo del navegador, cola ZPL y `GET`/`POST /api/impresion`.
+- [Persistencia en Postgres](docs/persistencia.md): base local o Supabase, migración, tablas y RLS sin políticas.
 
-## Flujos
-
-- [docs/historial-de-entradas.md](docs/historial-de-entradas.md) — paletas de `entradas_paleta`, en `/historial/entradas`.
-- [docs/historial-de-salidas.md](docs/historial-de-salidas.md) — despachos y consumos de `movimientos`, en `/historial/salidas`.
-
-Rangos (`src/lib/acceso.ts` y el menú de `src/components/shell.tsx`): administrador entra a todo; recepcionista suma `/entradas`; pesador suma `/salidas`; consulta, recepcionista y pesador comparten las rutas de lectura, incluidos los dos historiales. La salida a logística, dentro de `/salidas`, la ve y la ejecuta solo el administrador.
+Rangos (`src/lib/acceso.ts` y el menú de `src/components/shell.tsx`): administrador entra a todo; recepcionista suma `/entradas`; pesador suma `/salidas` (Dosificación); consulta, recepcionista y pesador comparten las rutas de lectura, incluidos los dos historiales. La calculadora no la ve el pesador.

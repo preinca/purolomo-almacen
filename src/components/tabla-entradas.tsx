@@ -28,6 +28,7 @@ export function TablaEntradas({
           <TableHead>Producto</TableHead>
           <TableHead>Lote</TableHead>
           <TableHead>Kilos</TableHead>
+          <TableHead>Disponibles</TableHead>
           <TableHead>Vencimiento</TableHead>
           {mostrarUsuario ? <TableHead>Usuario</TableHead> : null}
           <TableHead>Token</TableHead>
@@ -44,6 +45,7 @@ export function TablaEntradas({
             </TableCell>
             <TableCell className="font-mono">{entrada.lote}</TableCell>
             <TableCell>{formatoKg(entrada.kg)}</TableCell>
+            <TableCell>{entrada.kgDisponible === undefined ? "" : formatoKg(entrada.kgDisponible)}</TableCell>
             <TableCell>{formatoFecha(entrada.vencimiento)}</TableCell>
             {mostrarUsuario ? <TableCell>{entrada.usuario || "—"}</TableCell> : null}
             <TableCell className="font-mono text-xs">{entrada.token}</TableCell>

@@ -22,6 +22,9 @@ test("consulta entra a pesajes y consultas, y no a entradas ni usuarios", () => 
   assert.equal(puedeEntrar("recepcionista", "/pesajes"), true);
   assert.equal(puedeEntrar("pesador", "/salidas"), true);
   assert.equal(puedeEntrar("pesador", "/entradas"), false);
+  assert.equal(puedeEntrar("consulta", "/calculadora"), true);
+  assert.equal(puedeEntrar("recepcionista", "/calculadora"), true);
+  assert.equal(puedeEntrar("pesador", "/calculadora"), false);
   assert.equal(puedeEntrar("pesador", "/stock"), true);
   assert.equal(puedeEntrar("consulta", "/historial/entradas"), true);
   assert.equal(puedeEntrar("consulta", "/historial/salidas"), true);
