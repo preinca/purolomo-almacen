@@ -32,6 +32,8 @@ test("consulta entra a pesajes y consultas, y no a entradas ni usuarios", () => 
   assert.equal(puedeEntrar("recepcionista", "/historial/salidas"), true);
   assert.equal(puedeEntrar("pesador", "/historial/entradas"), true);
   assert.equal(puedeEntrar("pesador", "/historial/salidas"), true);
+  assert.equal(puedeEntrar("consulta", "/etiquetas-paletas"), true);
+  assert.equal(puedeEntrar("pesador", "/etiquetas-paletas"), true);
 });
 
 test("la clave y la sesión firmada se pueden comprobar", () => {

@@ -20,7 +20,7 @@ async function Hoja({ params }: { params: Promise<{ id: string }> }) {
   if (!datos) notFound();
   return (
     <div className="bg-white p-4">
-      <EtiquetaDosificacion datos={datos} />
+      <EtiquetaDosificacion datos={datos} anulada={datos.anulada} volverHref="/etiquetas-paletas" />
     </div>
   );
 }

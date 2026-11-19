@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { AnularDosificacion } from "@/components/dosificacion-form";
 import { PageFrame } from "@/components/page-frame";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -17,6 +18,7 @@ import { listarDosificaciones } from "@/lib/dosificacion";
 import { ZONA_HORARIA, formatoFecha, formatoHora, formatoKg } from "@/lib/formato";
 import { lineaPorId } from "@/lib/lineas";
 import { LIMITE_HISTORIAL_SALIDAS, listarHistorialSalidas } from "@/lib/lotes";
+import { leerSesion } from "@/lib/usuarios";
 
 function diaEnCaracas(iso: string) {
   const date = new Date(iso);
@@ -32,7 +34,7 @@ function diaEnCaracas(iso: string) {
 export default function Page() {
   return (
     <PageFrame
-      titulo="Historial de salidas"
+      titulo="Historial de Dosificaciones"
       descripcion={`Dosificaciones de paleta y salidas de TAG, de la más reciente a la más antigua. Se listan hasta ${LIMITE_HISTORIAL_SALIDAS} de cada lista. El consumo de una dosificación no se repite abajo. Un traslado a logística no entra.`}
     >
       <Suspense fallback={<p className="text-sm text-muted-foreground">Cargando historial…</p>}>
@@ -45,17 +47,19 @@ export default function Page() {
 async function Historial() {
   await connection();
   const db = getDb();
-  const [dosificaciones, movimientos] = await Promise.all([
+  const [dosificaciones, movimientos, sesion] = await Promise.all([
     listarDosificaciones(db, LIMITE_HISTORIAL_SALIDAS),
     listarHistorialSalidas(db),
+    leerSesion(),
   ]);
+  const puedeAnular = sesion?.rango === "administrador" || sesion?.rango === "pesador";
 
   if (dosificaciones.length === 0 && movimientos.length === 0) {
     return (
       <Card>
         <CardContent className="pt-4">
           <p className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
-            Todavía no hay salidas.
+            Todavía no hay dosificaciones.
           </p>
         </CardContent>
       </Card>
@@ -85,6 +89,7 @@ async function Historial() {
                   <TableHead className="text-right">Cantidad</TableHead>
                   <TableHead className="text-right">Peso total</TableHead>
                   <TableHead>Anulada</TableHead>
+                  <TableHead>Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -97,10 +102,7 @@ async function Historial() {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span>{textoDestino(fila.destino, fila.destinoCodigo)}</span>
-                      <Link href={`/historial/salidas/${fila.id}`} className="mt-0.5 block text-xs underline">
-                        Etiqueta
-                      </Link>
+                      {textoDestino(fila.destino, fila.destinoCodigo)}
                     </TableCell>
                     <TableCell className="font-mono text-xs">{fila.token}</TableCell>
                     <TableCell className="font-mono text-xs">{fila.codigo}</TableCell>
@@ -109,7 +111,17 @@ async function Historial() {
                     <TableCell className="text-right">{formatoKg(fila.pesoUnitario)}</TableCell>
                     <TableCell className="text-right tabular-nums">{fila.cantidad}</TableCell>
                     <TableCell className="text-right font-semibold">{formatoKg(fila.pesoTotal)}</TableCell>
-                    <TableCell>{fila.anulada ? "Sí" : "No"}</TableCell>
+                    <TableCell>{fila.anulada ? "Anulada" : "No"}</TableCell>
+                    <TableCell>
+                      <Link href={`/historial/salidas/${fila.id}`} className="text-sm underline">
+                        Etiqueta
+                      </Link>
+                      {puedeAnular && !fila.anulada ? (
+                        <span className="mt-1 block">
+                          <AnularDosificacion id={fila.id} />
+                        </span>
+                      ) : null}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

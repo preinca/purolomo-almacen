@@ -32,13 +32,14 @@ UPDATE dosificaciones SET destino = 'produccion' WHERE destino IS NULL OR destin
 UPDATE dosificaciones SET destino_codigo = '40602-1' WHERE destino = 'produccion' AND (destino_codigo IS NULL OR destino_codigo = '');
 UPDATE dosificaciones SET destino_codigo = '40602-3' WHERE destino = 'cerdo' AND (destino_codigo IS NULL OR destino_codigo = '');
 UPDATE dosificaciones SET destino_codigo = '60994' WHERE destino = 'makilas_san_pablo' AND (destino_codigo IS NULL OR destino_codigo = '');
-UPDATE dosificaciones SET destino_codigo = '60993' WHERE destino = 'makilas_turmero' AND (destino_codigo IS NULL OR destino_codigo = '');
+UPDATE dosificaciones SET destino = 'makilas_induproca' WHERE destino = 'makilas_turmero';
+UPDATE dosificaciones SET destino_codigo = '60993' WHERE destino = 'makilas_induproca' AND (destino_codigo IS NULL OR destino_codigo = '');
 UPDATE dosificaciones SET destino_codigo = '40644' WHERE destino = 'makilas_pev' AND (destino_codigo IS NULL OR destino_codigo = '');
 UPDATE dosificaciones SET destino_codigo = '60996' WHERE destino = 'makilas_sst' AND (destino_codigo IS NULL OR destino_codigo = '');
 ALTER TABLE dosificaciones ALTER COLUMN destino SET DEFAULT 'produccion';
 ALTER TABLE dosificaciones ALTER COLUMN destino SET NOT NULL;
 ALTER TABLE dosificaciones ADD CONSTRAINT dosificaciones_destino_ok CHECK (
-  destino IN ('produccion', 'cerdo', 'makilas_san_pablo', 'makilas_turmero', 'makilas_pev', 'makilas_sst')
+  destino IN ('produccion', 'cerdo', 'makilas_san_pablo', 'makilas_induproca', 'makilas_pev', 'makilas_sst')
 );
 ALTER TABLE movimientos ADD COLUMN IF NOT EXISTS dosificacion_id INTEGER;
 CREATE INDEX IF NOT EXISTS idx_movimientos_dosificacion ON movimientos (dosificacion_id);
@@ -270,7 +271,8 @@ async function kgDisponibles(db: Db, token: string, kgRecibidos: number) {
 }
 
 function destinoDe(valor: unknown): DestinoDosificacion | null {
-  const texto = String(valor ?? "");
+  const crudo = String(valor ?? "");
+  const texto = crudo === "makilas_turmero" ? "makilas_induproca" : crudo;
   return esDestinoDosificacion(texto) ? texto : null;
 }
 

@@ -12,6 +12,7 @@ const RUTAS_CONSULTA = [
   "/consulta-pesaje",
   "/qr",
   "/etiquetas",
+  "/etiquetas-paletas",
   "/historial",
   "/lote",
 ];
