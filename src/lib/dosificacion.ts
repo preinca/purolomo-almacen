@@ -36,8 +36,11 @@ export type ProductoDosificacion = {
   kgDisponibles: number | null;
 };
 
-export type Dosificacion = ProductoDosificacion & {
+export type Dosificacion = {
   id: number;
+  token: string;
+  codigo: string;
+  descripcion: string;
   nucleo: string;
   pesoUnitario: number;
   cantidad: number;
@@ -241,7 +244,6 @@ function fila(row: Record<string, unknown>): Dosificacion {
     token: String(row.token),
     codigo: String(row.codigo),
     descripcion: String(row.descripcion),
-    origen: "manual",
     nucleo: String(row.nucleo),
     pesoUnitario: Number(row.peso_unitario),
     cantidad: Number(row.cantidad),
