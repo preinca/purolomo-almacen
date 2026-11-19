@@ -16,7 +16,7 @@ Localiza un TAG de cava o un consumo ya registrado a partir del número, de la c
 
 Hace falta una sesión. Si no hay cookie, las dos acciones responden «Inicia sesión.» No exigen un rango concreto: un recepcionista podría invocarlas, aunque no llega a la página `/salidas`.
 
-La entrada de paleta usa otro lector, [`EscanerToken`](../src/components/escaner-token.tsx), que solo entiende tokens `PLT-…`. Ese flujo está en [entradas de paleta](entradas-paleta.md).
+La entrada de paleta y la dosificación usan otro lector, [`EscanerToken`](../src/components/escaner-token.tsx), que solo entiende tokens `PLT-…`. Pide la cámara trasera principal (1920×1080, enfoque continuo) y deja cambiar de cámara. La ultra gran angular no enfoca el QR de cerca. Ese flujo está en [entradas de paleta](entradas-paleta.md).
 
 ## Textos de QR que genera la aplicación
 
