@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { DosificacionForm } from "@/components/dosificacion-form";
-import { etiquetaDestino, type DestinoDosificacion } from "@/lib/destino-dosificacion";
+import {
+  DESTINOS_MAKILAS,
+  DESTINOS_RAIZ,
+  textoDestino,
+  type DestinoDosificacion,
+} from "@/lib/destino-dosificacion";
 
 type Paso = "empresa" | "planta" | "ficha";
 
@@ -17,16 +22,16 @@ export function DosificacionConDestino() {
           Volver
         </button>
         <div className="grid gap-4 sm:min-h-72 sm:grid-cols-2">
-          <BotonDestino
-            titulo="San Pablo"
-            detalle="Dosificar para Makilas en San Pablo."
-            onClick={() => elegir("makilas_san_pablo")}
-          />
-          <BotonDestino
-            titulo="Turmero"
-            detalle="Dosificar para Makilas en Turmero."
-            onClick={() => elegir("makilas_turmero")}
-          />
+          {DESTINOS_MAKILAS.map((item) => (
+            <BotonDestino
+              key={item.id}
+              titulo={item.nombre}
+              codigo={item.codigo}
+              detalle={item.detalle}
+              tono="ambar"
+              onClick={() => elegir(item.id)}
+            />
+          ))}
         </div>
       </div>
     );
@@ -36,7 +41,7 @@ export function DosificacionConDestino() {
     return (
       <div className="grid gap-6">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white px-4 py-3">
-          <p className="text-lg font-semibold">Destino: {etiquetaDestino(destino)}</p>
+          <p className="text-lg font-semibold">Destino: {textoDestino(destino)}</p>
           <button
             type="button"
             onClick={() => {
@@ -54,15 +59,19 @@ export function DosificacionConDestino() {
   }
 
   return (
-    <div className="grid gap-4 sm:min-h-72 sm:grid-cols-2">
-      <BotonDestino
-        titulo="Purolomo"
-        detalle="Abre la dosificación para Purolomo."
-        onClick={() => elegir("purolomo")}
-      />
+    <div className="grid gap-4 sm:min-h-72 sm:grid-cols-3">
+      {DESTINOS_RAIZ.map((item) => (
+        <BotonDestino
+          key={item.id}
+          titulo={item.nombre}
+          codigo={item.codigo}
+          detalle={item.detalle}
+          onClick={() => elegir(item.id)}
+        />
+      ))}
       <BotonDestino
         titulo="Makilas"
-        detalle="Después eliges San Pablo o Turmero."
+        detalle="San Pablo, Turmero, P.E.V o Planta SST."
         tono="ambar"
         onClick={() => setPaso("planta")}
       />
@@ -77,11 +86,13 @@ export function DosificacionConDestino() {
 
 function BotonDestino({
   titulo,
+  codigo,
   detalle,
   tono = "rojo",
   onClick,
 }: {
   titulo: string;
+  codigo?: string;
   detalle: string;
   tono?: "rojo" | "ambar";
   onClick: () => void;
@@ -94,6 +105,7 @@ function BotonDestino({
       className={`grid content-center gap-2 rounded-2xl border border-border bg-white px-6 py-10 text-left text-foreground sm:py-14 ${hover}`}
     >
       <span className="text-xl font-semibold">{titulo}</span>
+      {codigo ? <span className="font-mono text-sm font-semibold text-foreground">{codigo}</span> : null}
       <span className="text-sm leading-relaxed text-muted-foreground">{detalle}</span>
     </button>
   );

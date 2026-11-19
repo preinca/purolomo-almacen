@@ -39,7 +39,7 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
       nucleo: "N-12",
       pesoUnitario: 2.5,
       cantidad: 4,
-      destino: "purolomo",
+      destino: "produccion",
     },
     "ana",
   );
@@ -47,7 +47,8 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
   if (!guardada.ok) return;
   assert.equal(guardada.value.pesoTotal, 10);
   assert.equal(guardada.value.nucleo, "N-12");
-  assert.equal(guardada.value.destino, "purolomo");
+  assert.equal(guardada.value.destino, "produccion");
+  assert.equal(guardada.value.destinoCodigo, "40602-1");
   const lista = await listarDosificaciones(db);
   assert.equal(lista[0]?.descripcion, "SAL CON YODO Y FLUOR");
   assert.equal(lista[0]?.cantidad, 4);
@@ -90,7 +91,8 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
   assert.equal(fila?.cantidad, 4);
   assert.equal(fila?.pesoTotal, 10);
   assert.equal(fila?.anulada, true);
-  assert.equal(fila?.destino, "purolomo");
+  assert.equal(fila?.destino, "produccion");
+  assert.equal(fila?.destinoCodigo, "40602-1");
 
   const sinDestino = await guardarDosificacion(
     db,

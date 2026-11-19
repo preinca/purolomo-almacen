@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { anularDosificacion, consultarProductoDosificacion, guardarDosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
+import { anularDosificacion, consultarProductoDosificacion, guardarDosificacion, type Dosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
 import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { getDb } from "@/lib/db";
 import type { Resultado } from "@/lib/lotes";
@@ -24,7 +24,7 @@ export async function registrarDosificacion(input: {
   pesoUnitario: string;
   cantidad: string;
   destino: string;
-}): Promise<Resultado<{ pesoTotal: number }>> {
+}): Promise<Resultado<Dosificacion>> {
   const sesion = await exigirDosificacion();
   const pesoUnitario = Number(input.pesoUnitario.trim().replace(",", "."));
   const cantidad = Number(input.cantidad.trim());
@@ -49,7 +49,8 @@ export async function registrarDosificacion(input: {
   revalidatePath("/salidas");
   revalidatePath("/entradas");
   revalidatePath("/historial/salidas");
-  return { ok: true, value: { pesoTotal: resultado.value.pesoTotal } };
+  revalidatePath(`/historial/salidas/${resultado.value.id}`);
+  return resultado;
 }
 
 export async function anularRegistroDosificacion(id: number): Promise<Resultado> {

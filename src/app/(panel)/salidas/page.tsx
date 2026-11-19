@@ -7,7 +7,7 @@ import { SalidaAlibal } from "@/components/salida-alibal";
 import { SalidaLogistica } from "@/components/salida-logistica";
 import { getDb } from "@/lib/db";
 import { listarDosificaciones } from "@/lib/dosificacion";
-import { etiquetaDestino } from "@/lib/destino-dosificacion";
+import { textoDestino } from "@/lib/destino-dosificacion";
 import { fechaHoy, formatoKg } from "@/lib/formato";
 import { leerSesion } from "@/lib/usuarios";
 import { buscarPesaje, codigoDelPesaje, existenciasDeTipos, listarMiniLotes, pesajeEnCurso, progresoPesaje, siguienteNumero } from "@/lib/pesajes";
@@ -95,7 +95,12 @@ async function Salidas({
                   <tbody>
                     {historial.map((fila) => (
                       <tr key={fila.id} className="border-t">
-                        <td className="px-3 py-2">{etiquetaDestino(fila.destino)}</td>
+                        <td className="px-3 py-2">
+                          <span>{textoDestino(fila.destino, fila.destinoCodigo)}</span>
+                          <a href={`/historial/salidas/${fila.id}`} className="mt-0.5 block text-xs underline">
+                            Etiqueta
+                          </a>
+                        </td>
                         <td className="px-3 py-2">
                           <span className="font-medium">{fila.descripcion}</span>
                           <span className="mt-0.5 block font-mono text-xs text-muted-foreground">{fila.codigo}</span>
