@@ -68,11 +68,11 @@ async function Historial() {
 
   return (
     <div className="grid gap-8">
-      <Card>
+      <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Dosificaciones</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="min-w-0">
           {dosificaciones.length === 0 ? (
             <p className="text-sm text-muted-foreground">Todavía no hay dosificaciones.</p>
           ) : (
@@ -104,7 +104,7 @@ async function Historial() {
                     <TableCell>
                       {textoDestino(fila.destino, fila.destinoCodigo)}
                     </TableCell>
-                    <TableCell className="font-mono text-xs">{fila.token}</TableCell>
+                    <TableCell className="max-w-40 font-mono text-xs break-all whitespace-normal">{fila.token}</TableCell>
                     <TableCell className="font-mono text-xs">{fila.codigo}</TableCell>
                     <TableCell className="whitespace-normal">{fila.descripcion}</TableCell>
                     <TableCell>{fila.nucleo}</TableCell>
@@ -129,11 +129,11 @@ async function Historial() {
           )}
         </CardContent>
       </Card>
-      <Card>
+      <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Otras salidas</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="min-w-0">
           {movimientos.length === 0 ? (
             <p className="text-sm text-muted-foreground">No hay despachos ni consumos de TAG fuera de una dosificación.</p>
           ) : (

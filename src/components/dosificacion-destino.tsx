@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 import { DosificacionForm } from "@/components/dosificacion-form";
-import {
-  DESTINOS_MAKILAS,
-  DESTINOS_RAIZ,
-  textoDestino,
-  type DestinoDosificacion,
-} from "@/lib/destino-dosificacion";
+import { DESTINOS_MAKILAS, DESTINOS_RAIZ, type DestinoDosificacion } from "@/lib/destino-dosificacion";
 
 type Paso = "empresa" | "planta" | "ficha";
 
@@ -39,22 +34,13 @@ export function DosificacionConDestino() {
 
   if (paso === "ficha" && destino) {
     return (
-      <div className="grid gap-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white px-4 py-3">
-          <p className="text-lg font-semibold">Destino: {textoDestino(destino)}</p>
-          <button
-            type="button"
-            onClick={() => {
-              setDestino(null);
-              setPaso("empresa");
-            }}
-            className="h-11 rounded-lg border px-4 text-sm"
-          >
-            Cambiar destino
-          </button>
-        </div>
-        <DosificacionForm destino={destino} />
-      </div>
+      <DosificacionForm
+        destino={destino}
+        onVolverInicio={() => {
+          setDestino(null);
+          setPaso("empresa");
+        }}
+      />
     );
   }
 
@@ -102,9 +88,9 @@ function BotonDestino({
     <button
       type="button"
       onClick={onClick}
-      className={`grid content-center gap-2 rounded-2xl border border-border bg-white px-6 py-10 text-left text-foreground sm:py-14 ${hover}`}
+      className={`grid min-h-28 min-w-0 content-center gap-2 rounded-2xl border border-border bg-white px-4 py-8 text-left text-foreground sm:px-6 sm:py-14 ${hover}`}
     >
-      <span className="text-xl font-semibold">{titulo}</span>
+      <span className="text-xl font-semibold break-words">{titulo}</span>
       {codigo ? <span className="font-mono text-sm font-semibold text-foreground">{codigo}</span> : null}
       <span className="text-sm leading-relaxed text-muted-foreground">{detalle}</span>
     </button>

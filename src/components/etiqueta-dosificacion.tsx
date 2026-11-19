@@ -12,18 +12,20 @@ export function EtiquetaDosificacion({
 }: {
   datos: DatosEtiquetaDosificacion;
   volverHref?: string;
-  controles?: boolean;
+  controles?: boolean | "imprimir";
   anulada?: boolean;
 }) {
   const svg = svgQrDosificacion(datos);
   const dia = diaEnCaracas(datos.creadoEn);
   return (
-    <article className="etiqueta-dosificacion mx-auto w-full max-w-xl break-inside-avoid rounded-xl border bg-white p-4 text-[#071422]">
+    <article className="etiqueta-dosificacion mx-auto w-full min-w-0 max-w-xl break-inside-avoid overflow-hidden rounded-xl border bg-white p-4 text-[#071422]">
       {controles ? (
       <div className="mb-3 flex items-center justify-between gap-3 print:hidden">
-        <Link href={volverHref} className="text-sm underline">
-          Volver
-        </Link>
+        {controles === "imprimir" ? <span /> : (
+          <Link href={volverHref} className="text-sm underline">
+            Volver
+          </Link>
+        )}
         <BotonImprimir etiqueta="Imprimir" />
       </div>
       ) : null}
@@ -42,10 +44,10 @@ export function EtiquetaDosificacion({
       </div>
       <div className="mt-3 grid grid-cols-1 items-start gap-3 sm:grid-cols-[12rem_1fr]">
         <div
-          className="w-full max-w-48 rounded-md bg-white [&_svg]:h-auto [&_svg]:w-full"
+          className="mx-auto w-full min-w-0 max-w-48 rounded-md bg-white [&_svg]:h-auto [&_svg]:max-w-full [&_svg]:w-full"
           dangerouslySetInnerHTML={{ __html: svg }}
         />
-        <dl className="grid grid-cols-1 gap-x-3 gap-y-1 text-[11px] min-[420px]:grid-cols-2">
+        <dl className="grid min-w-0 grid-cols-1 gap-x-3 gap-y-1 text-[11px] sm:grid-cols-2">
           <Dato etiqueta="Producto" valor={datos.descripcion} />
           <Dato etiqueta="Código" valor={datos.codigo} />
           <Dato etiqueta="Kg totales" valor={formatoKg(datos.pesoTotal)} />
@@ -75,7 +77,7 @@ function Dato({ etiqueta, valor }: { etiqueta: string; valor: string }) {
   return (
     <div>
       <dt className="text-[9px] tracking-wide text-neutral-500 uppercase">{etiqueta}</dt>
-      <dd className="font-medium">{valor}</dd>
+      <dd className="font-medium break-words">{valor}</dd>
     </div>
   );
 }

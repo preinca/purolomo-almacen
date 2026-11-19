@@ -20,7 +20,7 @@ export function PageFrame({
         </div>
         {acciones ? <div className="flex flex-wrap gap-2 print:hidden">{acciones}</div> : null}
       </div>
-      {children}
+      <div className="min-w-0 max-w-full">{children}</div>
     </div>
   );
 }
