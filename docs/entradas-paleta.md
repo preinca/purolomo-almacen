@@ -36,7 +36,7 @@ No hay ruta de detalle por token. El panel de inicio reutiliza la misma tabla co
 ## Componentes
 
 - [`EntradaPorQr`](../src/components/entrada-por-qr.tsx) orquesta consulta, ficha y confirmación.
-- [`EscanerToken`](../src/components/escaner-token.tsx) lee el QR con la cámara (`BarcodeDetector` o jsQR) o desde una imagen.
+- [`EscanerToken`](../src/components/escaner-token.tsx) lee el QR con la cámara trasera principal (no la ultra gran angular 0.5), con `BarcodeDetector` o jsQR, o desde una imagen. La cámara elegida queda en el navegador. El token también se puede escribir a mano.
 - [`decodificar-imagen-qr.ts`](../src/components/decodificar-imagen-qr.ts) decodifica píxeles.
 - [`TablaEntradas`](../src/components/tabla-entradas.tsx) lista lo ya guardado.
 - [`PageFrame`](../src/components/page-frame.tsx) y las tarjetas de UI.

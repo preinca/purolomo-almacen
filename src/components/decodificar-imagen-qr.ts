@@ -6,12 +6,16 @@ export function decodificarPixeles(data: Uint8ClampedArray, width: number, heigh
 }
 
 export function decodificarImagen(imagen: HTMLImageElement) {
-  const completo = leerRegion(imagen, 0, 0, imagen.naturalWidth, imagen.naturalHeight, 1400);
+  const completo = leerRegion(imagen, 0, 0, imagen.naturalWidth, imagen.naturalHeight, 1600);
   if (completo) return completo;
-  const lado = Math.round(Math.min(imagen.naturalWidth, imagen.naturalHeight) * 0.62);
-  const sx = Math.round((imagen.naturalWidth - lado) / 2);
-  const sy = Math.round((imagen.naturalHeight - lado) / 2);
-  return leerRegion(imagen, sx, sy, lado, lado, 1400);
+  for (const fraccion of [0.72, 0.42]) {
+    const lado = Math.round(Math.min(imagen.naturalWidth, imagen.naturalHeight) * fraccion);
+    const sx = Math.round((imagen.naturalWidth - lado) / 2);
+    const sy = Math.round((imagen.naturalHeight - lado) / 2);
+    const texto = leerRegion(imagen, sx, sy, lado, lado, 1600);
+    if (texto) return texto;
+  }
+  return null;
 }
 
 function leerRegion(
@@ -31,6 +35,7 @@ function leerRegion(
   canvas.height = height;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) return null;
+  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(imagen, sx, sy, sw, sh, 0, 0, width, height);
   const datos = ctx.getImageData(0, 0, width, height);
   return decodificarPixeles(datos.data, datos.width, datos.height);

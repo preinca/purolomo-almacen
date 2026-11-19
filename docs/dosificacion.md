@@ -1,6 +1,6 @@
 # Dosificación
 
-La pestaña **Dosificación** (antes «Registrar salidas») registra una paleta de un solo producto. El QR es el mismo de la entrada (`PLT-…`).
+La pestaña **Dosificación** (antes «Registrar salidas») registra una paleta de un solo producto. El QR es el mismo de la entrada (`PLT-…`). La cámara es la trasera principal, no la ultra gran angular: esa no enfoca de cerca. Si no lee, el token se escribe a mano.
 
 El nombre y el código salen de la entrada ya guardada o, si todavía no está, del kárdex. Si no hay nombre, se escriben a mano. El peso total es el peso unitario por la cantidad de unidades.
 
