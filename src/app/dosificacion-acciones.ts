@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { consultarProductoDosificacion, guardarDosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
+import { anularDosificacion, consultarProductoDosificacion, guardarDosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
 import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { getDb } from "@/lib/db";
 import type { Resultado } from "@/lib/lotes";
@@ -45,6 +45,17 @@ export async function registrarDosificacion(input: {
   );
   if (!resultado.ok) return resultado;
   revalidatePath("/salidas");
+  revalidatePath("/entradas");
   revalidatePath("/historial/salidas");
   return { ok: true, value: { pesoTotal: resultado.value.pesoTotal } };
+}
+
+export async function anularRegistroDosificacion(id: number): Promise<Resultado> {
+  await exigirDosificacion();
+  const resultado = await anularDosificacion(getDb(), id);
+  if (!resultado.ok) return resultado;
+  revalidatePath("/salidas");
+  revalidatePath("/entradas");
+  revalidatePath("/historial/salidas");
+  return resultado;
 }

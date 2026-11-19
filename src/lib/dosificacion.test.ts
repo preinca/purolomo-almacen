@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { basePrueba } from "./db-prueba.ts";
 import { recibirPaleta } from "./entrada-paleta.ts";
-import { consultarProductoDosificacion, guardarDosificacion, listarDosificaciones, pesoTotalPaleta } from "./dosificacion.ts";
+import { anularDosificacion, consultarProductoDosificacion, guardarDosificacion, kgDisponiblesDeToken, listarDosificaciones, pesoTotalPaleta } from "./dosificacion.ts";
 import { PALETA_DE_PRUEBA, guardarDashboard, type OrigenRemoto } from "./paleta-remota.ts";
 import fs from "node:fs";
 import os from "node:os";
@@ -48,4 +48,31 @@ test("la dosificación usa la entrada ya registrada y guarda el peso total", asy
   const lista = await listarDosificaciones(db);
   assert.equal(lista[0]?.descripcion, "SAL CON YODO Y FLUOR");
   assert.equal(lista[0]?.cantidad, 4);
+  assert.equal(await kgDisponiblesDeToken(db, PALETA_DE_PRUEBA.token), 990);
+
+  const deMas = await guardarDosificacion(
+    db,
+    {
+      token: producto.value.token,
+      codigo: producto.value.codigo,
+      descripcion: producto.value.descripcion,
+      nucleo: "N-13",
+      pesoUnitario: 500,
+      cantidad: 3,
+    },
+    "ana",
+  );
+  assert.equal(deMas.ok, false);
+  if (deMas.ok) return;
+  assert.match(deMas.error, /Solo quedan/);
+
+  const anulada = await anularDosificacion(db, guardada.value.id);
+  assert.equal(anulada.ok, true);
+  assert.equal(await kgDisponiblesDeToken(db, PALETA_DE_PRUEBA.token), 1000);
+  const movimiento = await db.get<{ tipo: string; kg: number }>(
+    "SELECT tipo, kg FROM movimientos WHERE dosificacion_id = ? AND tipo = 'consumo'",
+    guardada.value.id,
+  );
+  assert.equal(movimiento?.tipo, "consumo");
+  assert.equal(Number(movimiento?.kg), 10);
 });

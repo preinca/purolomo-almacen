@@ -32,6 +32,10 @@ El túnel rápido cambia en cada reinicio. Esa computadora corre `herramientas/r
 
 La cookie de sesión se queda en el servidor. Si el kárdex no responde, se usa la copia local (`data/dashboard-remoto.json`) y, si tampoco tiene la paleta, se puede completar el producto, los kilos y el vencimiento a mano. Si el kárdex dice que el token no existe, no se registra. Sin usuario y clave del kárdex, el flujo local no cambia.
 
+## Dosificación
+
+En **Dosificación** se escanea el QR de la paleta que se está armando. Al guardar, los kilos totales se descuentan de la entrada de esa paleta y queda un movimiento de consumo. Si no alcanzan, no se guarda. Anular devuelve los kilos. El detalle está en [docs/dosificacion.md](docs/dosificacion.md).
+
 ## Calculadora semanal
 
 En el menú, **Calculadora semanal** arma la solicitud de materia prima no cárnica (y el empaque) a partir de los batches de lunes a viernes. El detalle está en [docs/calculadora-semanal.md](docs/calculadora-semanal.md).

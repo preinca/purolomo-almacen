@@ -1,5 +1,6 @@
 import type { Db } from "./db";
 import { buscarEntrada } from "./entrada-paleta";
+import { fechaHoy, semanaDe } from "./formato";
 import { buscarPaletaKardex, kardexEstaConfigurado } from "./kardex-externo";
 import type { Resultado } from "./lotes";
 import { pesoTotalPaleta } from "./peso-paleta";
@@ -18,9 +19,13 @@ CREATE TABLE IF NOT EXISTS dosificaciones (
   cantidad INTEGER NOT NULL CHECK (cantidad > 0),
   peso_total DOUBLE PRECISION NOT NULL CHECK (peso_total > 0),
   usuario TEXT NOT NULL DEFAULT '',
-  creado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
+  creado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
+  anulada INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_dosificaciones_creado ON dosificaciones (creado_en DESC, id DESC);
+ALTER TABLE dosificaciones ADD COLUMN IF NOT EXISTS anulada INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE movimientos ADD COLUMN IF NOT EXISTS dosificacion_id INTEGER;
+CREATE INDEX IF NOT EXISTS idx_movimientos_dosificacion ON movimientos (dosificacion_id);
 `;
 
 export type ProductoDosificacion = {
@@ -28,6 +33,7 @@ export type ProductoDosificacion = {
   codigo: string;
   descripcion: string;
   origen: "entrada" | "kardex" | "manual";
+  kgDisponibles: number | null;
 };
 
 export type Dosificacion = ProductoDosificacion & {
@@ -38,6 +44,7 @@ export type Dosificacion = ProductoDosificacion & {
   pesoTotal: number;
   usuario: string;
   creadoEn: string;
+  anulada: boolean;
 };
 
 export async function asegurarDosificaciones(db: Db) {
@@ -58,6 +65,7 @@ export async function consultarProductoDosificacion(db: Db, tokenTexto: string):
         codigo: local.codigo,
         descripcion: local.producto,
         origen: "entrada",
+        kgDisponibles: await kgDisponibles(db, local.token, local.kg),
       },
     };
   }
@@ -72,6 +80,7 @@ export async function consultarProductoDosificacion(db: Db, tokenTexto: string):
           codigo: remoto.value.codigo || partes.value.codigo,
           descripcion: remoto.value.descripcion,
           origen: "kardex",
+          kgDisponibles: null,
         },
       };
     }
@@ -83,6 +92,7 @@ export async function consultarProductoDosificacion(db: Db, tokenTexto: string):
           codigo: partes.value.codigo,
           descripcion: "",
           origen: "manual",
+          kgDisponibles: null,
         },
       };
     }
@@ -95,6 +105,7 @@ export async function consultarProductoDosificacion(db: Db, tokenTexto: string):
       codigo: partes.value.codigo,
       descripcion: "",
       origen: "manual",
+      kgDisponibles: null,
     },
   };
 }
@@ -123,24 +134,88 @@ export async function guardarDosificacion(
   if (nucleo.length < 1 || nucleo.length > 40) return { ok: false, error: "Escribe el número de núcleo." };
   if (pesoTotal === null) return { ok: false, error: "El peso unitario y la cantidad tienen que ser mayores que cero." };
 
-  await db.run(
-    `INSERT INTO dosificaciones (token, codigo, descripcion, nucleo, peso_unitario, cantidad, peso_total, usuario)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    partes.value.token,
-    codigo,
-    descripcion,
-    nucleo,
-    input.pesoUnitario,
-    input.cantidad,
-    pesoTotal,
-    usuario,
-  );
-  const guardada = await db.get<Record<string, unknown>>(
-    "SELECT * FROM dosificaciones WHERE token = ? ORDER BY id DESC LIMIT 1",
-    partes.value.token,
-  );
-  if (!guardada) return { ok: false, error: "No se pudo guardar la dosificación." };
-  return { ok: true, value: fila(guardada) };
+  return db.transaction(async (tx) => {
+    const entrada = await tx.get<Record<string, unknown>>(
+      "SELECT token, kg FROM entradas_paleta WHERE token = ? FOR UPDATE",
+      partes.value.token,
+    );
+    if (!entrada) {
+      return { ok: false, error: "Esta paleta no está registrada como entrada. No hay kilos que descontar." };
+    }
+    const disponible = await kgDisponibles(tx, partes.value.token, Number(entrada.kg));
+    if (pesoTotal > disponible + 0.001) {
+      return {
+        ok: false,
+        error: `Solo quedan ${disponible} kg en esta paleta. Esta dosificación pide ${pesoTotal} kg.`,
+      };
+    }
+
+    await tx.run(
+      `INSERT INTO dosificaciones (token, codigo, descripcion, nucleo, peso_unitario, cantidad, peso_total, usuario)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      partes.value.token,
+      codigo,
+      descripcion,
+      nucleo,
+      input.pesoUnitario,
+      input.cantidad,
+      pesoTotal,
+      usuario,
+    );
+    const guardada = await tx.get<Record<string, unknown>>(
+      "SELECT * FROM dosificaciones WHERE token = ? ORDER BY id DESC LIMIT 1",
+      partes.value.token,
+    );
+    if (!guardada) return { ok: false, error: "No se pudo guardar la dosificación." };
+
+    const fecha = fechaHoy();
+    await tx.run(
+      `INSERT INTO movimientos (tag, tipo, fecha, semana, kg, estado, nota, dosificacion_id)
+       VALUES (?, 'consumo', ?, ?, ?, 'CONSUMIDOS', ?, ?)`,
+      partes.value.token,
+      fecha,
+      semanaDe(fecha),
+      pesoTotal,
+      `Dosificación núcleo ${nucleo}`,
+      Number(guardada.id),
+    );
+    return { ok: true, value: fila(guardada) };
+  });
+}
+
+export async function anularDosificacion(db: Db, id: number): Promise<Resultado> {
+  await asegurarDosificaciones(db);
+  if (!Number.isInteger(id) || id <= 0) return { ok: false, error: "No existe esa dosificación." };
+
+  return db.transaction(async (tx) => {
+    const actual = await tx.get<Record<string, unknown>>(
+      "SELECT * FROM dosificaciones WHERE id = ? FOR UPDATE",
+      id,
+    );
+    if (!actual) return { ok: false, error: "No existe esa dosificación." };
+    if (Number(actual.anulada) === 1) return { ok: false, error: "Esa dosificación ya está anulada." };
+
+    await tx.run("UPDATE dosificaciones SET anulada = 1 WHERE id = ?", id);
+    const fecha = fechaHoy();
+    await tx.run(
+      `INSERT INTO movimientos (tag, tipo, fecha, semana, kg, estado, nota, dosificacion_id)
+       VALUES (?, 'devolucion', ?, ?, ?, 'DEVUELTO', ?, ?)`,
+      String(actual.token),
+      fecha,
+      semanaDe(fecha),
+      Number(actual.peso_total),
+      "Anulación de dosificación. Los kilos vuelven a la paleta.",
+      id,
+    );
+    return { ok: true, value: undefined };
+  });
+}
+
+export async function kgDisponiblesDeToken(db: Db, token: string) {
+  await asegurarDosificaciones(db);
+  const entrada = await buscarEntrada(db, token);
+  if (!entrada) return null;
+  return kgDisponibles(db, entrada.token, entrada.kg);
 }
 
 export async function listarDosificaciones(db: Db, limite = 30) {
@@ -150,6 +225,14 @@ export async function listarDosificaciones(db: Db, limite = 30) {
     limite,
   );
   return filas.map(fila);
+}
+
+async function kgDisponibles(db: Db, token: string, kgRecibidos: number) {
+  const row = await db.get<{ usado: number }>(
+    "SELECT COALESCE(SUM(peso_total), 0) AS usado FROM dosificaciones WHERE token = ? AND anulada = 0",
+    token,
+  );
+  return Math.round((kgRecibidos - Number(row?.usado ?? 0)) * 1000) / 1000;
 }
 
 function fila(row: Record<string, unknown>): Dosificacion {
@@ -165,5 +248,6 @@ function fila(row: Record<string, unknown>): Dosificacion {
     pesoTotal: Number(row.peso_total),
     usuario: String(row.usuario ?? ""),
     creadoEn: String(row.creado_en),
+    anulada: Number(row.anulada) === 1,
   };
 }

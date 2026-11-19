@@ -9,6 +9,7 @@ export type EntradaPaleta = DatosPaleta & {
   fecha: string;
   usuario: string;
   creadoEn: string;
+  kgDisponible?: number;
 };
 
 const TABLA = `
@@ -39,6 +40,7 @@ function fila(row: Fila): EntradaPaleta {
     fecha: String(row.fecha),
     usuario: String(row.usuario ?? ""),
     creadoEn: String(row.creado_en),
+    ...(row.kg_disponible === undefined ? {} : { kgDisponible: Number(row.kg_disponible) }),
   };
 }
 
@@ -54,8 +56,17 @@ export async function buscarEntrada(db: Db, token: string) {
 
 export async function listarEntradas(db: Db, limite = 20) {
   await asegurarEntradas(db);
+  const { asegurarDosificaciones } = await import("./dosificacion");
+  await asegurarDosificaciones(db);
   const filas = await db.all<Fila>(
-    "SELECT * FROM entradas_paleta ORDER BY creado_en DESC, token DESC LIMIT ?",
+    `SELECT e.*,
+       e.kg - COALESCE((
+         SELECT SUM(d.peso_total) FROM dosificaciones d
+         WHERE d.token = e.token AND d.anulada = 0
+       ), 0) AS kg_disponible
+     FROM entradas_paleta e
+     ORDER BY e.creado_en DESC, e.token DESC
+     LIMIT ?`,
     limite,
   );
   return filas.map(fila);

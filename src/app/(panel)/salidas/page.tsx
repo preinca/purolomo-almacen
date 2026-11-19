@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { DosificacionForm } from "@/components/dosificacion-form";
+import { AnularDosificacion, DosificacionForm } from "@/components/dosificacion-form";
 import { PageFrame } from "@/components/page-frame";
 import { SalidaAlibal } from "@/components/salida-alibal";
 import { SalidaLogistica } from "@/components/salida-logistica";
@@ -86,6 +86,7 @@ async function Salidas({
                       <th className="px-3 py-2">Unidades</th>
                       <th className="px-3 py-2">Peso total</th>
                       <th className="px-3 py-2">Usuario</th>
+                      <th className="px-3 py-2">Estado</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -100,6 +101,9 @@ async function Salidas({
                         <td className="px-3 py-2">{fila.cantidad}</td>
                         <td className="px-3 py-2 font-semibold">{formatoKg(fila.pesoTotal)}</td>
                         <td className="px-3 py-2">{fila.usuario}</td>
+                        <td className="px-3 py-2">
+                          {fila.anulada ? "Anulada" : <AnularDosificacion id={fila.id} />}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

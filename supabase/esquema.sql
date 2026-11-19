@@ -42,7 +42,10 @@ CREATE INDEX IF NOT EXISTS idx_lotes_fecha ON lotes (fecha DESC, tag DESC);
 CREATE INDEX IF NOT EXISTS idx_lotes_estado ON lotes (estado, fecha DESC);
 CREATE INDEX IF NOT EXISTS idx_lotes_codigo ON lotes (codigo);
 CREATE INDEX IF NOT EXISTS idx_lotes_creado ON lotes (creado_en DESC, tag DESC);
+ALTER TABLE movimientos ADD COLUMN IF NOT EXISTS dosificacion_id INTEGER;
+
 CREATE INDEX IF NOT EXISTS idx_mov_tag ON movimientos (tag, id DESC);
+CREATE INDEX IF NOT EXISTS idx_movimientos_dosificacion ON movimientos (dosificacion_id);
 CREATE INDEX IF NOT EXISTS idx_mov_tipo ON movimientos (tipo, fecha DESC);
 
 CREATE TABLE IF NOT EXISTS recetas (
@@ -277,5 +280,7 @@ CREATE TABLE IF NOT EXISTS dosificaciones (
 );
 
 CREATE INDEX IF NOT EXISTS idx_dosificaciones_creado ON dosificaciones (creado_en DESC, id DESC);
+
+ALTER TABLE dosificaciones ADD COLUMN IF NOT EXISTS anulada INTEGER NOT NULL DEFAULT 0;
 
 ALTER TABLE dosificaciones ENABLE ROW LEVEL SECURITY;

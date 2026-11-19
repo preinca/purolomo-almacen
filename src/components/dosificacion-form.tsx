@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { consultarPaletaDosificacion, registrarDosificacion } from "@/app/dosificacion-acciones";
+import { anularRegistroDosificacion, consultarPaletaDosificacion, registrarDosificacion } from "@/app/dosificacion-acciones";
 import { EscanerToken } from "@/components/escaner-token";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ export function DosificacionForm() {
   const [codigo, setCodigo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [manual, setManual] = useState(false);
+  const [disponibles, setDisponibles] = useState<number | null>(null);
   const [nucleo, setNucleo] = useState("");
   const [peso, setPeso] = useState("");
   const [cantidad, setCantidad] = useState("");
@@ -46,6 +47,7 @@ export function DosificacionForm() {
       setCodigo(resultado.value.codigo);
       setDescripcion(resultado.value.descripcion);
       setManual(resultado.value.origen === "manual" || !resultado.value.descripcion);
+      setDisponibles(resultado.value.kgDisponibles);
       setNota(
         resultado.value.descripcion
           ? null
@@ -116,6 +118,11 @@ export function DosificacionForm() {
             </Button>
           </div>
         </div>
+        {disponibles !== null ? (
+          <p className="text-sm text-muted-foreground">
+            Disponibles en esta paleta: <span className="font-semibold text-foreground">{formatoKg(disponibles)}</span>
+          </p>
+        ) : null}
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
             <Label htmlFor="codigo-dosi">Código</Label>
@@ -147,5 +154,24 @@ export function DosificacionForm() {
         </Button>
       </form>
     </div>
+  );
+}
+
+export function AnularDosificacion({ id }: { id: number }) {
+  const [pendiente, iniciar] = useTransition();
+  return (
+    <button
+      type="button"
+      disabled={pendiente}
+      className="text-sm underline"
+      onClick={() => {
+        if (!confirm("¿Anular esta dosificación? Los kilos vuelven a la paleta.")) return;
+        iniciar(async () => {
+          await anularRegistroDosificacion(id);
+        });
+      }}
+    >
+      {pendiente ? "Anulando…" : "Anular"}
+    </button>
   );
 }
