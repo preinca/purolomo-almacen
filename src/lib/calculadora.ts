@@ -1,3 +1,13 @@
+/** El Excel imprime un solo carmín. 01182 es el mismo líquido que 01004. */
+export const ALIAS_MPNC: Record<string, string> = {
+  MPCM01182: "MPCM01004",
+};
+
+export function codigoHoja(codigo: string) {
+  const limpio = codigo.trim().toUpperCase();
+  return ALIAS_MPNC[limpio] ?? limpio;
+}
+
 export const DIAS = ["lunes", "martes", "miercoles", "jueves", "viernes"] as const;
 export type Dia = (typeof DIAS)[number];
 
@@ -69,11 +79,12 @@ export function calcularMpnc(filas: FilaPlan[], recetas: RecetaCalc[], porFila: 
     const formula = receta.get(fila.recetaId);
     if (!formula) continue;
     for (const item of formula.items) {
+      const codigo = codigoHoja(item.codigo);
       const kg = batches * item.kgPorBatch;
-      const previo = totales.get(item.codigo);
+      const previo = totales.get(codigo);
       if (!previo) {
-        totales.set(item.codigo, {
-          codigo: item.codigo,
+        totales.set(codigo, {
+          codigo,
           nombre: item.nombre,
           unidad: "kg",
           tipo: "mpnc",
@@ -82,6 +93,7 @@ export function calcularMpnc(filas: FilaPlan[], recetas: RecetaCalc[], porFila: 
         });
         continue;
       }
+      if (item.codigo.trim().toUpperCase() === codigo) previo.nombre = item.nombre;
       previo.cantidad = (previo.cantidad ?? 0) + kg;
       previo.porPlanta[fila.planta] = (previo.porPlanta[fila.planta] ?? 0) + kg;
     }

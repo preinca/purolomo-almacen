@@ -5,7 +5,7 @@
     "etiqueta_plan": "SEMANA # 16",
     "correcciones": [
       "Benzoato (MPCM01059): la solicitud de San Pablo apuntaba al eritorbato del jamón cocido (10,4 kg) en vez de a su benzoato (6,2 kg). El total corregido de la semana es 120,67 kg (el Excel imprimía 124,87 kg).",
-      "El carmín de MTD Con Todo va con su código MPCM01182, no mezclado en MPCM01004.",
+      "El carmín de MTD Con Todo (0,468 kg/batch) se suma en MPCM01004, una sola fila, como en el Excel.",
       "La fila impresa de ajo es MPCM01011 Ajo en polvo (antes decía MPCM01175 Saborizante de Ajo)."
     ]
   },
@@ -1919,7 +1919,7 @@
           "tipo": "mpnc"
         },
         {
-          "codigo": "MPCM01182",
+          "codigo": "MPCM01004",
           "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
           "kg_por_batch": 0.468,
           "tipo": "mpnc"
@@ -2022,12 +2022,6 @@
     },
     {
       "codigo": "MPCM01004",
-      "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
-      "unidad": "kg",
-      "tipo": "mpnc"
-    },
-    {
-      "codigo": "MPCM01182",
       "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
       "unidad": "kg",
       "tipo": "mpnc"
@@ -2596,14 +2590,7 @@
       {
         "codigo": "MPCM01004",
         "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
-        "cantidad": 281.692,
-        "unidad": "kg",
-        "tipo": "mpnc"
-      },
-      {
-        "codigo": "MPCM01182",
-        "nombre": "Carmín Líquido al 3% (918-25) p/ emulsionado",
-        "cantidad": 42.12,
+        "cantidad": 323.812,
         "unidad": "kg",
         "tipo": "mpnc"
       },

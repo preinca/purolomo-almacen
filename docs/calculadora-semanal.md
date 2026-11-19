@@ -6,6 +6,10 @@ El total de un ingrediente es la suma, sobre las filas del plan, de los batches 
 
 El empaque no trae cantidad por batch en el Excel (eran totales de un despacho viejo). Queda vacío hasta que se escriba en la receta. Mientras tanto, la cantidad solicitada se anota a mano. `cantidad_observada` es solo referencia y no se multiplica.
 
+El carmín queda en una sola fila, como el Excel: el de MTD Con Todo (0,468 kg/batch, antes anotado como MPCM01182) se suma en **MPCM01004**. En la semana de ejemplo eso da **323,812 kg**. Las únicas diferencias que se mantienen frente al Excel impreso son el benzoato (120,67 kg, no 124,87) y el ajo (MPCM01011 Ajo en polvo, no MPCM01175).
+
+Si la base ya se sembró con MPCM01182, hay que aplicar `supabase/migraciones/2026-11-19-carmin.sql`. Aunque no se aplique, la hoja igual agrupa ese código dentro de MPCM01004.
+
 ## SQL para Supabase
 
 Está al final de `supabase/esquema.sql`. Se puede ejecutar de nuevo.

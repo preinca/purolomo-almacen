@@ -63,8 +63,9 @@ test("la semana de ejemplo coincide con los totales de la semilla", () => {
     assert.equal(cantidad !== undefined, true, esperado.codigo);
     assert.ok(Math.abs((cantidad ?? 0) - esperado.cantidad) < 0.001, `${esperado.codigo}: ${cantidad} ≠ ${esperado.cantidad}`);
   }
+  assert.equal(porCodigo.get("MPCM01004"), 323.812);
+  assert.equal(porCodigo.has("MPCM01182"), false);
   assert.equal(porCodigo.get("MPCM01059"), 120.67);
-  assert.equal(porCodigo.get("MPCM01182"), 42.12);
   assert.equal(porCodigo.get("MPCM01011"), 187.596);
   assert.equal(porCodigo.get("MPCM01009"), 9435.46);
 });
@@ -97,8 +98,35 @@ test("la semilla en la base reproduce la semana 45", async () => {
   assert.ok(resultado);
   const sal = resultado?.mpnc.find((fila) => fila.codigo === "MPCM01009");
   assert.equal(sal?.cantidad, 9435.46);
+  const carmin = resultado?.mpnc.find((fila) => fila.codigo === "MPCM01004");
+  assert.equal(carmin?.cantidad, 323.812);
+  assert.equal(resultado?.mpnc.some((fila) => fila.codigo === "MPCM01182"), false);
   const benzoato = resultado?.mpnc.find((fila) => fila.codigo === "MPCM01059");
   assert.equal(benzoato?.cantidad, 120.67);
+});
+
+test("un carmín guardado como MPCM01182 se suma en MPCM01004", () => {
+  const filas: FilaPlan[] = [{ orden: 1, planta: "SAN PABLO", nombre: "MTD", recetaId: "mtd" }];
+  const recetas: RecetaCalc[] = [
+    {
+      id: "mtd",
+      nombre: "MTD",
+      planta: "SAN PABLO",
+      items: [
+        { codigo: "MPCM01004", nombre: "Carmín", kgPorBatch: 1 },
+        { codigo: "MPCM01182", nombre: "Carmín alias", kgPorBatch: 0.5 },
+      ],
+      empaque: [],
+    },
+  ];
+  const porFila = new Map<number, BatchesDia>([
+    [1, { lunes: 2, martes: 0, miercoles: 0, jueves: 0, viernes: 0 }],
+  ]);
+  const totales = calcularMpnc(filas, recetas, porFila);
+  assert.equal(totales.length, 1);
+  assert.equal(totales[0]?.codigo, "MPCM01004");
+  assert.equal(totales[0]?.nombre, "Carmín");
+  assert.equal(totales[0]?.cantidad, 3);
 });
 
 test("el csv de recetas lee coma decimal y rechaza una línea corta", () => {
