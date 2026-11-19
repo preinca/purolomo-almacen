@@ -4,7 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { basePrueba } from "./db-prueba.ts";
-import { buscarEntrada, listarEntradas, listarHistorialEntradas, prepararEntrada, recibirPaleta, resumirEntradas } from "./entrada-paleta.ts";
+import { buscarEntrada, listarEntradas, listarHistorialEntradas, listarInventarioPaletas, prepararEntrada, recibirPaleta, resumirEntradas } from "./entrada-paleta.ts";
+import { textoVencimiento } from "./formato.ts";
 import { PALETA_DE_PRUEBA, guardarDashboard, type OrigenRemoto } from "./paleta-remota.ts";
 import { cruzarConToken, partirToken } from "./token-paleta.ts";
 
@@ -41,6 +42,7 @@ test("la entrada guarda la copia y avisa al otro dashboard una sola vez", async 
   assert.equal(entrada.value.producto, "SAL CON YODO Y FLUOR");
   assert.equal(entrada.value.kg, 1000);
   assert.equal(entrada.value.vencimiento, "2030-12-07");
+  assert.equal(entrada.value.vencimientoNoAplica, false);
   assert.equal(entrada.value.usuario, "ana");
 
   const archivo = JSON.parse(fs.readFileSync(origen.archivo, "utf8")) as { paletas: { recibidaEn: string }[] };
@@ -94,6 +96,46 @@ test("el historial de entradas sale del más reciente al más antiguo y respeta 
   );
   assert.equal(historial[0]?.usuario, "luis");
   assert.equal(historial[0]?.lote, "L3");
+});
+
+test("el inventario deja al final la paleta que no vence y el historial dice No aplica", async () => {
+  const db = await basePrueba();
+  await listarInventarioPaletas(db);
+  const filas = [
+    ["PLT-LATE", "2030-12-07", 0],
+    ["PLT-SOON", "2026-01-15", 0],
+    ["PLT-OUT", "2026-06-01", 0],
+  ] as const;
+  for (const [token, vencimiento, noAplica] of filas) {
+    await db.run(
+      `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario, vencimiento_no_aplica)
+       VALUES (?, 'EMP01', 'CAJA', 10, 'L', ?, '2026-11-17', 'ana', ?)`,
+      token,
+      vencimiento,
+      noAplica,
+    );
+  }
+  await db.run(
+    `INSERT INTO entradas_paleta (token, codigo, producto, kg, lote, vencimiento, fecha, usuario, vencimiento_no_aplica)
+     VALUES ('PLT-NA', 'EMP02', 'BOLSA', 4, 'L', NULL, '2026-11-17', 'ana', 1)`,
+  );
+  await db.run(
+    `INSERT INTO dosificaciones (token, codigo, descripcion, nucleo, peso_unitario, cantidad, peso_total, usuario)
+     VALUES ('PLT-OUT', 'EMP01', 'CAJA', 'N', 10, 1, 10, 'ana')`,
+  );
+
+  const inventario = await listarInventarioPaletas(db);
+  assert.deepEqual(
+    inventario.map((entrada) => entrada.token),
+    ["PLT-SOON", "PLT-LATE", "PLT-NA"],
+  );
+  const sinFecha = inventario.find((entrada) => entrada.token === "PLT-NA");
+  assert.equal(sinFecha?.vencimiento, "");
+  assert.equal(sinFecha?.vencimientoNoAplica, true);
+  assert.equal(textoVencimiento(sinFecha?.vencimiento ?? "", sinFecha?.vencimientoNoAplica), "No aplica");
+
+  const historial = await listarEntradas(db);
+  assert.equal(historial.some((entrada) => entrada.token === "PLT-NA" && entrada.vencimientoNoAplica), true);
 });
 
 test("un token desconocido no se registra", async () => {

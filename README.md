@@ -30,7 +30,7 @@ Con estas variables en `.env.local` (y en Vercel, en Environment Variables), al 
 
 El túnel rápido cambia en cada reinicio. Esa computadora corre `herramientas/reporte-tunel-windows/` y avisa a `POST /api/kardex-externo/url`. El almacén guarda la URL y la usa antes que `KARDEX_EXTERNO_URL`. El detalle y el SQL de Supabase están en [docs/kardex-externo.md](docs/kardex-externo.md).
 
-La cookie de sesión se queda en el servidor. Si el kárdex no responde, se usa la copia local (`data/dashboard-remoto.json`) y, si tampoco tiene la paleta, se puede completar el producto, los kilos y el vencimiento a mano. Si el kárdex dice que el token no existe, no se registra. Sin usuario y clave del kárdex, el flujo local no cambia.
+La cookie de sesión se queda en el servidor. Si el kárdex no responde, se usa la copia local (`data/dashboard-remoto.json`) y, si tampoco tiene la paleta, se puede completar el producto, los kilos y el vencimiento a mano. Si el kárdex no manda vencimiento, se escribe la fecha o se marca que no aplica (empaque). Si el kárdex dice que el token no existe, no se registra. Sin usuario y clave del kárdex, el flujo local no cambia.
 
 ## Dosificación
 

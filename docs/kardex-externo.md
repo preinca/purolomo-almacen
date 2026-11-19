@@ -1,6 +1,8 @@
 # Kárdex externo y túnel que cambia
 
-El QR de la paleta solo trae un token (`PLT-<código>-<lote>-...`). El nombre y los kilos los consulta el servidor en el dashboard Purolomo Kárdex: entra con usuario y clave, guarda la cookie y llama a `POST /api/palleta/buscar`. El lote, si el kárdex no lo manda, sale del token. La fecha de vencimiento se usa cuando viene (`DD/MM/AAAA`, `DD-MM-AAAA` o `AAAA-MM-DD`, con o sin hora, día primero). Si falta, es nula o no se entiende, la ficha pide completarla. `encontrado: false` significa que el kárdex no tiene esa paleta.
+El QR de la paleta solo trae un token (`PLT-<código>-<lote>-...`). El nombre y los kilos los consulta el servidor en el dashboard Purolomo Kárdex: entra con usuario y clave, guarda la cookie y llama a `POST /api/palleta/buscar`. El lote, si el kárdex no lo manda, sale del token. La fecha de vencimiento se usa cuando viene (`DD/MM/AAAA`, `DD-MM-AAAA` o `AAAA-MM-DD`, con o sin hora, día primero) y la ficha la muestra ya escrita, sin la casilla de «no aplica». Si falta, es nula o no se entiende, la ficha pide la fecha o la casilla **Fecha de vencimiento: No aplica** (empaque). Sin una de las dos, no se guarda. Con la casilla, `vencimiento` queda nulo y `vencimiento_no_aplica` en 1; el historial y el inventario dicen «No aplica». En el inventario esa paleta va al final, porque no vence. `encontrado: false` significa que el kárdex no tiene esa paleta.
+
+Si la tabla ya existe, aplica `supabase/migraciones/2026-11-19-vencimiento-no-aplica.sql`. Se puede ejecutar de nuevo.
 
 Ese dashboard se publica con un túnel rápido de Cloudflare (`*.trycloudflare.com`). La dirección cambia cada vez que se reinicia `cloudflared`. No se deja un túnel fijo. La computadora donde corre el dashboard avisa la dirección nueva.
 

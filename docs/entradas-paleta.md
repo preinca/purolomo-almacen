@@ -17,13 +17,13 @@ Administrador y recepcionista. Consulta y pesador no pasan el proxy en `/entrada
 3. La aplicación parte el token. Si el formato no es `PLT-…` con cuatro tramos, muestra el error y no consulta.
 4. Si ese token ya está en `entradas_paleta`, muestra la ficha guardada y avisa que no se creará otra entrada. No hay botón de registrar.
 5. Si no está, consulta el otro dashboard. En local, ese dashboard es el archivo `data/dashboard-remoto.json`. Si el archivo no existe, se crea con una paleta de prueba. Si el archivo dice que no responde, o no trae ese token, la entrada no se registra.
-6. Cruza código, lote y token. Exige nombre, kilos mayores que 0 y una fecha de vencimiento válida (`AAAA-MM-DD`). Si algo no coincide, muestra el error.
-7. Si todo cuadra, la ficha pide **Registrar entrada**.
+6. Cruza código, lote y token. Exige nombre y kilos mayores que 0. Si el kárdex trae vencimiento (`AAAA-MM-DD`), la ficha lo muestra y no pide nada más. Si no lo trae, hay que escribir la fecha o marcar **Fecha de vencimiento: No aplica**. Sin una de las dos, el aviso es «Elige la fecha de vencimiento o marca que no aplica.» Si algo no coincide, muestra el error.
+7. Si todo cuadra, la ficha pide **Registrar entrada**. Con «no aplica» se guarda `vencimiento` nulo y `vencimiento_no_aplica = 1`.
 8. Al confirmar, vuelve a consultar, marca la paleta como recibida en el otro dashboard y solo entonces inserta la fila local. Si el aviso al otro dashboard falla, no se guarda nada. Si el insert local falla después de avisar, intenta liberar la marca de recibida.
 9. La fecha de la entrada es el día de hoy en `America/Caracas`. El usuario guardado es el de la sesión.
 10. Un aviso verde confirma producto y kilos, el formulario se limpia y la tabla de abajo se refresca.
 
-La tabla **Entradas registradas** lista hasta 20 filas (la función `listarEntradas` usa ese tope por defecto), de la más reciente a la más antigua.
+La tabla **Entradas registradas** lista hasta 20 filas (la función `listarEntradas` usa ese tope por defecto), de la más reciente a la más antigua. Si el vencimiento no aplica, esa columna dice «No aplica».
 
 ## Rutas y páginas
 

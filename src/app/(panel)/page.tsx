@@ -2,9 +2,9 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { TablaEntradas } from "@/components/tabla-entradas";
 import { PageFrame } from "@/components/page-frame";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDb } from "@/lib/db";
-import { listarEntradas, resumirEntradas } from "@/lib/entrada-paleta";
+import { listarEntradas, listarInventarioPaletas, resumirEntradas } from "@/lib/entrada-paleta";
 import { formatoNumero } from "@/lib/formato";
 
 export default function Page() {
@@ -23,7 +23,11 @@ export default function Page() {
 async function Dashboard() {
   await connection();
   const db = getDb();
-  const [resumen, entradas] = await Promise.all([resumirEntradas(db), listarEntradas(db, 12)]);
+  const [resumen, entradas, inventario] = await Promise.all([
+    resumirEntradas(db),
+    listarEntradas(db, 12),
+    listarInventarioPaletas(db),
+  ]);
 
   return (
     <div className="grid gap-8">
@@ -41,6 +45,17 @@ async function Dashboard() {
           color="border-rose-500"
         />
       </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>Inventario</CardTitle>
+          <CardDescription>
+            Paletas con kilos disponibles. Primero lo que vence antes. Si el vencimiento no aplica, queda al final.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <TablaEntradas entradas={inventario} vacio="No hay paletas con kilos disponibles." />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>Últimas entradas</CardTitle>
