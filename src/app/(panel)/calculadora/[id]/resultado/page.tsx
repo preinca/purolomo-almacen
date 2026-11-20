@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { notFound, redirect } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { cargarPlan } from "@/lib/calculadora-db";
 import { getDb } from "@/lib/db";
 
@@ -12,11 +12,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   );
 }
 
-async function Destino({ params }: { params: Promise<{ id: string }> }) {
+async function Destino({ params }: { params: Promise<{ id: string }> }): Promise<ReactNode> {
   await connection();
   const id = Number((await params).id);
   const plan = await cargarPlan(getDb(), id);
   if (!plan) notFound();
   if (plan.cerrado) redirect(`/calculadora/${id}/imprimir`);
   redirect(`/calculadora/${id}`);
+  return null;
 }
