@@ -134,8 +134,11 @@ CREATE TABLE IF NOT EXISTS impresiones (
   estado TEXT NOT NULL DEFAULT 'pendiente',
   creada_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
   tomada_en TEXT NOT NULL DEFAULT '',
-  lista_en TEXT NOT NULL DEFAULT ''
+  lista_en TEXT NOT NULL DEFAULT '',
+  zpl TEXT NOT NULL DEFAULT ''
 );
+
+ALTER TABLE impresiones ADD COLUMN IF NOT EXISTS zpl TEXT NOT NULL DEFAULT '';
 
 CREATE TABLE IF NOT EXISTS impresion_items (
   impresion_id INTEGER NOT NULL,

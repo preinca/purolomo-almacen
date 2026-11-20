@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { anularRegistroDosificacion, consultarPaletaDosificacion, registrarDosificacion } from "@/app/dosificacion-acciones";
+import { AccionesEtiquetaPaleta } from "@/components/acciones-etiqueta-paleta";
 import { EtiquetaDosificacion } from "@/components/etiqueta-dosificacion";
 import { EscanerToken } from "@/components/escaner-token";
 import { Button } from "@/components/ui/button";
@@ -102,7 +103,8 @@ export function DosificacionForm({
     return (
       <div className="mx-auto grid w-full min-w-0 max-w-xl justify-items-center gap-4">
         <p className="text-center text-lg font-semibold text-emerald-800">Dosificación guardada</p>
-        <EtiquetaDosificacion datos={etiqueta} controles="imprimir" />
+        <EtiquetaDosificacion datos={etiqueta} controles={false} />
+        <AccionesEtiquetaPaleta datos={etiqueta} guardar />
         <div className="grid w-full gap-3 print:hidden">
           <button
             type="button"

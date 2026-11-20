@@ -56,7 +56,17 @@ export async function encolarEtiquetaTag(db: Db, tag: string): Promise<Resultado
   });
 }
 
+/** Encola un ZPL ya armado. Lo usa la etiqueta de paleta, que no es un TAG de cava. */
+export async function encolarZpl(db: Db, zpl: string): Promise<Resultado> {
+  const texto = zpl.trim();
+  if (!texto) return { ok: false, error: "La etiqueta está vacía." };
+  await asegurarZpl(db);
+  await db.run("INSERT INTO impresiones (estado, zpl) VALUES ('pendiente', ?)", texto);
+  return { ok: true, value: undefined };
+}
+
 export async function tomarImpresion(db: Db): Promise<{ id: number; zpl: string } | null> {
+  await asegurarZpl(db);
   const ahora = new Date().toISOString();
   const vencida = new Date(Date.now() - 2 * 60 * 1000).toISOString();
   return db.transaction(async (tx) => {
@@ -64,12 +74,14 @@ export async function tomarImpresion(db: Db): Promise<{ id: number; zpl: string 
       "UPDATE impresiones SET estado = 'pendiente', tomada_en = '' WHERE estado = 'imprimiendo' AND tomada_en <> '' AND tomada_en < ?",
       vencida,
     );
-    const trabajo = await tx.get<{ id: number }>(
-      "SELECT id FROM impresiones WHERE estado = 'pendiente' ORDER BY id LIMIT 1 FOR UPDATE",
+    const trabajo = await tx.get<{ id: number; zpl: string }>(
+      "SELECT id, COALESCE(zpl, '') AS zpl FROM impresiones WHERE estado = 'pendiente' ORDER BY id LIMIT 1 FOR UPDATE",
     );
     if (!trabajo) return null;
     const id = Number(trabajo.id);
+    const zplGuardado = String(trabajo.zpl ?? "").trim();
     await tx.run("UPDATE impresiones SET estado = 'imprimiendo', tomada_en = ? WHERE id = ?", ahora, id);
+    if (zplGuardado) return { id, zpl: zplGuardado };
     const items = await tx.all<{ tag: string }>(
       "SELECT tag FROM impresion_items WHERE impresion_id = ? ORDER BY orden",
       id,
@@ -97,6 +109,10 @@ export async function cerrarImpresion(db: Db, id: number, impresa: boolean) {
       id,
     );
   });
+}
+
+async function asegurarZpl(db: Db) {
+  await db.exec(`ALTER TABLE impresiones ADD COLUMN IF NOT EXISTS zpl TEXT NOT NULL DEFAULT ''`);
 }
 
 function leerLote(row: Record<string, unknown>): Lote {

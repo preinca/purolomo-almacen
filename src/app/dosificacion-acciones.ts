@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { anularDosificacion, consultarProductoDosificacion, guardarDosificacion, type Dosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
+import { anularDosificacion, buscarDosificacion, consultarProductoDosificacion, guardarDosificacion, type Dosificacion, type ProductoDosificacion } from "@/lib/dosificacion";
+import { datosEtiqueta, zplEtiquetaPaleta } from "@/lib/etiqueta-dosificacion";
+import { encolarZpl } from "@/lib/impresion";
 import { pesoTotalPaleta } from "@/lib/peso-paleta";
 import { getDb } from "@/lib/db";
 import type { Resultado } from "@/lib/lotes";
-import { exigirRango } from "@/lib/usuarios";
+import { exigirRango, exigirSesion } from "@/lib/usuarios";
 
 async function exigirDosificacion() {
   return exigirRango(["administrador", "pesador"]);
@@ -51,6 +53,14 @@ export async function registrarDosificacion(input: {
   revalidatePath("/historial/salidas");
   revalidatePath(`/historial/salidas/${resultado.value.id}`);
   return resultado;
+}
+
+export async function imprimirEtiquetaPaleta(id: number): Promise<Resultado> {
+  await exigirSesion();
+  if (!Number.isInteger(id) || id <= 0) return { ok: false, error: "Esa etiqueta no es válida." };
+  const fila = await buscarDosificacion(getDb(), id);
+  if (!fila) return { ok: false, error: "No se encontró esa etiqueta." };
+  return encolarZpl(getDb(), zplEtiquetaPaleta(datosEtiqueta(fila)));
 }
 
 export async function anularRegistroDosificacion(id: number): Promise<Resultado> {

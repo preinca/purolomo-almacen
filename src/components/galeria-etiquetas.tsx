@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { AccionesEtiquetaPaleta } from "@/components/acciones-etiqueta-paleta";
 import { EtiquetaDosificacion } from "@/components/etiqueta-dosificacion";
 import { CATALOGO_DESTINOS, textoDestino } from "@/lib/destino-dosificacion";
 import type { DatosEtiquetaDosificacion } from "@/lib/etiqueta-dosificacion";
@@ -138,6 +139,9 @@ export function GaleriaEtiquetas({ etiquetas }: { etiquetas: EtiquetaListada[] }
                         Ver
                       </a>
                     </label>
+                    <div className="mb-2 print:hidden">
+                      <AccionesEtiquetaPaleta datos={etiqueta} />
+                    </div>
                     <EtiquetaDosificacion datos={etiqueta} controles={false} anulada={etiqueta.anulada} />
                   </div>
                 );

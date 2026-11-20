@@ -36,7 +36,9 @@ Si el TAG ya está en cola (`impresa_en` empieza por `cola:`), no se encola otra
 
 La autorización es el encabezado `x-impresion-clave`, comparado en tiempo constante con la variable de entorno `IMPRESION_CLAVE`. Si la variable está vacía, o la longitud no coincide, responde 401 «No autorizado». Un `id` que no sea un entero positivo responde 400.
 
-El ZPL lo arma `zplDeLotes` a partir de la etiqueta de cava (5,7 cm × 3,2 cm) y del texto corto `PUROLOMO MPC` / `TAG:<número>`.
+El ZPL de un TAG lo arma `zplDeLotes` a partir de la etiqueta de cava (5,7 cm × 3,2 cm) y del texto corto `PUROLOMO MPC` / `TAG:<número>`.
+
+La etiqueta de una dosificación no es un TAG. `imprimirEtiquetaPaleta` guarda el ZPL ya armado en `impresiones.zpl` (`zplEtiquetaPaleta`, el mismo tamaño y el QR a la derecha). `GET /api/impresion` devuelve ese texto si el trabajo lo trae; si `zpl` está vacío, sigue armando el de los TAG. La columna se agrega en `supabase/migraciones/2026-11-20-impresion-zpl.sql`.
 
 ## Otros formatos, sin ruta HTTP
 

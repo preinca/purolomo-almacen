@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { AccionesEtiquetaPaleta } from "@/components/acciones-etiqueta-paleta";
 import { EtiquetaDosificacion } from "@/components/etiqueta-dosificacion";
 import { getDb } from "@/lib/db";
 import { buscarDosificacion } from "@/lib/dosificacion";
@@ -20,7 +21,10 @@ async function Hoja({ params }: { params: Promise<{ id: string }> }) {
   if (!datos) notFound();
   return (
     <div className="bg-white p-4">
-      <EtiquetaDosificacion datos={datos} anulada={datos.anulada} volverHref="/etiquetas-paletas" />
+      <div className="mx-auto grid w-full max-w-xl gap-3">
+        <AccionesEtiquetaPaleta datos={datos} />
+        <EtiquetaDosificacion datos={datos} anulada={datos.anulada} volverHref="/etiquetas-paletas" />
+      </div>
     </div>
   );
 }

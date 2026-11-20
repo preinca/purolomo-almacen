@@ -9,7 +9,11 @@ const QR_X = 286;
 
 /** ZPL de una etiqueta de 5,7 cm × 3,2 cm a 203 dpi. El texto queda a la izquierda y el QR, más pequeño, a la derecha. */
 export function zplDeEtiqueta(etiqueta: EtiquetaCava, textoDelQr: string) {
-  const lineas = lineasEtiqueta(etiqueta);
+  return zplDeLineas(lineasEtiqueta(etiqueta), textoDelQr);
+}
+
+/** Misma geometría para cualquier etiqueta: primera línea más grande, el resto a la izquierda y el QR dibujado a la derecha. */
+export function zplDeLineas(lineas: string[], textoDelQr: string) {
   const columna = QR_X - 18;
   const usable = ALTO - MARGEN * 2;
   const unidades = 1.7 + Math.max(lineas.length - 1, 1);
