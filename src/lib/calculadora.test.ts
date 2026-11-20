@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { crearPlan, guardarBatches, prepararCalculadora, resultadoPlan } from "./calculadora-db.ts";
+import { cerrarSolicitud, crearPlan, guardarBatches, guardarSolicitado, prepararCalculadora, resultadoPlan } from "./calculadora-db.ts";
 import { calcularMpnc, parseCsvRecetas, type BatchesDia, type FilaPlan, type RecetaCalc } from "./calculadora.ts";
 import { basePrueba } from "./db-prueba.ts";
 
@@ -103,6 +103,30 @@ test("la semilla en la base reproduce la semana 45", async () => {
   assert.equal(resultado?.mpnc.some((fila) => fila.codigo === "MPCM01182"), false);
   const benzoato = resultado?.mpnc.find((fila) => fila.codigo === "MPCM01059");
   assert.equal(benzoato?.cantidad, 120.67);
+});
+
+test("una solicitud guardada no se vuelve a editar", async () => {
+  const db = await basePrueba();
+  await prepararCalculadora(db);
+  const creado = await crearPlan(db, 2026, 12, "ana");
+  assert.equal(creado.ok, true);
+  if (!creado.ok) return;
+  const cerrado = await cerrarSolicitud(
+    db,
+    creado.id,
+    [{ orden: 1, batches: { lunes: 2, martes: 0, miercoles: 0, jueves: 0, viernes: 0 } }],
+    [{ codigo: "MPCM01009", tipo: "mpnc", cantidad: 10 }],
+    "ana",
+  );
+  assert.equal(cerrado.ok, true);
+  const resultado = await resultadoPlan(db, creado.id);
+  assert.equal(resultado?.mpnc.find((fila) => fila.codigo === "MPCM01009")?.solicitada, 10);
+  const batches = await guardarBatches(db, creado.id, [], "ana");
+  assert.equal(batches.ok, false);
+  const pedido = await guardarSolicitado(db, creado.id, "CAJA", "empaque", 4);
+  assert.equal(pedido.ok, false);
+  const otra = await cerrarSolicitud(db, creado.id, [], [], "ana");
+  assert.equal(otra.ok, false);
 });
 
 test("un carmín guardado como MPCM01182 se suma en MPCM01004", () => {

@@ -36,7 +36,7 @@ const grupos = [
       { href: "/salidas", label: "Dosificación", icon: ArrowUpFromLine, roles: ["administrador", "pesador"] as Rango[] },
       { href: "/etiquetas-paletas", label: "Etiquetas Paletas", icon: Tags, roles: todos },
       { href: "/receta", label: "Cargar receta", icon: FileSpreadsheet, roles: ["administrador"] as Rango[] },
-      { href: "/calculadora", label: "Calculadora semanal", icon: Calculator, roles: ["administrador", "recepcionista", "consulta"] as Rango[] },
+      { href: "/calculadora", label: "Solicitud MPNC", icon: Calculator, roles: ["administrador", "recepcionista", "consulta"] as Rango[] },
     ],
   },
   {

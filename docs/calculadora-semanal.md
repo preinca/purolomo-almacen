@@ -1,6 +1,10 @@
-# Calculadora semanal de MPNC
+# Solicitud MPNC
 
-Reemplaza el Excel de solicitud semanal. Las recetas de pesaje de Alibal (`recetas` / `receta_items`) no se tocan: miden otra cosa (kilos de una línea de producción). Esta calculadora tiene tablas propias, `calc_*`.
+En el menú se llama **Solicitud MPNC**. Reemplaza el Excel de solicitud semanal. Las recetas de pesaje de Alibal (`recetas` / `receta_items`) no se tocan: miden otra cosa (kilos de una línea de producción). Esta solicitud tiene tablas propias, `calc_*`.
+
+El pedido se arma una sola vez. **Crear solicitud** abre la semana. El primer paso anota los batches de cada producto, de lunes a viernes, en fichas (no en una tabla ancha). **Siguiente** pasa al material de empaque: una ficha por material, con la cantidad a pedir. **Guardar** pregunta si está seguro. Si no, se sigue editando. Si sí, `calc_planes.cerrado` queda en 1, se muestra la planilla y se puede imprimir. Una solicitud guardada, al abrirla desde la lista, solo muestra esa planilla. Una que sigue en curso vuelve al formulario.
+
+Si la base ya existía, hay que aplicar `supabase/migraciones/2026-11-20-solicitud-cerrada.sql`. En local la columna se agrega sola al abrir la solicitud.
 
 El total de un ingrediente es la suma, sobre las filas del plan, de los batches de lunes a viernes por los kilos de ese ingrediente en la receta de la fila. Varias presentaciones comparten receta, así que sus batches se suman antes de multiplicar.
 
@@ -62,6 +66,7 @@ CREATE TABLE IF NOT EXISTS calc_planes (
   creado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
   actualizado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
   usuario TEXT NOT NULL DEFAULT '',
+  cerrado INTEGER NOT NULL DEFAULT 0,
   UNIQUE (anio, semana)
 );
 

@@ -39,10 +39,10 @@ export function NuevaSemana({ anio, hayAnterior }: { anio: number; hayAnterior: 
       </div>
       <label className="flex min-h-11 items-center gap-2 text-sm sm:col-span-2">
         <input type="checkbox" name="copiar" defaultChecked={hayAnterior} />
-        Copiar la semana anterior
+        Copiar la solicitud anterior
       </label>
       {error ? <p className="text-sm font-medium text-red-800 sm:col-span-4">{error}</p> : null}
-      <Button type="submit" disabled={pendiente} className="sm:col-span-2">{pendiente ? "Creando…" : "Crear semana"}</Button>
+      <Button type="submit" disabled={pendiente} className="sm:col-span-2">{pendiente ? "Creando…" : "Crear solicitud"}</Button>
     </form>
   );
 }

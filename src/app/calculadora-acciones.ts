@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import {
   agregarItemReceta,
+  cerrarSolicitud,
   crearPlan,
   guardarBatches,
   guardarKgItem,
@@ -40,6 +41,20 @@ export async function guardarPlanBatches(
   if (!resultado.ok) return resultado;
   revalidatePath(`/calculadora/${id}`);
   revalidatePath(`/calculadora/${id}/resultado`);
+  return { ok: true, value: undefined };
+}
+
+export async function guardarSolicitud(
+  id: number,
+  filas: { orden: number; batches: BatchesDia }[],
+  pedidos: { codigo: string; tipo: "mpnc" | "empaque"; cantidad: number | null }[],
+): Promise<Resultado> {
+  const sesion = await exigirEdicion();
+  const resultado = await cerrarSolicitud(getDb(), id, filas, pedidos, sesion.usuario);
+  if (!resultado.ok) return resultado;
+  revalidatePath("/calculadora");
+  revalidatePath(`/calculadora/${id}`);
+  revalidatePath(`/calculadora/${id}/imprimir`);
   return { ok: true, value: undefined };
 }
 

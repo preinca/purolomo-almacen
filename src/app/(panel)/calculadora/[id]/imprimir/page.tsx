@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { BotonImprimir } from "@/components/boton-imprimir";
-import { resultadoPlan } from "@/lib/calculadora-db";
+import { cargarPlan, resultadoPlan } from "@/lib/calculadora-db";
 import { getDb } from "@/lib/db";
 import { fechaHoy, formatoNumero } from "@/lib/formato";
 
@@ -18,14 +18,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 async function Hoja({ params }: { params: Promise<{ id: string }> }) {
   await connection();
   const id = Number((await params).id);
-  const datos = await resultadoPlan(getDb(), id);
+  const db = getDb();
+  const plan = await cargarPlan(db, id);
+  if (!plan) notFound();
+  if (!plan.cerrado) redirect(`/calculadora/${id}`);
+  const datos = await resultadoPlan(db, id);
   if (!datos) notFound();
   const plantas = ["PE PUROLOMO/CDL", "INDUPROCA", "SAN PABLO"];
 
   return (
     <article className="hoja-solicitud mx-auto max-w-3xl bg-white px-4 py-6 text-black">
       <div className="mb-4 flex items-center justify-between print:hidden">
-        <Link href={`/calculadora/${id}/resultado`} className="text-sm underline">Volver</Link>
+        <Link href="/calculadora" className="text-sm underline">Solicitudes</Link>
         <BotonImprimir etiqueta="Imprimir" />
       </div>
       <header className="mb-4">

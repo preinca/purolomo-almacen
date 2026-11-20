@@ -11,8 +11,8 @@ import { leerSesion } from "@/lib/usuarios";
 export default function Page() {
   return (
     <PageFrame
-      titulo="Calculadora semanal"
-      descripcion="Batches de lunes a viernes. El total de cada materia prima es la suma de la semana por los kilos de la receta."
+      titulo="Solicitud MPNC"
+      descripcion="Crea la solicitud, anota la materia prima de la semana y después el empaque. Al guardar queda lista para imprimir."
     >
       <Suspense fallback={<p className="text-sm text-muted-foreground">Cargando…</p>}>
         <Lista />
@@ -42,12 +42,17 @@ async function Lista() {
         </p>
       ) : null}
       <ul className="grid gap-2">
-        {planes.length === 0 ? <li className="text-sm text-muted-foreground">Todavía no hay semanas guardadas.</li> : null}
+        {planes.length === 0 ? <li className="text-sm text-muted-foreground">Todavía no hay solicitudes.</li> : null}
         {planes.map((plan) => (
           <li key={plan.id}>
-            <Link href={`/calculadora/${plan.id}`} className="flex min-h-14 items-center justify-between rounded-xl border bg-white px-4 py-3">
+            <Link
+              href={plan.cerrado ? `/calculadora/${plan.id}/imprimir` : `/calculadora/${plan.id}`}
+              className="flex min-h-14 items-center justify-between gap-3 rounded-xl border bg-white px-4 py-3"
+            >
               <span className="font-semibold">Semana {plan.semana} · {plan.anio}</span>
-              <span className="text-sm text-muted-foreground">{plan.usuario}</span>
+              <span className={plan.cerrado ? "text-sm font-medium text-emerald-800" : "text-sm text-muted-foreground"}>
+                {plan.cerrado ? "Guardada" : "En curso"}
+              </span>
             </Link>
           </li>
         ))}

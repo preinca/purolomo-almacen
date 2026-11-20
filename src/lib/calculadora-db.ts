@@ -61,8 +61,10 @@ CREATE TABLE IF NOT EXISTS calc_planes (
   creado_en TEXT NOT NULL DEFAULT ${AHORA},
   actualizado_en TEXT NOT NULL DEFAULT ${AHORA},
   usuario TEXT NOT NULL DEFAULT '',
+  cerrado INTEGER NOT NULL DEFAULT 0,
   UNIQUE (anio, semana)
 );
+ALTER TABLE calc_planes ADD COLUMN IF NOT EXISTS cerrado INTEGER NOT NULL DEFAULT 0;
 CREATE TABLE IF NOT EXISTS calc_plan_batches (
   plan_id INTEGER NOT NULL,
   fila_orden INTEGER NOT NULL,
@@ -197,12 +199,13 @@ export type PlanResumen = {
   semana: number;
   actualizadoEn: string;
   usuario: string;
+  cerrado: boolean;
 };
 
 export async function listarPlanes(db: Db) {
   await prepararCalculadora(db);
   const filas = await db.all<Record<string, unknown>>(
-    "SELECT id, anio, semana, actualizado_en, usuario FROM calc_planes ORDER BY anio DESC, semana DESC, id DESC",
+    "SELECT id, anio, semana, actualizado_en, usuario, COALESCE(cerrado, 0) AS cerrado FROM calc_planes ORDER BY anio DESC, semana DESC, id DESC",
   );
   return filas.map((fila) => ({
     id: Number(fila.id),
@@ -210,6 +213,7 @@ export async function listarPlanes(db: Db) {
     semana: Number(fila.semana),
     actualizadoEn: String(fila.actualizado_en),
     usuario: String(fila.usuario ?? ""),
+    cerrado: Number(fila.cerrado) === 1,
   }));
 }
 
@@ -217,7 +221,7 @@ export async function crearPlan(db: Db, anio: number, semana: number, usuario: s
   await prepararCalculadora(db);
   if (!anioValido(anio) || !semanaValida(semana)) return { ok: false as const, error: "Escribe un año y una semana del 1 al 53." };
   const existe = await db.get("SELECT id FROM calc_planes WHERE anio = ? AND semana = ?", anio, semana);
-  if (existe) return { ok: false as const, error: "Esa semana ya está guardada." };
+  if (existe) return { ok: false as const, error: "Esa solicitud ya está creada." };
   await db.run(
     `INSERT INTO calc_planes (anio, semana, usuario, actualizado_en) VALUES (?, ?, ?, ${AHORA})`,
     anio,
@@ -226,7 +230,7 @@ export async function crearPlan(db: Db, anio: number, semana: number, usuario: s
   );
   const creado = await db.get<{ id: number }>("SELECT id FROM calc_planes WHERE anio = ? AND semana = ?", anio, semana);
   const id = Number(creado?.id);
-  if (!id) return { ok: false as const, error: "No se pudo crear la semana." };
+  if (!id) return { ok: false as const, error: "No se pudo crear la solicitud." };
   const filas = await listarFilas(db);
   for (const fila of filas) {
     const origen = copiarDe
@@ -282,6 +286,7 @@ export type PlanCargado = {
   anio: number;
   semana: number;
   usuario: string;
+  cerrado: boolean;
   filas: (FilaPlan & { batches: BatchesDia })[];
   recetas: RecetaCalc[];
 };
@@ -301,15 +306,23 @@ export async function cargarPlan(db: Db, id: number): Promise<PlanCargado | unde
     anio: Number(plan.anio),
     semana: Number(plan.semana),
     usuario: String(plan.usuario ?? ""),
+    cerrado: Number(plan.cerrado ?? 0) === 1,
     filas: filas.map((fila) => ({ ...fila, batches: porFila.get(fila.orden) ?? vacio() })),
     recetas: await listarRecetas(db),
   };
 }
 
+async function planAbierto(db: Db, id: number) {
+  const plan = await db.get<Record<string, unknown>>("SELECT id, COALESCE(cerrado, 0) AS cerrado FROM calc_planes WHERE id = ?", id);
+  if (!plan) return { ok: false as const, error: "No existe esa solicitud." };
+  if (Number(plan.cerrado) === 1) return { ok: false as const, error: "Esta solicitud ya está guardada y no se puede modificar." };
+  return { ok: true as const };
+}
+
 export async function guardarBatches(db: Db, id: number, filas: { orden: number; batches: BatchesDia }[], usuario: string) {
   await prepararCalculadora(db);
-  const plan = await db.get("SELECT id FROM calc_planes WHERE id = ?", id);
-  if (!plan) return { ok: false as const, error: "No existe ese plan." };
+  const abierto = await planAbierto(db, id);
+  if (!abierto.ok) return abierto;
   for (const fila of filas) {
     const b = fila.batches;
     if (DIAS.some((dia) => !Number.isFinite(b[dia]) || b[dia] < 0)) {
@@ -342,6 +355,8 @@ export async function guardarSolicitado(
   cantidad: number | null,
 ) {
   await prepararCalculadora(db);
+  const abierto = await planAbierto(db, id);
+  if (!abierto.ok) return abierto;
   if (cantidad !== null && (!Number.isFinite(cantidad) || cantidad < 0)) {
     return { ok: false as const, error: "La cantidad solicitada tiene que ser cero o más." };
   }
@@ -357,6 +372,23 @@ export async function guardarSolicitado(
       cantidad,
     );
   }
+  return { ok: true as const };
+}
+
+export async function cerrarSolicitud(
+  db: Db,
+  id: number,
+  filas: { orden: number; batches: BatchesDia }[],
+  pedidos: { codigo: string; tipo: "mpnc" | "empaque"; cantidad: number | null }[],
+  usuario: string,
+) {
+  const guardado = await guardarBatches(db, id, filas, usuario);
+  if (!guardado.ok) return guardado;
+  for (const pedido of pedidos) {
+    const resultado = await guardarSolicitado(db, id, pedido.codigo, pedido.tipo, pedido.cantidad);
+    if (!resultado.ok) return resultado;
+  }
+  await db.run(`UPDATE calc_planes SET cerrado = 1, usuario = ?, actualizado_en = ${AHORA} WHERE id = ?`, usuario, id);
   return { ok: true as const };
 }
 

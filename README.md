@@ -36,9 +36,9 @@ La cookie de sesión se queda en el servidor. Si el kárdex no responde, se usa 
 
 En **Dosificación** se escanea el QR de la paleta que se está armando. Al guardar, los kilos totales se descuentan de la entrada de esa paleta y queda un movimiento de consumo. Si no alcanzan, no se guarda. Anular devuelve los kilos. El detalle está en [docs/dosificacion.md](docs/dosificacion.md).
 
-## Calculadora semanal
+## Solicitud MPNC
 
-En el menú, **Calculadora semanal** arma la solicitud de materia prima no cárnica (y el empaque) a partir de los batches de lunes a viernes. El detalle está en [docs/calculadora-semanal.md](docs/calculadora-semanal.md).
+En el menú, **Solicitud MPNC** arma la materia prima y el empaque de la semana. Se guarda una sola vez y después solo se puede ver e imprimir. El detalle está en [docs/calculadora-semanal.md](docs/calculadora-semanal.md).
 
 ```bash
 npm test

@@ -242,6 +242,7 @@ CREATE TABLE IF NOT EXISTS calc_planes (
   creado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
   actualizado_en TEXT NOT NULL DEFAULT to_char(clock_timestamp() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
   usuario TEXT NOT NULL DEFAULT '',
+  cerrado INTEGER NOT NULL DEFAULT 0,
   UNIQUE (anio, semana)
 );
 
@@ -266,6 +267,7 @@ CREATE TABLE IF NOT EXISTS calc_plan_solicitado (
 
 CREATE INDEX IF NOT EXISTS idx_calc_items_receta ON calc_receta_items (receta_id, orden);
 CREATE INDEX IF NOT EXISTS idx_calc_planes_semana ON calc_planes (anio DESC, semana DESC);
+ALTER TABLE calc_planes ADD COLUMN IF NOT EXISTS cerrado INTEGER NOT NULL DEFAULT 0;
 
 ALTER TABLE calc_recetas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE calc_receta_items ENABLE ROW LEVEL SECURITY;

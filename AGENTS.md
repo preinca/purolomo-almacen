@@ -21,7 +21,7 @@ Los flujos de Purolomo Almacén están en `docs/`. Cada archivo describe el prop
 - [Carga de receta](docs/recetas.md): Excel de Alibal 1 kg por línea, descarga y borrado.
 - [Dosificación](docs/dosificacion.md): la pestaña de salidas. QR de la paleta, núcleo, peso unitario por cantidad y descuento del stock.
 - [Historial de Dosificaciones](docs/historial-de-salidas.md): dosificaciones y, aparte, despachos y consumos de TAG, en `/historial/salidas`.
-- [Calculadora semanal](docs/calculadora-semanal.md): plan de materia prima no cárnica.
+- [Solicitud MPNC](docs/calculadora-semanal.md): materia prima y empaque de la semana, en un solo guardado.
 - [Salida para consumo](docs/salida-consumo.md): pesaje, mini lotes y cierre de la fórmula. Ya no está enlazada en el menú.
 - [Salida para logística](docs/salida-logistica.md): el TAG sale de cava y deja de poder consumirse. Ya no está enlazada en el menú.
 - [Ficha del TAG e historial](docs/lote-y-historial.md): kilos, movimientos, observación e impresión del navegador.
