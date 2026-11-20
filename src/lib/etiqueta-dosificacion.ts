@@ -37,7 +37,7 @@ export function datosEtiqueta(fila: DatosEtiquetaDosificacion): DatosEtiquetaDos
 export function lineasEtiquetaPaleta(datos: DatosEtiquetaDosificacion) {
   const destino = textoDestino(datos.destino, datos.destinoCodigo);
   return [
-    `PAL ${datos.id}`,
+    datos.nucleo.trim(),
     ...lineasDescripcion(datos.descripcion, 14),
     datos.codigo,
     formatoKg(datos.pesoTotal),

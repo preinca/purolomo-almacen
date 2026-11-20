@@ -6,10 +6,10 @@ import { textoQrDosificacion, zplEtiquetaPaleta } from "./etiqueta-dosificacion.
 test("cada destino de dosificación tiene su código", () => {
   assert.equal(textoDestino("produccion"), "Producción · 40602-1");
   assert.equal(textoDestino("cerdo"), "Cerdo · 40602-3");
-  assert.equal(textoDestino("makilas_san_pablo"), "Makilas · San Pablo · 60994");
-  assert.equal(textoDestino("makilas_induproca"), "Makilas · Induproca · 60993");
-  assert.equal(textoDestino("makilas_pev"), "Makilas · P.E.V · 40644");
-  assert.equal(textoDestino("makilas_sst"), "Makilas · Planta SST · 60996");
+  assert.equal(textoDestino("makilas_san_pablo"), "Maquilas · San Pablo · 60994");
+  assert.equal(textoDestino("makilas_induproca"), "Maquilas · Induproca · 60993");
+  assert.equal(textoDestino("makilas_pev"), "Maquilas · P.E.V · 40644");
+  assert.equal(textoDestino("makilas_sst"), "Maquilas · Planta SST · 60996");
   assert.equal(codigoDestino("makilas_san_pablo"), "60994");
   assert.equal(codigoDestino("makilas_induproca"), "60993");
 });
@@ -34,7 +34,7 @@ test("el QR de la dosificación lleva el id y no es un token de entrada", () => 
   assert.match(texto, /Kg unidad:2\.5/);
   assert.match(texto, /Unidades:4/);
   assert.match(texto, /Nucleo:N-12/);
-  assert.match(texto, /Destino:Makilas · Induproca · 60993/);
+  assert.match(texto, /Destino:Maquilas · Induproca · 60993/);
   assert.match(texto, /Destino codigo:60993/);
   assert.equal(texto.startsWith("PLT-"), false);
 });
@@ -52,7 +52,8 @@ test("la etiqueta de paleta usa el mismo tamaño y el qr a la derecha", () => {
     destino: "makilas_induproca",
     destinoCodigo: "60993",
   });
-  assert.match(zpl, /\^FDPAL 15\^FS/);
+  assert.match(zpl, /\^FDN-12\^FS/);
+  assert.doesNotMatch(zpl, /PAL 15/);
   assert.match(zpl, /MPCM01009/);
   assert.match(zpl, /10 kg/);
   assert.match(zpl, /60993/);

@@ -7,14 +7,14 @@ export const CATALOGO_DESTINOS = [
     nombre: "San Pablo",
     grupo: "makilas",
     codigo: "60994",
-    detalle: "Makilas, planta San Pablo.",
+    detalle: "Maquilas, planta San Pablo.",
   },
   {
     id: "makilas_induproca",
     nombre: "Induproca",
     grupo: "makilas",
     codigo: "60993",
-    detalle: "Makilas, planta Induproca.",
+    detalle: "Maquilas, planta Induproca.",
   },
   {
     id: "makilas_pev",
@@ -46,11 +46,11 @@ export function codigoDestino(id: string | null | undefined) {
   return fichaDestino(id)?.codigo ?? null;
 }
 
-/** «Producción · 40602-1» o «Makilas · San Pablo · 60994». El código guardado gana sobre el catálogo. */
+/** «Producción · 40602-1» o «Maquilas · San Pablo · 60994». El código guardado gana sobre el catálogo. */
 export function textoDestino(id: string | null | undefined, codigoGuardado?: string | null) {
   const ficha = fichaDestino(id);
   if (!ficha) return "—";
-  const nombre = ficha.grupo === "makilas" ? `Makilas · ${ficha.nombre}` : ficha.nombre;
+  const nombre = ficha.grupo === "makilas" ? `Maquilas · ${ficha.nombre}` : ficha.nombre;
   const codigo = (codigoGuardado ?? "").trim() || ficha.codigo;
   return codigo ? `${nombre} · ${codigo}` : nombre;
 }

@@ -56,7 +56,7 @@ export function DosificacionConDestino() {
         />
       ))}
       <BotonDestino
-        titulo="Makilas"
+        titulo="Maquilas"
         detalle="San Pablo, Induproca, P.E.V o Planta SST."
         tono="ambar"
         onClick={() => setPaso("planta")}

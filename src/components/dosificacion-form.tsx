@@ -202,7 +202,7 @@ export function DosificacionForm({
             <Input id="total-dosi" readOnly value={total === null ? "" : String(total)} className="bg-muted" />
           </div>
         </div>
-        <Button type="submit" disabled={pendiente || total === null} className="min-h-14 w-full">
+        <Button type="submit" disabled={pendiente || total === null || nucleo.trim().length === 0} className="min-h-14 w-full">
           {pendiente ? "Guardando…" : "Guardar dosificación"}
         </Button>
       </form>
